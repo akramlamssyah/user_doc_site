@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Explore — User Documentation</title>
+<style>
+:root {
+  --brand: #00C79A;
+  --brand-light: #30D2AE;
+  --brand-dark: #008668;
+  --brand-bg: #DFF8F3;
+  --sidebar-w: 280px;
+  --text: #2c3e50;
+  --text-light: #5a6a7a;
+  --border: #e8e8e8;
+  --bg: #ffffff;
+  --bg-alt: #f8f9fa;
+  --code-bg: #f0f2f5;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --dark: #005542;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body { font-family: Arial, sans-serif; font-size: 15px; color: var(--text); line-height: 1.7; background: #f9fafb; }
+
+/* Sidebar */
+#sidebar {
+  position: fixed; top:0; left:0; bottom:0;
+  width: var(--sidebar-w); background: var(--bg);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index:100;
+  display:flex; flex-direction:column;
+  transition: transform 0.3s ease;
+}
+#sidebar::-webkit-scrollbar { width:4px; }
+#sidebar::-webkit-scrollbar-thumb { background:#ccc; border-radius:2px; }
+.sidebar-header {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logo svg {
+  display: block;
+  width: 140px;
+  height: auto;
+}
+.doc-title {
+  font-size: 13px; color: var(--text-light); margin-top: 2px; font-weight: 500;
+}
+.sidebar-search {
+  padding:12px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.sidebar-search input {
+  width:100%; padding:8px 12px; border:1px solid var(--border);
+  border-radius:6px; font-size:13px; outline:none;
+  background:var(--bg-alt); transition: border-color 0.2s;
+}
+.sidebar-search input:focus { border-color:var(--brand); }
+.sidebar-content {
+  flex:1; overflow-y:auto; padding:8px 0;
+}
+.nav-section { margin-bottom:2px; }
+.nav-chapter {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; text-decoration: none; color: var(--text);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border: none; background: none; width: 100%; text-align: left;
+  user-select: none;
+}
+.nav-chapter:hover { background: var(--bg-alt); color: var(--brand); }
+.nav-chapter.active { color: var(--brand); }
+.ch-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; border-radius: 4px;
+  background: var(--brand-bg); color: var(--brand);
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.ch-title { flex: 1; }
+.chevron {
+  flex-shrink: 0; transition: transform 0.3s;
+  color: var(--text-light); opacity: 0.6;
+  font-size: 12px; display: inline-block;
+}
+.nav-section.open > .nav-chapter .chevron { transform: rotate(90deg); }
+.nav-items {
+  display:none; padding-left:0;
+  overflow:hidden;
+}
+.nav-section.open > .nav-items { display:block; }
+.nav-item {
+  display:block; padding:5px 16px 5px 46px;
+  text-decoration:none; color:var(--text-light);
+  font-size:12.5px; line-height:1.5;
+  border-left:2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-item:hover { color:var(--brand); background:var(--bg-alt); }
+.nav-item.active {
+  color:var(--brand); border-left-color:var(--brand);
+  font-weight:600; background:var(--brand-bg);
+}
+.nav-subitem {
+  display:block; padding:4px 16px 4px 58px;
+  text-decoration:none; color:var(--text-light);
+  font-size:12px; line-height:1.4;
+  transition: all 0.15s;
+}
+.nav-subitem:hover { color:var(--brand); background:var(--bg-alt); }
+.nav-subitem.active { color:var(--brand); font-weight:600; }
+
+/* Main content */
+#main {
+  margin-left: var(--sidebar-w);
+  padding: 0 0 80px;
+}
+
+/* Cover — style harmonisé avec ExperTab */
+.doc-cover {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--dark) 100%);
+  color: white;
+  padding: 80px 60px 70px;
+}
+.doc-cover h1 {
+  font-size: 56px; font-weight: 800; letter-spacing: 2px; line-height: 1.1;
+  border: none; color: white; padding: 0; margin: 0;
+  display: block;
+}
+.doc-cover .cover-subtitle { font-size: 22px; opacity: .85; margin-top: 10px; }
+.doc-cover .cover-meta { display: flex; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+.doc-cover .cover-meta-item {
+  background: rgba(255,255,255,.1); border-radius: 8px;
+  padding: 12px 20px; font-size: 13px;
+}
+.doc-cover .cover-meta-item span {
+  display: block; font-size: 10px; opacity: .65;
+  text-transform: uppercase; letter-spacing: .8px; margin-bottom: 3px;
+}
+
+/* Content wrapper */
+.content-wrap { padding: 0 60px 60px; }
+
+/* ── TOC — style identique ExperTab ── */
+.toc-section {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 50px 60px;
+}
+.toc-section h2 {
+  color: var(--brand);
+  font-size: 22px;
+  margin-bottom: 24px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--brand);
+  display: inline-block;
+  border-top: none;
+  margin-top: 0;
+  gap: 0;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 6px;
+}
+.toc-grid a {
+  display: block;
+  color: var(--brand);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px 0;
+  border-bottom: 1px dotted #d0dfe0;
+}
+.toc-grid a:hover { color: var(--dark); }
+.toc-grid a .toc-num { font-weight: 700; margin-right: 6px; }
+
+/* ── Section titles h2 — style identique ExperTab section-title ── */
+h2 {
+  font-size: 28px;
+  color: var(--brand);
+  padding-bottom: 12px;
+  border-bottom: 4px solid var(--brand);
+  margin-bottom: 28px;
+  margin-top: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  scroll-margin-top: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  border-top: none;
+  padding-top: 0;
+}
+h2 .num {
+  background: var(--brand);
+  color: white;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; flex-shrink: 0;
+}
+
+/* ── Sub-titles h3 — style identique ExperTab sub-title ── */
+h3 {
+  font-size: 19px;
+  color: var(--dark);
+  margin: 36px 0 14px;
+  padding-left: 14px;
+  border-left: 4px solid var(--brand);
+  font-weight: 700;
+  scroll-margin-top: 24px;
+}
+
+/* ── Sub-sub-titles h4 — style identique ExperTab sub-sub-title ── */
+h4 {
+  font-size: 15px;
+  color: var(--brand);
+  margin: 24px 0 8px;
+  font-weight: 700;
+  scroll-margin-top: 24px;
+}
+
+/* ── Cover h1 — isolé du style général ── */
+.doc-cover h1 {
+  font-size: 48px; font-weight: 800; letter-spacing: 2px;
+  color: white; border: none; padding: 0; margin: 0;
+  display: block; line-height: 1.1;
+}
+
+/* Section separator */
+.content-wrap > h2 { border-top: 1px solid #e8ecee; padding-top: 48px; }
+.content-wrap > h2:first-child { border-top: none; margin-top: 40px; padding-top: 0; }
+p { margin: 8px 0 10px; font-size:15px; }
+ul { padding-left: 28px; margin: 10px 0 14px; font-size:15px; }
+ul li { margin-bottom: 5px; }
+ol { padding-left: 28px; margin: 10px 0 14px; font-size:15px; }
+ol li { margin-bottom: 5px; }
+
+/* ── Listes numérotées procédurales — cercles verts style ExperTab ── */
+.content-wrap ol {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+}
+.content-wrap ol li {
+  counter-increment: step;
+  display: flex;
+  gap: 14px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.content-wrap ol li::before {
+  content: counter(step);
+  background: var(--brand);
+  color: white;
+  min-width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+a { color:var(--brand-dark); }
+code {
+  background:var(--code-bg); padding:2px 6px;
+  border-radius:3px; font-size:13px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+strong { font-weight:600; }
+hr { border:none; border-top:1px solid var(--border); margin:32px 0; }
+
+.table-wrapper { overflow-x:auto; margin:16px 0 24px; border-radius:8px; box-shadow: var(--shadow); }
+table { border-collapse:collapse; width:100%; font-size:14px; line-height:1.5; }
+th {
+  text-align:left; padding:11px 14px;
+  background:var(--brand); color:white;
+  font-weight:600; font-size:13px;
+  white-space:nowrap;
+}
+td { padding:10px 14px; border-bottom: 1px solid #e5eaeb; vertical-align:top; }
+tbody tr:nth-child(even) td { background:var(--bg-alt); }
+
+/* Images — ne pas prendre toute la largeur */
+figure img, .content-wrap img {
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: block;
+  margin: 0 auto;
+}
+
+figure { margin: 24px 0; text-align: center; }
+figcaption {
+  margin-top: 8px; font-size: 13px; color: var(--text-light);
+  font-style: italic;
+}
+
+#back-to-top {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--brand); color: white;
+  border: none; cursor: pointer; font-size: 18px;
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 200;
+  transition: background 0.2s;
+}
+#back-to-top:hover { background: var(--brand-dark); }
+#back-to-top.visible { display: flex; }
+
+#menu-toggle {
+  display:none; position:fixed; top:12px; left:12px;
+  z-index:200; background:var(--brand); color:white;
+  border:none; border-radius:6px; padding:8px 12px;
+  cursor:pointer; font-size:16px;
+}
+@media (max-width:768px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); box-shadow:4px 0 16px rgba(0,0,0,0.15); }
+  #main { margin-left:0; }
+  .doc-cover { padding: 40px 24px; }
+  .doc-cover h1 { font-size: 32px; }
+  .content-wrap { padding: 0 24px 40px; }
+  #menu-toggle { display:block; }
+  h1 { font-size:22px; }
+  h2 { font-size:17px; }
+}
+@media print {
+  #sidebar, #back-to-top, #menu-toggle { display:none !important; }
+  #main { margin-left:0; padding:20px; }
+  .doc-cover { break-after: page; }
+}
+
+/* GTS Logo */
+.gts-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gts-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.gts-text {
+  line-height: 1.2;
+}
+.gts-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #D63384 0%, #7B2FF7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* GTS Logo */
+.gts-logo {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gts-logo svg {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+</style>
+<style>
+.callout{border-left:4px solid var(--brand,#00C79A);background:var(--brand-bg,#DFF8F3);padding:12px 16px;margin:16px 0;border-radius:6px}
+.callout.warn{border-color:#E67E22;background:#FDF2E9}.callout.danger{border-color:#C0392B;background:#FDEDEC}
+.callout p{margin:0}
+</style></head>
+<body>
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<nav id="sidebar">
+<div class="gts-logo">
+<svg fill="none" height="38" viewbox="0 0 145 38" width="145" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4005_30414)">
+<path d="M96.7249 23.612C100.619 23.612 103.773 26.7747 103.773 30.6727C103.773 34.5708 100.619 37.7334 96.7249 37.7334C92.8307 37.7334 89.6768 34.5708 89.6768 30.6727C89.6768 26.7747 92.8337 23.612 96.7249 23.612ZM95.3422 27.8626C95.1005 27.8626 94.9078 28.0618 94.9078 28.3039C94.9078 28.546 95.1066 28.739 95.3483 28.736L98.2207 28.7145L94.0176 32.9865C93.8493 33.1581 93.8493 33.4339 94.0237 33.6055C94.195 33.774 94.4703 33.774 94.6386 33.6024L98.8417 29.3305L98.8631 32.2081C98.8631 32.4502 99.062 32.6432 99.3037 32.6402C99.5453 32.6402 99.738 32.441 99.735 32.2019L99.7075 28.2702C99.7075 28.0281 99.5086 27.835 99.27 27.835L95.3452 27.8626H95.3422Z" fill="#00C79A"></path>
+<path d="M30.1191 31.1971L30.1161 31.2029C30.1161 32.3031 30.2629 33.0634 30.5566 33.4832C30.8503 33.9061 31.3275 34.1142 31.9913 34.1142C32.4624 34.1142 32.9029 33.9487 33.3128 33.6147C33.735 33.2837 34.0715 32.8148 34.3284 32.2142C34.5823 31.6135 34.7108 30.9363 34.7108 30.1824V26.0606H37.1611V36.1827H34.7108V35.5484C34.7108 35.2664 34.7353 35.0305 34.7873 34.8405C34.8393 34.6352 34.9158 34.4114 35.0167 34.1694C35.0809 34.0039 35.1115 33.9027 35.1115 33.8629C35.1115 33.7464 35.0595 33.6821 34.9586 33.6698H34.9005C34.8118 33.6698 34.7353 33.7464 34.671 33.8997C34.3529 34.5402 33.9063 35.1071 33.3312 35.6066C32.7714 36.0908 32.0922 36.336 31.303 36.336C30.1803 36.336 29.2932 35.9713 28.6447 35.2419C27.9931 34.5126 27.6688 33.4461 27.6688 32.0398V26.0576H30.1191V31.1971ZM5.79355 22.3985C6.9039 22.3985 7.82765 22.5979 8.56791 22.9932C9.30818 23.3884 9.85575 23.9125 10.2137 24.5652C10.5716 25.218 10.7553 25.9261 10.7675 26.6922H8.29874C8.29874 26.1437 8.09379 25.65 7.68693 25.2149C7.28007 24.7675 6.63449 24.5436 5.75351 24.5436C4.87255 24.5437 4.24248 24.7094 3.86009 25.0434C3.47774 25.3744 3.28505 25.733 3.28505 26.1161C3.28511 27.0352 4.15991 27.5929 5.90646 27.7829C7.06582 27.9239 8.02952 28.1356 8.79734 28.4173C9.57435 28.6869 10.1832 29.1068 10.6146 29.6829C11.0489 30.259 11.2661 31.0374 11.2661 32.0211C11.2661 32.775 11.0489 33.471 10.6146 34.1114C10.1924 34.7516 9.56835 35.2603 8.73937 35.6465C7.91037 36.0173 6.91595 36.2011 5.75351 36.2011C4.55441 36.2011 3.53895 35.9713 2.70997 35.5116C1.88096 35.0519 1.26294 34.4513 0.853025 33.7097C0.446199 32.9681 0.241211 32.1621 0.241211 31.2948H2.76791C2.79238 32.0119 3.02188 32.6493 3.4562 33.2132C3.89059 33.7771 4.65536 34.056 5.75351 34.056C6.4418 34.056 7.00488 33.961 7.43927 33.7679C7.88583 33.5629 8.19779 33.3205 8.37522 33.0389C8.56794 32.7447 8.6629 32.4563 8.6629 32.1744C8.6629 31.6748 8.45164 31.2737 8.03258 30.9672C7.61042 30.6485 6.85171 30.4187 5.75351 30.2777C4.4902 30.1122 3.48998 29.8606 2.74971 29.5297C2.02165 29.1834 1.50164 28.7513 1.18044 28.2273C0.862294 27.691 0.700072 27.026 0.700072 26.2353C0.700072 25.5335 0.90503 24.8869 1.31189 24.2985C1.71871 23.7102 2.30911 23.2505 3.07382 22.9195C3.85079 22.5733 4.7594 22.4018 5.79024 22.4018L5.79355 22.3985ZM67.8436 25.9108C68.9663 25.9108 69.8537 26.2752 70.505 27.0045C71.1566 27.7339 71.4809 28.8003 71.4809 30.2069V36.1889H69.0305V31.0497C69.0305 29.9495 68.8837 29.1895 68.59 28.7697C68.2964 28.3498 67.8191 28.1384 67.1553 28.1384C66.6842 28.1384 66.2376 28.3039 65.8154 28.6379C65.4086 28.9689 65.0751 29.438 64.8212 30.0387C64.5673 30.639 64.4389 31.3163 64.4389 32.0702V36.1922H61.9886V26.0698H64.4389V26.7045C64.4389 26.9984 64.4144 27.2466 64.3624 27.4519C64.3104 27.6573 64.2339 27.8659 64.133 28.0835C64.0687 28.2368 64.0381 28.3409 64.0381 28.39C64.0381 28.5031 64.0901 28.5677 64.1911 28.58H64.2492C64.3379 28.58 64.4144 28.5031 64.4786 28.3501C64.7601 27.725 65.1945 27.1611 65.7787 26.6647C66.3661 26.1651 67.0544 25.9166 67.8467 25.9166L67.8436 25.9108ZM17.2406 25.7606C18.2622 25.7606 19.1555 25.9905 19.9202 26.4501C20.685 26.9098 21.2724 27.5347 21.6792 28.3284C22.086 29.1221 22.291 30.0047 22.291 30.9761C22.291 31.9476 22.086 32.8271 21.6792 33.6208C21.2724 34.4114 20.685 35.0397 19.9202 35.4994C19.1555 35.959 18.2622 36.1889 17.2406 36.1889C16.2188 36.1889 15.3253 35.959 14.5606 35.4994C13.7959 35.0397 13.2084 34.4145 12.8016 33.6208C12.3948 32.8302 12.1898 31.9476 12.1898 30.9761C12.1898 30.0047 12.3948 29.1221 12.8016 28.3284C13.2085 27.538 13.7959 26.9098 14.5606 26.4501C15.3284 25.9905 16.2188 25.7606 17.2406 25.7606ZM42.5145 26.064H45.2738V28.2122H42.5176V32.8335C42.5176 33.2408 42.5298 33.523 42.5543 33.6763C42.594 33.8292 42.6766 33.9306 42.8021 33.9827C42.9428 34.0226 43.1967 34.0406 43.5668 34.0406H45.2707V36.1889H43.0498C42.3493 36.1889 41.7803 36.1 41.3459 35.9192C40.9115 35.7261 40.5873 35.4074 40.3701 34.96C40.1651 34.5126 40.0642 33.8874 40.0642 33.0814V28.2122H38.2257V26.064H40.0642V23.3026H42.5145V26.064ZM55.7022 25.7606C56.7239 25.7606 57.6171 25.9905 58.3819 26.4501C59.1467 26.9098 59.734 27.5347 60.1409 28.3284C60.5477 29.1221 60.7527 30.0047 60.7527 30.9761C60.7527 31.9476 60.5477 32.8271 60.1409 33.6208C59.734 34.4114 59.1467 35.0397 58.3819 35.4994C57.6171 35.959 56.7239 36.1889 55.7022 36.1889C54.6804 36.1889 53.7872 35.959 53.0224 35.4994C52.2576 35.0397 51.6672 34.4145 51.2604 33.6208C50.8535 32.8302 50.6486 31.9476 50.6486 30.9761C50.6486 30.0047 50.8535 29.1221 51.2604 28.3284C51.6703 27.5347 52.2576 26.9098 53.0224 26.4501C53.7902 25.9905 54.6804 25.7606 55.7022 25.7606ZM77.3362 25.7576C78.6226 25.7579 79.6369 26.0643 80.3766 26.6769C81.1169 27.2776 81.5177 28.0559 81.5819 29.0151H79.1714C79.1316 28.6321 78.9664 28.3134 78.6727 28.056C78.3913 27.8016 77.9263 27.6729 77.2747 27.6729C76.0633 27.6729 75.4576 28.0192 75.4576 28.7087C75.4576 28.9018 75.5035 29.0608 75.5922 29.1864C75.6932 29.3152 75.9043 29.4285 76.2224 29.5327C76.5406 29.6339 77.0147 29.7169 77.6388 29.7813C78.9786 29.9222 80.0187 30.2345 80.759 30.7218C81.5115 31.1937 81.8878 31.9111 81.8878 32.8703C81.8878 33.9306 81.4871 34.7489 80.6825 35.325C79.8902 35.9008 78.7553 36.1889 77.2747 36.1889C75.8465 36.1889 74.7357 35.8763 73.9465 35.2484C73.1695 34.6079 72.7534 33.7342 72.7045 32.6218H75.115C75.1273 33.0814 75.3016 33.471 75.632 33.7927C75.9777 34.1111 76.5497 34.2705 77.3543 34.2705C78.0946 34.2705 78.6238 34.1632 78.9419 33.9459C79.2723 33.7284 79.4406 33.4339 79.4406 33.0634C79.4406 32.8213 79.3335 32.634 79.1163 32.5084C78.9113 32.3797 78.6235 32.285 78.2536 32.2206C77.8835 32.144 77.3023 32.061 76.513 31.9721C75.1364 31.8066 74.2034 31.4358 73.7201 30.8597C73.249 30.2713 73.0134 29.6002 73.0134 28.8463C73.0134 28.2824 73.1786 27.7737 73.5121 27.311C73.8425 26.839 74.335 26.4624 74.9865 26.1805C75.6366 25.8991 76.4179 25.7582 77.3362 25.7576ZM25.9772 36.1858H23.5269V22.3832H25.9772V36.1858ZM49.4127 36.1858H46.9627V26.064H49.4127V36.1858ZM17.2373 27.9852C16.4328 27.9882 15.7934 28.2735 15.3224 28.8497C14.8636 29.4105 14.6341 30.1211 14.6341 30.9761C14.6341 31.8311 14.8635 32.5452 15.3224 33.1213C15.7965 33.6821 16.4328 33.964 17.2373 33.964C18.0418 33.964 18.6751 33.6852 19.1339 33.1213C19.605 32.5482 19.8408 31.8311 19.8408 30.9761C19.8407 30.1211 19.605 29.4135 19.1339 28.8497C18.672 28.2735 18.0418 27.9852 17.2373 27.9852ZM55.7022 27.9852C54.8976 27.9852 54.2583 28.2735 53.7872 28.8497C53.3283 29.4105 53.0989 30.1211 53.0989 30.9761C53.0989 31.8311 53.3283 32.5452 53.7872 33.1213C54.2613 33.6821 54.9007 33.964 55.7022 33.964C56.5036 33.964 57.1369 33.6852 57.5957 33.1213C58.0668 32.5482 58.3024 31.8311 58.3024 30.9761C58.3024 30.1211 58.0668 29.4135 57.5957 28.8497C57.1369 28.2735 56.5067 27.9852 55.7022 27.9852ZM49.4127 24.8381H46.9627V22.3832H49.4127V24.8381ZM32.5695 4.31784C32.5695 4.66413 32.4777 5.01364 32.3003 5.37219C32.288 5.41203 32.2635 5.47034 32.2238 5.54696C32.1993 5.62047 32.1871 5.68492 32.1871 5.73699C32.1871 5.80128 32.2177 5.8504 32.2819 5.89021L32.3584 5.90848C32.4471 5.90845 32.5144 5.86864 32.5511 5.79206C32.5909 5.71544 32.6153 5.66935 32.6276 5.65709C32.958 5.08106 33.3862 4.62754 33.9093 4.2966C34.4477 3.95031 35.084 3.77858 35.8243 3.77858C36.6808 3.77858 37.4395 4.00848 38.1033 4.46809C38.7794 4.92777 39.3025 5.5529 39.6726 6.34661V6.35289C40.0397 7.14654 40.2263 8.02912 40.2263 9.00051C40.2263 9.97193 40.0428 10.8515 39.6726 11.6452C39.3025 12.4389 38.7794 13.064 38.1033 13.5237C37.4395 13.9833 36.6778 14.2132 35.8243 14.2132C35.0962 14.2132 34.4569 14.0447 33.9093 13.7137C33.374 13.3674 32.9457 12.9017 32.6276 12.3134C32.6276 12.3012 32.6031 12.2551 32.5511 12.1784C32.5113 12.1019 32.441 12.0806 32.34 12.1204C32.2513 12.1572 32.2054 12.2153 32.2054 12.2919C32.2054 12.3807 32.236 12.479 32.3003 12.5801C32.4807 12.9386 32.5695 13.2849 32.5695 13.6159V14.057H30.1191V0.254384H32.5695V4.31784ZM77.287 3.78155C78.116 3.78158 78.8869 3.95935 79.6027 4.31784C80.3277 4.66107 80.915 5.21899 81.3616 5.98509C81.8205 6.73893 82.0499 7.69812 82.0499 8.85958L82.0561 8.86586C82.0561 9.07115 82.0377 9.31931 81.9979 9.61342H74.65C74.7388 10.3795 75.0202 10.9802 75.4913 11.4153C75.9624 11.8505 76.5834 12.068 77.3482 12.068C78.3791 12.068 79.0643 11.5563 79.3947 10.5328H81.8817C81.6523 11.6452 81.1536 12.54 80.3889 13.2172C79.6363 13.8791 78.6146 14.2132 77.3267 14.2132C76.2652 14.2132 75.3536 13.9896 74.5889 13.5422C73.8241 13.0948 73.2429 12.4789 72.8483 11.7005C72.4536 10.9068 72.2548 10.0057 72.2548 8.99754C72.2548 7.94948 72.4598 7.03312 72.8666 6.25474C73.2735 5.46415 73.8547 4.85747 74.6072 4.43457C75.372 3.99941 76.2652 3.78155 77.287 3.78155ZM46.2435 3.77858C47.5956 3.77858 48.6663 4.10961 49.4586 4.77455V4.77154C50.2509 5.43654 50.6455 6.66232 50.6455 8.45196V14.051H48.1952V13.3429C48.1952 12.9599 48.29 12.5891 48.4827 12.2305C48.5347 12.1019 48.5592 12.007 48.5592 11.9426C48.5592 11.866 48.5286 11.8139 48.4644 11.7894L48.3879 11.7709C48.3114 11.7709 48.2533 11.8107 48.2166 11.8873C48.1768 11.9485 48.1585 11.9884 48.1585 12.0007C47.5589 13.4717 46.3965 14.2072 44.6742 14.2072C44.0471 14.2072 43.4597 14.0785 42.9122 13.8242C42.3768 13.5698 41.9486 13.2172 41.6304 12.7698C41.3123 12.3224 41.1532 11.8229 41.1532 11.2744C41.1532 10.2264 41.4836 9.45424 42.1474 8.95473C42.8235 8.44295 43.7167 8.1548 44.8272 8.09044L45.803 8.05364C46.6718 8.02912 47.2897 7.97099 47.6599 7.88215C48.03 7.79328 48.2074 7.57542 48.1952 7.22913C48.183 6.79409 48.0361 6.44477 47.7547 6.17512C47.4732 5.90851 46.944 5.77349 46.167 5.77349C45.3747 5.77352 44.8119 5.91473 44.4815 6.19666C44.1511 6.46634 43.9461 6.83712 43.8697 7.30905H41.4591C41.6243 6.10779 42.1535 5.21899 43.0468 4.64286C43.94 4.06673 45.0076 3.77858 46.2435 3.77858ZM135.893 3.77858C137.245 3.77858 138.319 4.10955 139.108 4.77455L139.102 4.77154C139.891 5.43654 140.289 6.66232 140.289 8.45196V14.051H137.838V13.3429C137.838 12.9599 137.933 12.5891 138.126 12.2305C138.178 12.1019 138.202 12.007 138.202 11.9426C138.202 11.866 138.172 11.8139 138.107 11.7894L138.031 11.7709C137.954 11.7709 137.896 11.8107 137.86 11.8873C137.823 11.9485 137.802 11.9884 137.802 12.0007C137.202 13.4717 136.043 14.2072 134.32 14.2072C133.693 14.2072 133.106 14.0785 132.558 13.8242C132.023 13.5698 131.595 13.2172 131.277 12.7698C130.958 12.3224 130.799 11.8229 130.799 11.2744C130.799 10.2264 131.13 9.45424 131.794 8.95473C132.473 8.44295 133.363 8.1548 134.473 8.09044L135.449 8.05364C136.318 8.02912 136.936 7.97099 137.306 7.88215C137.676 7.79328 137.854 7.57542 137.841 7.22913C137.829 6.79406 137.682 6.44477 137.401 6.17512C137.119 5.90851 136.59 5.77349 135.813 5.77349C135.024 5.77352 134.461 5.91473 134.131 6.19666C133.8 6.46634 133.595 6.83718 133.519 7.30905H131.108C131.273 6.10776 131.803 5.21899 132.696 4.64286C133.589 4.06673 134.654 3.77858 135.893 3.77858ZM7.02014 0.404607C8.2193 0.404607 9.25318 0.62847 10.122 1.07586C10.9907 1.52328 11.6668 2.10541 12.1501 2.81941C12.6334 3.53648 12.9546 4.3149 13.1075 5.15761H10.5228C10.2934 4.41609 9.89873 3.82166 9.33595 3.37425C8.77312 2.92686 8.01434 2.70302 7.05688 2.70299C6.16364 2.70299 5.39865 2.90832 4.75931 3.3159C4.13532 3.71122 3.65514 4.26286 3.32476 4.96458C3.00664 5.65406 2.84739 6.43554 2.84739 7.30277C2.84739 8.15771 3.00037 8.93922 3.30625 9.64097C3.62436 10.3304 4.09258 10.879 4.70434 11.2896C5.32836 11.6972 6.08398 11.9025 6.9619 11.9025C7.87962 11.9025 8.62613 11.6451 9.20123 11.1364C9.78854 10.6246 10.1895 9.95958 10.4066 9.14445H7.13336V6.99632H13.1045V14.051H10.4249V13.1684C10.4249 12.7333 10.538 12.2365 10.7705 11.6727C10.7827 11.6482 10.789 11.6023 10.789 11.538C10.789 11.4369 10.749 11.3785 10.6725 11.3662C10.6481 11.354 10.6144 11.348 10.5778 11.348C10.5013 11.348 10.4371 11.4001 10.3851 11.5012C10.1159 12.1662 9.64486 12.7853 8.9688 13.3615C8.30499 13.9253 7.46353 14.2042 6.4418 14.2042C5.17849 14.2042 4.07423 13.8977 3.13209 13.2849C2.20217 12.672 1.48638 11.8414 0.987747 10.7934C0.489118 9.74537 0.241211 8.58374 0.241211 7.30277C0.241211 6.01264 0.50111 4.84187 1.02418 3.79384C1.54728 2.74581 2.32138 1.9216 3.33999 1.32096C4.36172 0.708086 5.58535 0.401634 7.01387 0.401604L7.02014 0.404607ZM88.1467 3.77858C89.0522 3.77858 89.8506 3.9657 90.5389 4.33341C91.2272 4.70418 91.7625 5.19745 92.1449 5.81032C92.5395 6.4109 92.7689 7.06371 92.8332 7.76542H90.4226C90.3461 7.25374 90.1106 6.83077 89.716 6.49984C89.3214 6.16887 88.7982 6.00035 88.1467 6.00035C87.3177 6.00035 86.6664 6.27631 86.1953 6.82483C85.7242 7.37335 85.4883 8.09648 85.4883 8.99123C85.4883 9.88607 85.7242 10.6094 86.1953 11.158C86.6664 11.7065 87.3177 11.9824 88.1467 11.9824C88.7982 11.9824 89.3214 11.817 89.716 11.483C90.1106 11.152 90.3461 10.7288 90.4226 10.217H92.8332C92.7689 10.9188 92.5395 11.5778 92.1449 12.1907C91.7625 12.7913 91.2272 13.2786 90.5389 13.6464C89.8628 14.0171 89.0644 14.2009 88.1467 14.2009C87.1402 14.2009 86.2439 13.9774 85.4669 13.53C84.7022 13.0825 84.1026 12.4634 83.6682 11.6697C83.246 10.876 83.035 9.98425 83.035 8.98525C83.035 7.98622 83.2399 7.09451 83.6468 6.3008C84.0689 5.50709 84.6685 4.88796 85.4455 4.44054C86.2225 3.99319 87.1249 3.7696 88.1436 3.7696L88.1467 3.77858ZM125.204 3.77858C126.11 3.77858 126.908 3.96567 127.596 4.33341C128.285 4.70115 128.82 5.19745 129.202 5.81032C129.597 6.4109 129.83 7.06371 129.891 7.76542H127.48C127.404 7.25371 127.168 6.83077 126.771 6.49984C126.376 6.1689 125.853 6.00035 125.201 6.00035C124.372 6.00035 123.721 6.27631 123.25 6.82483C122.778 7.37335 122.54 8.09648 122.54 8.99123C122.54 9.88607 122.775 10.6094 123.25 11.158C123.721 11.7065 124.372 11.9824 125.201 11.9824C125.853 11.9824 126.376 11.817 126.771 11.483C127.165 11.152 127.404 10.7288 127.48 10.217H129.891C129.827 10.9188 129.597 11.5778 129.202 12.1907C128.82 12.7913 128.285 13.2786 127.596 13.6464C126.92 14.0172 126.122 14.2009 125.204 14.2009C124.198 14.2009 123.305 13.9773 122.525 13.53C121.76 13.0825 121.16 12.4634 120.726 11.6697C120.307 10.876 120.096 9.98428 120.096 8.98525C120.096 7.98625 120.301 7.09451 120.707 6.3008C121.127 5.50712 121.729 4.88796 122.506 4.44054C123.283 3.99312 124.183 3.7696 125.204 3.7696V3.77858ZM23.8358 3.69299C24.8575 3.69299 25.7508 3.92282 26.5155 4.3825C27.2803 4.84218 27.8677 5.46731 28.2745 6.26102C28.6814 7.0547 28.8863 7.93722 28.8863 8.90864C28.8863 9.88009 28.6814 10.7596 28.2745 11.5533C27.8677 12.347 27.2803 12.9721 26.5155 13.4318C25.7508 13.8914 24.8575 14.1213 23.8358 14.1213C22.8141 14.1213 21.9209 13.8915 21.1561 13.4318C20.3913 12.9721 19.801 12.347 19.3942 11.5533C18.9873 10.7626 18.7823 9.88009 18.7823 8.90864C18.7823 7.93722 18.9843 7.0547 19.3942 6.26102C19.8041 5.46731 20.3913 4.84218 21.1561 4.3825C21.9239 3.92282 22.8141 3.69299 23.8358 3.69299ZM73.1572 2.63867H69.1009V14.1153H66.4976V2.63867H62.4413V0.337279H73.1572V2.63867ZM111.091 3.77858C112.213 3.77885 113.1 4.14365 113.751 4.8727C114.403 5.60206 114.727 6.66857 114.727 8.07518V14.057H112.277V8.91792C112.277 7.81776 112.13 7.0577 111.836 6.6348C111.542 6.21193 111.065 6.00336 110.401 6.00332C109.93 6.00332 109.484 6.16911 109.062 6.50312C108.655 6.83405 108.322 7.3028 108.068 7.90339C107.814 8.504 107.685 9.18132 107.685 9.93513V14.057H105.235V3.9318H107.685V4.56625C107.685 4.86035 107.657 5.10855 107.609 5.31381C107.557 5.51913 107.48 5.7277 107.379 5.94528C107.315 6.09851 107.284 6.2027 107.284 6.25173C107.284 6.36509 107.333 6.42951 107.437 6.44176H107.495C107.584 6.4417 107.661 6.36509 107.725 6.21193C108.006 5.58676 108.441 5.02289 109.025 4.52644C109.612 4.02732 110.3 3.77895 111.091 3.77858ZM17.5494 14.054H15.0992V0.251381H17.5494V14.054ZM55.0934 14.054H52.6431V0.251381H55.0934V14.054ZM96.5102 4.56625L96.5071 4.56325C96.5071 4.85735 96.4826 5.10554 96.4306 5.31084C96.3786 5.51616 96.3022 5.7247 96.2012 5.94228C96.1373 6.0955 96.1064 6.1997 96.1064 6.24873C96.1064 6.36206 96.1553 6.4265 96.2593 6.43876H96.3175C96.4062 6.4387 96.4826 6.36206 96.5469 6.20892C96.8283 5.58376 97.2627 5.01989 97.847 4.52344C98.4343 4.02392 99.1226 3.77557 99.9149 3.77557C101.038 3.77557 101.925 4.14034 102.576 4.8697C103.228 5.59902 103.552 6.66541 103.552 8.07187V14.054H101.102V8.91461C101.102 7.81455 100.955 7.0547 100.661 6.63179C100.368 6.20889 99.8904 6.00035 99.2266 6.00035C98.7555 6.00035 98.3089 6.16584 97.8868 6.49984C97.4799 6.83077 97.1465 7.29977 96.8926 7.90041C96.6387 8.50103 96.5102 9.17828 96.5102 9.93216V14.054H94.0599V0.251381H96.5102V4.56625ZM118.86 14.054H116.409V3.9318H118.86V14.054ZM144.743 14.054H142.292V0.251381H144.743V14.054ZM48.1982 8.84131C47.9413 9.12315 47.6048 9.31922 47.1826 9.43564C46.7727 9.53984 46.1303 9.63499 45.2493 9.72386C44.6987 9.78822 44.2857 9.93513 44.0043 10.165C43.7381 10.3825 43.6035 10.7075 43.6035 11.1427C43.6035 11.5135 43.7442 11.814 44.0257 12.0438C44.3194 12.2736 44.6956 12.3867 45.1545 12.3867C45.3197 12.3867 45.4481 12.3807 45.5369 12.3685C46.2894 12.2673 46.9134 11.9393 47.4121 11.3908H47.4151C47.9229 10.8423 48.186 9.99041 48.1982 8.84131ZM137.85 8.84131C137.594 9.12322 137.254 9.31922 136.835 9.43564C136.425 9.53984 135.783 9.63499 134.902 9.72386C134.351 9.78822 133.938 9.93516 133.656 10.165C133.39 10.3825 133.256 10.7075 133.256 11.1427C133.256 11.5135 133.394 11.814 133.675 12.0438C133.969 12.2735 134.345 12.3867 134.804 12.3867C134.969 12.3867 135.097 12.3807 135.186 12.3685C135.939 12.2674 136.563 11.9393 137.061 11.3908H137.064C137.575 10.8423 137.838 9.99044 137.85 8.84131ZM35.2523 6.00663C34.7292 6.00663 34.2611 6.13829 33.8543 6.40796C33.4443 6.67458 33.1262 7.03941 32.8968 7.49908C32.6796 7.95873 32.5725 8.45828 32.5725 8.99454C32.5728 9.5308 32.6796 10.0303 32.8968 10.49C33.1262 10.9496 33.4474 11.3112 33.8543 11.5808C34.2642 11.8474 34.7292 11.9824 35.2523 11.9824C36.069 11.9824 36.6931 11.7035 37.1275 11.1397V11.1427C37.5619 10.5696 37.779 9.85251 37.779 8.99754C37.779 8.14254 37.5619 7.43448 37.1275 6.87061C36.6931 6.29454 36.069 6.00663 35.2523 6.00663ZM23.8358 5.91773C23.0313 5.91776 22.392 6.20567 21.9209 6.78174C21.462 7.34255 21.2326 8.05364 21.2326 8.90864C21.2326 9.76364 21.462 10.4777 21.9209 11.0538C22.395 11.6146 23.0343 11.8965 23.8358 11.8965C24.6372 11.8965 25.2706 11.6177 25.7294 11.0538C26.2005 10.4807 26.436 9.76361 26.436 8.90864C26.436 8.05364 26.2005 7.34561 25.7294 6.78174C25.2706 6.20564 24.6403 5.91773 23.8358 5.91773ZM77.3604 5.77051C75.9073 5.77054 75.0324 6.48767 74.7388 7.91865H79.5996C79.5476 7.27826 79.3304 6.76044 78.948 6.36515C78.5657 5.96983 78.0364 5.77051 77.3604 5.77051ZM118.86 0.251381V2.706H116.409V0.251381H118.86Z" fill="url(#paint0_linear_4005_30414)"></path>
+</g>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_4005_30414" x1="144.743" x2="0.241211" y1="18.2937" y2="18.2937">
+<stop stop-color="#00C79A"></stop>
+<stop offset="0.502824" stop-color="#E92184"></stop>
+<stop offset="1" stop-color="#6C1D45"></stop>
+</lineargradient>
+<clippath id="clip0_4005_30414">
+<rect fill="white" height="38" width="145"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<div class="sidebar-header">
+<div class="logo"><svg fill="none" height="47" viewbox="0 0 226 47" width="226" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 39.1928H12.7634V47H0V39.1928Z" fill="#00C79A"></path>
+<path d="M0 23.5087H12.7634V31.3681H0V23.5087Z" fill="#00C79A"></path>
+<path d="M0 7.81593H12.7634V15.6754H0V7.81593Z" fill="#00C79A"></path>
+<path d="M12.7547 31.342H46.6287V39.2015H12.7547V31.342Z" fill="#00C79A"></path>
+<path d="M12.7547 15.6928H46.6287V23.5261H12.7547V15.6928Z" fill="#00C79A"></path>
+<path d="M12.7547 0.0087039H46.6287V7.84204H12.7547V0.0087039Z" fill="#00C79A"></path>
+<path d="M60.1454 23.0735L51.7462 7.85074H59.1843L64.4749 17.9644H65.0464L70.3371 7.85074H77.7319L69.3326 23.0735L78.2081 39.1841H70.9519L65.0031 28.0781H64.4836L58.5349 39.1841H51.2786L60.1541 23.0735H60.1454Z" fill="#00C79A"></path>
+<path d="M82.3038 7.85074H92.9977C98.9638 7.85074 102.999 11.837 102.999 17.9209C102.999 24.0048 98.7473 28.1304 92.9977 28.1304H88.7028V39.1841H82.3038V7.85074ZM92.7379 21.9072C95.0585 21.9072 96.5566 20.21 96.5566 17.9209C96.5566 15.6319 95.0499 14.0739 92.7379 14.0739H88.7028V21.9072H92.7379Z" fill="#00C79A"></path>
+<path d="M107.311 7.85074H113.71V32.9609H125.608V39.1841H107.311V7.85074Z" fill="#00C79A"></path>
+<path d="M126.473 23.4739C126.473 14.6222 133.167 7.85074 142.146 7.85074C151.126 7.85074 157.819 14.7093 157.819 23.4739C157.819 32.2385 151.16 39.1841 142.146 39.1841C133.132 39.1841 126.473 32.4126 126.473 23.4739ZM151.204 23.4739C151.204 18.0776 147.298 14.0652 142.146 14.0652C136.994 14.0652 133.089 18.0776 133.089 23.4739C133.089 28.8702 136.908 32.9696 142.146 32.9696C147.385 32.9696 151.204 28.9572 151.204 23.4739Z" fill="#00C79A"></path>
+<path d="M162.555 7.85074H172.903C179.215 7.85074 183.64 11.7935 183.64 17.6511C183.64 21.855 181.753 25.1276 178.272 26.8248L184.844 39.1754H177.544L172.002 27.8519H168.954V39.1754H162.555V7.84204V7.85074ZM172.99 21.8202C175.31 21.8202 176.981 20.3841 176.981 17.7904C176.981 15.7798 175.648 14.0739 172.773 14.0739H168.954V21.8202H172.99Z" fill="#00C79A"></path>
+<path d="M189.372 7.85074H208.907V14.1174H195.988V20.1578H207.132V26.3809H195.988V32.9609H209.349V39.1841H189.372V7.85074Z" fill="#00C79A"></path>
+<path d="M214.847 7.05V1.19241H212.769V0H218.337V1.19241H216.259V7.05H214.847Z" fill="#00C79A"></path>
+<path d="M219.229 7.05V0H221.35L222.623 4.80444L223.879 0H226V7.05H224.684V1.50574L223.29 7.05H221.93L220.545 1.50574V7.05H219.229Z" fill="#00C79A"></path>
+</svg></div>
+<div class="doc-title">User Documentation</div>
+</div>
+<div class="sidebar-search"><input id="search-input" placeholder="🔍 Search documentation…" type="text"/></div>
+<div class="sidebar-content"><div class="nav-section" data-section="table-of-contents"><div class="nav-chapter" data-target="table-of-contents" onclick="handleChapterClick(event, this)"><span class="ch-title">Table of Contents</span> <span class="chevron">▸</span></div><div class="nav-items"></div></div><div class="nav-section" data-section="introduction"><div class="nav-chapter" data-target="introduction" onclick="handleChapterClick(event, this)"><span class="ch-num">1</span> <span class="ch-title">Introduction</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#what-is-explore">What is Explore?</a><a class="nav-item" href="#who-is-this-manual-for">Who is this manual for?</a><a class="nav-item" href="#glossary-of-mining-and-drilling-terms">Glossary of Mining and Drilling Terms</a><a class="nav-item" href="#conventions-used-in-this-document">Conventions Used in This Document</a></div></div><div class="nav-section" data-section="getting-started"><div class="nav-chapter" data-target="getting-started" onclick="handleChapterClick(event, this)"><span class="ch-num">2</span> <span class="ch-title">Getting Started</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#accessing-the-platform">Accessing the Platform</a><a class="nav-item" href="#login-and-authentication">Login and Authentication</a><a class="nav-item" href="#password-creation-and-reset">Password Creation and Reset</a><a class="nav-item" href="#interface-overview">Interface Overview</a><a class="nav-item" href="#changing-language">Changing Language</a><a class="nav-item" href="#user-profiles-and-roles">User Profiles and Roles</a></div></div><div class="nav-section" data-section="navigation-and-dashboard"><div class="nav-chapter" data-target="navigation-and-dashboard" onclick="handleChapterClick(event, this)"><span class="ch-num">3</span> <span class="ch-title">Navigation and Dashboard</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#home-page-my-site">Home Page — My Site</a><a class="nav-item" href="#site-and-region-selector">Site and Region Selector</a><a class="nav-item" href="#organization-selector">Organization Selector</a><a class="nav-item" href="#main-dashboard-and-kpis">Main Dashboard and KPIs</a><a class="nav-item" href="#metabase-dashboard-embedded-analytics">Metabase Dashboard (Embedded Analytics)</a></div></div><div class="nav-section" data-section="site-management"><div class="nav-chapter" data-target="site-management" onclick="handleChapterClick(event, this)"><span class="ch-num">4</span> <span class="ch-title">Site Management</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#site-list-and-search">Site List and Search</a><a class="nav-item" href="#creating-and-editing-a-site">Creating and Editing a Site</a><a class="nav-item" href="#site-configuration">Site Configuration</a></div></div><div class="nav-section" data-section="projects"><div class="nav-chapter" data-target="projects" onclick="handleChapterClick(event, this)"><span class="ch-num">5</span> <span class="ch-title">Projects</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#my-projects-list">My Projects List</a><a class="nav-item" href="#creating-and-editing-a-project">Creating and Editing a Project</a><a class="nav-item" href="#viewing-project-details">Viewing Project Details</a><a class="nav-item" href="#analysis-data-and-csv-export">Analysis Data and CSV Export</a></div></div><div class="nav-section" data-section="blasts-planning-and-execution"><div class="nav-chapter" data-target="blasts-planning-and-execution" onclick="handleChapterClick(event, this)"><span class="ch-num">6</span> <span class="ch-title">Blasts — Planning and Execution</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#my-blasts-list">My Blasts List</a><a class="nav-item" href="#creating-a-new-blast">Creating a New Blast</a><a class="nav-item" href="#blast-design">Blast Design</a><a class="nav-item" href="#blast-loading">Blast Loading</a><a class="nav-item" href="#blast-environment">Blast Environment</a><a class="nav-item" href="#3d-blast-visualization">3D Blast Visualization</a><a class="nav-item" href="#copying-an-existing-blast">Copying an Existing Blast</a><a class="nav-item" href="#fragmentation-analysis">Fragmentation Analysis</a><a class="nav-item" href="#blast-kpi-and-analysis-data">Blast KPI and Analysis Data</a><a class="nav-item" href="#blast-general-information">Blast General Information</a><a class="nav-item" href="#blast-drilling">Blast Drilling</a><a class="nav-item" href="#blast-deliveries">Blast Deliveries</a><a class="nav-item" href="#blast-vibrations">Blast Vibrations</a><a class="nav-item" href="#post-blast-status">Post-Blast Status</a></div></div><div class="nav-section" data-section="drilling-operations"><div class="nav-chapter" data-target="drilling-operations" onclick="handleChapterClick(event, this)"><span class="ch-num">7</span> <span class="ch-title">Drilling Operations</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#drill-sessions-overview">Drill Sessions — Overview</a><a class="nav-item" href="#drill-activity-chart">Drill Activity Chart</a><a class="nav-item" href="#drill-session-details">Drill Session Details</a><a class="nav-item" href="#pause-management-and-stop-reasons">Pause Management and Stop Reasons</a><a class="nav-item" href="#drill-reports">Drill Reports</a><a class="nav-item" href="#synchronization-with-expertab-field-tablet">Synchronization with Expertab (Field Tablet)</a></div></div><div class="nav-section" data-section="deliveries-and-logistics"><div class="nav-chapter" data-target="deliveries-and-logistics" onclick="handleChapterClick(event, this)"><span class="ch-num">8</span> <span class="ch-title">Deliveries and Logistics</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#explosive-delivery-tracking">Explosive Delivery Tracking</a><a class="nav-item" href="#delivery-activity-chart">Delivery Activity Chart</a></div></div><div class="nav-section" data-section="geology"><div class="nav-chapter" data-target="geology" onclick="handleChapterClick(event, this)"><span class="ch-num">9</span> <span class="ch-title">Geology</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#drill-logs">Drill Logs</a><a class="nav-item" href="#lithology-data-entry-and-viewing">Lithology — Data Entry and Viewing</a><a class="nav-item" href="#mineralization">Mineralization</a><a class="nav-item" href="#hole-conditions">Hole Conditions</a><a class="nav-item" href="#rock-types">Rock Types</a><a class="nav-item" href="#assay-data">Assay Data</a></div></div><div class="nav-section" data-section="vibration-monitoring"><div class="nav-chapter" data-target="vibration-monitoring" onclick="handleChapterClick(event, this)"><span class="ch-num">10</span> <span class="ch-title">Vibration Monitoring</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#seismograph-control-points">Seismograph Control Points</a><a class="nav-item" href="#recording-and-viewing-vibrations">Recording and Viewing Vibrations</a><a class="nav-item" href="#vibration-charts">Vibration Charts</a><a class="nav-item" href="#assigning-records-to-a-blast">Assigning Records to a Blast</a><a class="nav-item" href="#record-details">Record Details</a></div></div><div class="nav-section" data-section="products-and-suppliers"><div class="nav-chapter" data-target="products-and-suppliers" onclick="handleChapterClick(event, this)"><span class="ch-num">11</span> <span class="ch-title">Products and Suppliers</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#products-dashboard">Products Dashboard</a><a class="nav-item" href="#explosives-management-bulk-cartridges">Explosives Management (Bulk, Cartridges)</a><a class="nav-item" href="#detonator-management">Detonator Management</a><a class="nav-item" href="#detonating-cord-management">Detonating Cord Management</a><a class="nav-item" href="#supplier-management">Supplier Management</a><a class="nav-item" href="#product-sources-factories-and-warehouses">Product Sources (Factories and Warehouses)</a></div></div><div class="nav-section" data-section="workflows-and-approvals"><div class="nav-chapter" data-target="workflows-and-approvals" onclick="handleChapterClick(event, this)"><span class="ch-num">12</span> <span class="ch-title">Workflows and Approvals</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#workflow-principles-in-explore">Workflow Principles in Explore</a><a class="nav-item" href="#creating-and-configuring-a-workflow-template">Creating and Configuring a Workflow Template</a><a class="nav-item" href="#steps-conditions-and-validators">Steps, Conditions, and Validators</a><a class="nav-item" href="#tracking-workflow-progress">Tracking Workflow Progress</a><a class="nav-item" href="#document-management-per-step">Document Management per Step</a></div></div><div class="nav-section" data-section="mapping-and-visualization"><div class="nav-chapter" data-target="mapping-and-visualization" onclick="handleChapterClick(event, this)"><span class="ch-num">13</span> <span class="ch-title">Mapping and Visualization</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#interactive-map-mapbox">Interactive Map (MapBox)</a><a class="nav-item" href="#displaying-drill-holes-and-blast-patterns">Displaying Drill Holes and Blast Patterns</a><a class="nav-item" href="#terrain-layers-and-orthophotos">Terrain Layers and Orthophotos</a><a class="nav-item" href="#mapbox-layer-management">MapBox Layer Management</a><a class="nav-item" href="#dxf-file-import">DXF File Import</a></div></div><div class="nav-section" data-section="data-analysis-and-key-performance-indicators-kpis"><div class="nav-chapter" data-target="data-analysis-and-key-performance-indicators-kpis" onclick="handleChapterClick(event, this)"><span class="ch-num">14</span> <span class="ch-title">Data Analysis and Key Performance Indicators (KPIs)</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#indicator-configuration">Indicator Configuration</a><a class="nav-item" href="#analysis-data-entry">Analysis Data Entry</a><a class="nav-item" href="#entry-profiles">Entry Profiles</a><a class="nav-item" href="#metabase-dashboards-and-reports">Metabase Dashboards and Reports</a><a class="nav-item" href="#vibration-indicators">Vibration Indicators</a><a class="nav-item" href="#operational-tracking-data">Operational Tracking Data</a><a class="nav-item" href="#data-export">Data Export</a></div></div><div class="nav-section" data-section="equipment-and-fleet"><div class="nav-chapter" data-target="equipment-and-fleet" onclick="handleChapterClick(event, this)"><span class="ch-num">15</span> <span class="ch-title">Equipment and Fleet</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#drilling-equipment-management">Drilling Equipment Management</a><a class="nav-item" href="#equipment-path-tracking">Equipment Path Tracking</a><a class="nav-item" href="#hiboo-dashboard">Hiboo Dashboard</a></div></div><div class="nav-section" data-section="reports-and-exports"><div class="nav-chapter" data-target="reports-and-exports" onclick="handleChapterClick(event, this)"><span class="ch-num">16</span> <span class="ch-title">Reports and Exports</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#excel-report-generation">Excel Report Generation</a><a class="nav-item" href="#analysis-data-export-csv">Analysis Data Export (CSV)</a><a class="nav-item" href="#metabase-analytical-dashboards">Metabase Analytical Dashboards</a></div></div><div class="nav-section" data-section="satisfaction-surveys"><div class="nav-chapter" data-target="satisfaction-surveys" onclick="handleChapterClick(event, this)"><span class="ch-num">17</span> <span class="ch-title">Satisfaction Surveys</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#customer-feedback-post-blast">Customer Feedback (Post-Blast)</a><a class="nav-item" href="#supplier-feedback">Supplier Feedback</a></div></div><div class="nav-section" data-section="administration"><div class="nav-chapter" data-target="administration" onclick="handleChapterClick(event, this)"><span class="ch-num">18</span> <span class="ch-title">Administration</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#user-management">User Management</a><a class="nav-item" href="#user-dashboard">User Dashboard</a><a class="nav-item" href="#region-management">Region Management</a><a class="nav-item" href="#area-dashboard">Area Dashboard</a><a class="nav-item" href="#organization-and-company-management">Organization and Company Management</a><a class="nav-item" href="#organization-setup-product-sources">Organization Setup (Product Sources)</a><a class="nav-item" href="#user-licensing">User Licensing</a></div></div><div class="nav-section" data-section="appendices"><div class="nav-chapter" data-target="appendices" onclick="handleChapterClick(event, this)"><span class="ch-title">Appendices</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#appendix-a-navigation-shortcuts-and-tips">Appendix A — Navigation Shortcuts and Tips</a><a class="nav-item" href="#appendix-b-common-error-messages-and-troubleshooting">Appendix B — Common Error Messages and Troubleshooting</a><a class="nav-item" href="#appendix-c-detailed-roles-and-permissions">Appendix C — Detailed Roles and Permissions</a><a class="nav-item" href="#appendix-d-supported-file-formats">Appendix D — Supported File Formats</a><a class="nav-item" href="#appendix-e-external-integrations">Appendix E — External Integrations</a></div></div></div>
+</nav>
+<main id="main">
+<!-- COVER -->
+<div class="doc-cover">
+<h1>Explore</h1>
+<div class="cover-subtitle">User Documentation — Mining &amp; Drilling Operations Management Platform</div>
+<div class="cover-meta">
+<div class="cover-meta-item"><span>Version</span>1.0</div>
+<div class="cover-meta-item"><span>Date</span>April 2026</div>
+<div class="cover-meta-item"><span>Platform</span>Web</div>
+<div class="cover-meta-item"><span>Audience</span>Field operators, site managers, administrators</div>
+</div>
+</div>
+<div class="toc-section">
+<h2 id="table-of-contents">Table of Contents</h2>
+<div class="toc-grid"><a href="#introduction"><span class="toc-num">1.</span>Introduction</a><a href="#getting-started"><span class="toc-num">2.</span>Getting Started</a><a href="#navigation-and-dashboard"><span class="toc-num">3.</span>Navigation and Dashboard</a><a href="#site-management"><span class="toc-num">4.</span>Site Management</a><a href="#projects"><span class="toc-num">5.</span>Projects</a><a href="#blasts-planning-and-execution"><span class="toc-num">6.</span>Blasts — Planning and Execution</a><a href="#drilling-operations"><span class="toc-num">7.</span>Drilling Operations</a><a href="#deliveries-and-logistics"><span class="toc-num">8.</span>Deliveries and Logistics</a><a href="#geology"><span class="toc-num">9.</span>Geology</a><a href="#vibration-monitoring"><span class="toc-num">10.</span>Vibration Monitoring</a><a href="#products-and-suppliers"><span class="toc-num">11.</span>Products and Suppliers</a><a href="#workflows-and-approvals"><span class="toc-num">12.</span>Workflows and Approvals</a><a href="#mapping-and-visualization"><span class="toc-num">13.</span>Mapping and Visualization</a><a href="#data-analysis-and-key-performance-indicators-kpis"><span class="toc-num">14.</span>Data Analysis and Key Performance Indicators (KPIs)</a><a href="#equipment-and-fleet"><span class="toc-num">15.</span>Equipment and Fleet</a><a href="#reports-and-exports"><span class="toc-num">16.</span>Reports and Exports</a><a href="#satisfaction-surveys"><span class="toc-num">17.</span>Satisfaction Surveys</a><a href="#administration"><span class="toc-num">18.</span>Administration</a><a href="#appendices"><span class="toc-num"></span>Appendices</a></div>
+</div>
+<div class="content-wrap"><h2 id="introduction">1. Introduction</h2><h3 id="what-is-explore">1.1 What is Explore?</h3>
+<p>Explore is a web-based platform developed by EPC Group for managing the full lifecycle of mining and drilling operations — from blast pattern design through drill execution, geological data capture, vibration monitoring, and post-blast analysis. The platform connects field operators using tablets (Expertab) with site engineers and regional managers through a unified interface, providing real-time visibility into every stage of the drill-to-ignition (DTI) workflow.</p>
+<p>Explore supports open-pit mining operations and covers the following functional domains:</p>
+<ul>
+<li>Blast pattern planning and design (hole positioning, geometry, charging)</li>
+<li>Drill session tracking and monitoring</li>
+<li>Geological data collection (lithology, mineralization, hole conditions)</li>
+<li>Ground vibration monitoring and compliance</li>
+<li>Explosive product and supplier management</li>
+<li>Equipment fleet tracking and utilization</li>
+<li>Operational KPIs, reporting, and analytics</li>
+<li>Workflow-based approval processes</li>
+<li>Interactive site mapping with aerial imagery</li>
+</ul>
+<h3 id="who-is-this-manual-for">1.2 Who is this manual for?</h3>
+<p>This manual is intended for all users of the Explore platform. Depending on your role, certain sections will be more relevant to you:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Description</th>
+<th>Key chapters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Field Operator</strong> (explore_app_user)</td>
+<td>Drill operators and blast team members working on site</td>
+<td>2, 3, 5, 6, 7, 8, 9, 17</td>
+</tr>
+<tr>
+<td><strong>Site Manager</strong> (manage_site)</td>
+<td>Engineers and managers responsible for a specific mining site</td>
+<td>2–16</td>
+</tr>
+<tr>
+<td><strong>Regional Manager</strong> (manage_area)</td>
+<td>Managers overseeing multiple sites within a region</td>
+<td>2, 3, 4, 9, 11, 14, 18</td>
+</tr>
+<tr>
+<td><strong>Administrator</strong> (manage_user)</td>
+<td>System administrators managing users, organizations, and platform configuration</td>
+<td>2, 3, 18</td>
+</tr>
+<tr>
+<td><strong>Organization Manager</strong> (org_manager)</td>
+<td>Executives with visibility across the entire organization</td>
+<td>3, 14, 18</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="glossary-of-mining-and-drilling-terms">1.3 Glossary of Mining and Drilling Terms</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Assay</strong></td>
+<td>Chemical composition analysis of rock samples taken during drilling, used for ore-grade estimation.</td>
+</tr>
+<tr>
+<td><strong>Azimuth</strong></td>
+<td>The horizontal angle (measured clockwise from north) defining the direction of a drill hole.</td>
+</tr>
+<tr>
+<td><strong>Bench</strong></td>
+<td>A horizontal step or level in an open-pit mine where blast patterns are designed and executed.</td>
+</tr>
+<tr>
+<td><strong>Blast / Tir</strong></td>
+<td>A controlled detonation event using explosives placed in pre-drilled holes to break rock.</td>
+</tr>
+<tr>
+<td><strong>Blast Pattern</strong></td>
+<td>The planned arrangement of drill holes for a blast, including positions, depths, azimuths, and charging parameters.</td>
+</tr>
+<tr>
+<td><strong>Blast Hole</strong></td>
+<td>An individual hole within a blast pattern, defined by its position, depth, diameter, azimuth, and inclination.</td>
+</tr>
+<tr>
+<td><strong>Blasted</strong></td>
+<td>Status indicating that a blast has been detonated.</td>
+</tr>
+<tr>
+<td><strong>Bulk Explosive</strong></td>
+<td>Explosive material delivered in loose form (not cartridged), measured in kilograms.</td>
+</tr>
+<tr>
+<td><strong>Cartridge</strong></td>
+<td>Pre-packaged explosive charge with specific diameter and weight.</td>
+</tr>
+<tr>
+<td><strong>Control Point</strong></td>
+<td>A fixed survey reference point with known GPS coordinates, used for positioning and vibration monitoring.</td>
+</tr>
+<tr>
+<td><strong>Detonating Cord (Detcord)</strong></td>
+<td>A flexible cord containing explosive, used to transmit detonation between holes.</td>
+</tr>
+<tr>
+<td><strong>Detonator</strong></td>
+<td>A device used to initiate the detonation of explosives in a blast hole, with a specified delay time.</td>
+</tr>
+<tr>
+<td><strong>Discontinuity</strong></td>
+<td>A fracture, joint, or structural break in rock, recorded during geological logging.</td>
+</tr>
+<tr>
+<td><strong>Drill Session</strong></td>
+<td>A recorded period of drilling activity capturing timestamps, depth progress, equipment used, and operator data.</td>
+</tr>
+<tr>
+<td><strong>DTI (Drill-To-Ignition)</strong></td>
+<td>The complete workflow from drilling a hole to detonating it.</td>
+</tr>
+<tr>
+<td><strong>Expertab</strong></td>
+<td>EPC Group's proprietary tablet application used by on-site operators for drill navigation, data capture, and synchronization with Explore.</td>
+</tr>
+<tr>
+<td><strong>Expertir</strong></td>
+<td>A real-time drill navigation system that guides operators to the correct drill position and angle.</td>
+</tr>
+<tr>
+<td><strong>Fragmentation</strong></td>
+<td>The size distribution of rock pieces after a blast. Measured by analyzing muckpile images.</td>
+</tr>
+<tr>
+<td><strong>Hiboo</strong></td>
+<td>A third-party fleet management platform providing equipment utilization metrics, fuel consumption, and machine health data.</td>
+</tr>
+<tr>
+<td><strong>Hole Condition</strong></td>
+<td>The physical state of a drill hole (e.g., collapsed, water-filled, intact).</td>
+</tr>
+<tr>
+<td><strong>Inclination</strong></td>
+<td>The vertical angle of a drill hole relative to the horizontal plane.</td>
+</tr>
+<tr>
+<td><strong>KPI (Key Performance Indicator)</strong></td>
+<td>Operational metrics such as meters drilled per shift, equipment utilization, or blast efficiency.</td>
+</tr>
+<tr>
+<td><strong>Lithology</strong></td>
+<td>The classification and description of rock types encountered during drilling.</td>
+</tr>
+<tr>
+<td><strong>Mineralization</strong></td>
+<td>The presence and characteristics of ore-bearing minerals in rock samples.</td>
+</tr>
+<tr>
+<td><strong>Muckpile</strong></td>
+<td>The pile of broken rock resulting from a blast, before it is loaded and hauled away.</td>
+</tr>
+<tr>
+<td><strong>Open Pit</strong></td>
+<td>A surface mining method where rock is extracted from a large open excavation. This is the primary mining type supported by Explore.</td>
+</tr>
+<tr>
+<td><strong>Orthophoto</strong></td>
+<td>A geometrically corrected aerial photograph used as a map layer, providing an accurate representation of the ground surface.</td>
+</tr>
+<tr>
+<td><strong>PPV (Peak Particle Velocity)</strong></td>
+<td>The maximum ground vibration speed measured at a monitoring point, expressed in mm/s. A key compliance metric.</td>
+</tr>
+<tr>
+<td><strong>Region / Area</strong></td>
+<td>An organizational grouping of multiple mining sites within a company.</td>
+</tr>
+<tr>
+<td><strong>Rotation</strong></td>
+<td>A work rotation period, typically spanning multiple shifts.</td>
+</tr>
+<tr>
+<td><strong>RQD (Rock Quality Designation)</strong></td>
+<td>A standard measure of rock mass quality based on core recovery during drilling.</td>
+</tr>
+<tr>
+<td><strong>Seismograph / Sismograph</strong></td>
+<td>A vibration monitoring instrument placed at control points to record ground vibrations during blasting.</td>
+</tr>
+<tr>
+<td><strong>Shift</strong></td>
+<td>A defined work period (typically 8 to 12 hours) during which drilling or blasting activities take place.</td>
+</tr>
+<tr>
+<td><strong>Site</strong></td>
+<td>A physical mining or quarry location with its own equipment, personnel, and operational data.</td>
+</tr>
+<tr>
+<td><strong>Vibration Record</strong></td>
+<td>A single vibration measurement captured by a seismograph, containing velocity and frequency data across three axes.</td>
+</tr>
+<tr>
+<td><strong>Workflow</strong></td>
+<td>A state machine governing the lifecycle of domain objects (e.g., blasts), defining approval steps and transitions.</td>
+</tr>
+<tr>
+<td><strong>Zone</strong></td>
+<td>A defined operational area within a mining site.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="conventions-used-in-this-document">1.4 Conventions Used in This Document</h3>
+<p>Throughout this manual, the following conventions are used:</p>
+<ul>
+<li><strong>Bold text</strong> indicates a button label, menu item, or field name visible in the interface.</li>
+<li><code>Monospace text</code> indicates a technical value, status code, or system identifier.</li>
+<li>"Quoted text" indicates a message displayed by the system.</li>
+<li>Sections marked with a role badge (e.g., <em>Site Manager</em>) indicate features restricted to users with that role.</li>
+<li>Screenshots and diagrams reference the English version of the interface. The platform is also available in French and Spanish.</li>
+</ul><hr/><h2 id="getting-started">2. Getting Started</h2><h3 id="accessing-the-platform">2.1 Accessing the Platform</h3>
+<p>Explore is a web application accessible through any modern browser. The recommended browsers are Google Chrome (latest version) and Mozilla Firefox (latest version). The platform URL is provided by your site or regional administrator.</p>
+<p>No software installation is required on your computer. For on-site field operations, the companion Expertab tablet application is used separately (see Appendix E).</p>
+<h3 id="login-and-authentication">2.2 Login and Authentication</h3>
+<p>Explore uses Keycloak as its identity provider. When you navigate to the platform URL, you are presented with the login screen.</p>
+<p><strong>To log in:</strong></p>
+<ol>
+<li>Enter your <strong>Username</strong> (email address) in the first field.</li>
+<li>Enter your <strong>Password</strong> in the second field.</li>
+<li>Click the <strong>Log in</strong> button.</li>
+</ol>
+<p>If your credentials are valid and you have access to multiple sites, a <strong>Select a site</strong> dialog appears. Choose your site from the <strong>My sites</strong> dropdown and confirm.</p>
+<p><strong>Common login messages:</strong></p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Your username and/or password are incorrect"</td>
+<td>The credentials entered do not match any account. Verify your username and password.</td>
+</tr>
+<tr>
+<td>"Your account has been deactivated"</td>
+<td>Your account has been disabled by an administrator. Contact your site manager.</td>
+</tr>
+<tr>
+<td>"Your account is valid but you are not authorized to access the application"</td>
+<td>Your Keycloak account exists but lacks the required Explore role. Contact your administrator.</td>
+</tr>
+<tr>
+<td>"An error occurred during the connection, please try again later"</td>
+<td>A server-side issue prevented login. Try again in a few minutes or contact support.</td>
+</tr>
+</tbody>
+</table></div>
+<p>A <strong>Contact support</strong> link is available at the bottom of the login screen.</p>
+<h3 id="password-creation-and-reset">2.3 Password Creation and Reset</h3>
+<h4 id="first-time-password-creation">First-time password creation</h4>
+<p>When your account is first created, you receive an email with a link to set your password. Click the link to reach the <strong>Creating the password</strong> page.</p>
+<ol>
+<li>Enter a password of at least <strong>10 characters</strong>.</li>
+<li>Confirm the password by typing it again.</li>
+<li>Click <strong>Confirm</strong>.</li>
+</ol>
+<p>If the link has expired, the message "Your authentication token has expired" is displayed. Contact your administrator to request a new invitation.</p>
+<h4 id="forgotten-password">Forgotten password</h4>
+<p>From the login screen:</p>
+<ol>
+<li>Click <strong>Forgotten password?</strong></li>
+<li>Enter your email address in the dialog that appears.</li>
+<li>Click <strong>Send</strong>. A reset email will be sent to your address.</li>
+<li>Follow the link in the email to reach the <strong>Resetting the password</strong> page.</li>
+<li>Enter your new password (minimum 10 characters), confirm it, and click <strong>Save</strong>.</li>
+</ol>
+<h4 id="changing-your-password">Changing your password</h4>
+<p>Once logged in, you can change your password at any time:</p>
+<ol>
+<li>Click on your <strong>name</strong> in the top-right corner of the screen.</li>
+<li>Select <strong>Change my password</strong> from the dropdown menu.</li>
+<li>Follow the prompts to set a new password.</li>
+</ol>
+<h3 id="interface-overview">2.4 Interface Overview</h3>
+<p>The Explore interface is organized into three main areas:</p>
+<h4 id="left-sidebar">Left sidebar</h4>
+<p>The left sidebar is the primary navigation menu. It is divided into two collapsible sections:</p>
+<ul>
+<li><strong>Config</strong> — Contains setup and reference data pages (users, regions, sites, organization settings). Visible to users with administrative roles (manage_user, manage_area, manage_site).</li>
+<li><strong>Operations</strong> — Contains day-to-day operational pages (Site, Projects, Operations, Indicators, Dashboard). Visible to all users with the explore_app_user role.</li>
+</ul>
+<p>The EPC Group logo at the top of the sidebar returns you to the home page. The current application version (frontend and backend) is displayed at the bottom.</p>
+<h4 id="top-navigation-bar">Top navigation bar</h4>
+<p>The top bar displays:</p>
+<ul>
+<li>The <strong>current page title</strong>, which updates dynamically as you navigate.</li>
+<li>A <strong>site and region selector</strong> (dropdown) allowing you to switch between sites. Use the search field to quickly find a site.</li>
+<li>An <strong>organization selector</strong> for users with access to multiple organizations.</li>
+<li>A <strong>user menu</strong> (your name, top right) with options to change language, change password, contact support, view your profile, or log out.</li>
+</ul>
+<p>When not logged in, the top bar displays language selection flags (English, French, Spanish).</p>
+<figure><img alt="User menu dropdown showing language, password, and profile options" src="assets/getting-started-01.jpg"/><figcaption>Figure 1 — User menu dropdown showing language, password, and profile options</figcaption></figure>
+
+<figure><img alt="Site and region selector dropdown" src="assets/getting-started-02.jpg"/><figcaption>Figure 1b — Site and region selector dropdown allowing you to switch between sites</figcaption></figure>
+
+<h4 id="breadcrumb">Breadcrumb</h4>
+<p>On pages with hierarchical depth (e.g., inside a project or blast), a breadcrumb trail appears below the top bar showing the navigation path: <strong>Projects</strong> &gt; <strong>Project Name</strong> &gt; <strong>Blast Name</strong> &gt; <strong>Step Name</strong>. Click any item in the breadcrumb to navigate back to that level.</p>
+<h3 id="changing-language">2.5 Changing Language</h3>
+<p>Explore is available in three languages: <strong>English</strong>, <strong>French</strong>, and <strong>Spanish</strong>.</p>
+<p>To change your language:</p>
+<ol>
+<li>Click on your <strong>name</strong> in the top-right corner.</li>
+<li>Select <strong>Change my language</strong>.</li>
+<li>In the modal that appears, select your preferred language (each option displays its country flag).</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<figure><img alt="Change language dialog with country flags" src="assets/getting-started-03.jpg"/><figcaption>Figure 1c — Change my language dialog with English, French, and Spanish options</figcaption></figure>
+
+<p>The interface immediately refreshes in the selected language. Your preference is saved to your profile.</p>
+<h3 id="user-profiles-and-roles">2.6 User Profiles and Roles</h3>
+<p>Access to Explore features is governed by roles assigned to your account in Keycloak. The main roles are:</p>
+<h4 id="field-operator-explore_app_user">Field Operator (explore_app_user)</h4>
+<p>The default role for all Explore users. Grants access to operational features: viewing the site dashboard, browsing projects and blasts, accessing operations charts, indicators, and submitting survey feedback.</p>
+<h4 id="site-manager-manage_site">Site Manager (manage_site)</h4>
+<p>In addition to field operator access, site managers can create and configure sites, manage site-level settings (zones, equipment, shifts, workflows, KPIs), manage operators, and access cost tracking. They can also configure the organization-level product sources.</p>
+<h4 id="regional-manager-manage_area">Regional Manager (manage_area)</h4>
+<p>Regional managers can create and manage regions (areas), configure region-level products and workflows, manage geology reference data, and access the region setup pages. They can view the area dashboard for cross-site analytics.</p>
+<h4 id="administrator-manage_user">Administrator (manage_user)</h4>
+<p>Administrators manage user accounts, assign roles, and configure organization-wide settings. They have access to the user management page and user dashboard.</p>
+<h4 id="organization-manager-org_manager">Organization Manager (org_manager)</h4>
+<p>Organization managers have visibility across the entire organization. They can access the area dashboard with organization-wide analytics and reporting.</p>
+<p>A single user can hold multiple roles. Role assignment is managed by administrators through the user management interface or directly in Keycloak.</p><hr/><h2 id="navigation-and-dashboard">3. Navigation and Dashboard</h2><h3 id="home-page-my-site">3.1 Home Page — My Site</h3>
+<p>After logging in and selecting a site, the <strong>My Site</strong> page is your landing page. It provides an overview of the selected site through a tabbed interface:</p>
+<h4 id="map-tab">Map tab</h4>
+<p>The default tab displays an interactive map of the site (powered by MapBox). The map shows blast patterns, drill holes, equipment positions, and terrain layers. For detailed map usage, see Chapter 13.</p>
+<figure><img alt="My Site page with interactive map view showing blast locations and project tree" src="assets/navigation-and-dashboard-01.jpg"/><figcaption>Figure 2 — My Site page with interactive map view showing blast locations and project tree</figcaption></figure>
+
+<h4 id="documents-tab">Documents tab</h4>
+<p>Displays the site name, country, and a file explorer for managing site-level documents. You can create folders, upload files, download, rename, cut/paste, and delete items. See <a href="#document-management-per-step">Document Management per Step</a> for more details on document management.</p>
+<figure><img alt="My Site Documents tab with file browser and folder structure" src="assets/navigation-and-dashboard-02.jpg"/><figcaption>Figure 3 — My Site Documents tab with file browser and folder structure</figcaption></figure>
+
+<h4 id="dashboard-tab">Dashboard tab</h4>
+<p>Available for specific organizations, this tab embeds a Metabase analytics dashboard with site-level KPIs and metrics.</p>
+<h4 id="hiboo-tab">Hiboo tab</h4>
+<p>Available for specific sites with Hiboo integration enabled, this tab displays equipment fleet metrics from the Hiboo platform.</p>
+<h3 id="site-and-region-selector">3.2 Site and Region Selector</h3>
+<p>The site and region selector appears in the top navigation bar whenever you are working within a site context. It displays the current <strong>region name</strong> and <strong>site name</strong>.</p>
+<p>To switch sites:</p>
+<ol>
+<li>Click on the site/region selector in the top bar.</li>
+<li>Use the <strong>search</strong> field to filter by name.</li>
+<li>Sites are grouped by region. Click on the desired site to switch.</li>
+</ol>
+<p>The entire interface updates to reflect the selected site's data.</p>
+<p>When working in region setup views, a separate <strong>region selector</strong> dropdown appears, allowing you to switch between regions.</p>
+<h3 id="organization-selector">3.3 Organization Selector</h3>
+<p>For users with access to multiple organizations (multi-tenant setup), an <strong>organization selector</strong> appears in the top bar on relevant pages (e.g., user dashboard). Click the selector and choose the organization to view its data.</p>
+<h3 id="main-dashboard-and-kpis">3.4 Main Dashboard and KPIs</h3>
+<p>The <strong>Dashboard</strong> page (accessible from <strong>Operations &gt; Dashboard</strong> in the left sidebar) displays the <strong>Site Dashboard</strong> for the currently selected site. The page is organized as follows:</p>
+<ul>
+<li><strong>Global / Custom</strong> tabs — Switch between the standard (Global) dashboard and any custom dashboard configured for your site.</li>
+<li><strong>Sub-tabs</strong> — The Global dashboard is divided into topical sections: General, Drilling, Deliveries, Loading, Blast Output, Vibration, and Equipment.</li>
+<li><strong>Filters</strong> — A Date filter and an IsBlasted filter allow you to narrow the displayed data.</li>
+<li><strong>Export tab as PDF</strong> — Click this button (top right) to export the current tab as a PDF document.</li>
+</ul>
+<p>The General sub-tab shows summary cards (e.g., Number of blasts, Percentage of Completed blasts), charts (Blasts per month, Number of blasts per Zone), a Blast Locations map, and a Blast dates table.</p>
+<h3 id="metabase-dashboard-embedded-analytics">3.5 Metabase Dashboard (Embedded Analytics)</h3>
+<p>Explore integrates with Metabase to provide advanced analytics capabilities. Metabase dashboards are embedded within the platform at several levels:</p>
+<ul>
+<li><strong>Site dashboard</strong> — Site-specific operational metrics</li>
+<li><strong>Region dashboard</strong> — Cross-site analytics for regional managers</li>
+<li><strong>Client view</strong> — Organization-level reporting</li>
+<li><strong>Equipment blast dashboard</strong> — Equipment performance per blast</li>
+<li><strong>StevinRock dashboard</strong> — Geological analytics</li>
+</ul>
+<p>These dashboards are preconfigured and automatically filtered to your site, region, or organization context. Contact your administrator if you need access to additional dashboards.</p><hr/><h2 id="site-management">4. Site Management</h2><p><em>This chapter is primarily relevant to users with the <strong>Site Manager</strong> (manage_site) or <strong>Regional Manager</strong> (manage_area) role.</em></p>
+<h3 id="site-list-and-search">4.1 Site List and Search</h3>
+<p>Navigate to <strong>Config &gt; Sites</strong> in the left sidebar to view the list of all sites you have access to. The list displays site names and basic information. Click on a site to view its details, or use the search functionality to filter the list.</p>
+<p>You can filter the list to show only <strong>Active</strong> sites.</p>
+<figure><img alt="Sites list showing all sites with Area, Country, Users, and Zones columns" src="assets/site-management-01.jpg"/><figcaption>Figure 4 — Sites list showing all sites with Area, Country, Users, and Zones columns</figcaption></figure>
+
+<h3 id="creating-and-editing-a-site">4.2 Creating and Editing a Site</h3>
+<p>To create a new site, click the <strong>Add</strong> button from the sites list. Fill in the required information (site name, region, GPS coordinates, country) and save.</p>
+<p>To edit an existing site, select it from the list and modify its properties.</p>
+<h3 id="site-configuration">4.3 Site Configuration</h3>
+<p>Navigate to <strong>Config &gt; Setup site</strong> in the left sidebar, then select the site to configure. The site setup page presents a left-hand navigation menu with the following configuration sections: Blasts hierarchy, Control point, Cost, Drill Pause Reasons, DXF, Equipment, Hole Tolerances, KPI display, KPI setup, Operators, Orthophotos, Rock type, Seismograph, Shift Configuration, Tab Features, Users, Workflows, and Zones.</p>
+<h4 id="blasts-hierarchy">Blasts Hierarchy</h4>
+<p>Configure how blasts are organized and displayed in the project tree. The hierarchy is defined using three levels of dropdown selectors:</p>
+<ul>
+<li><strong>Level 1</strong> — The top-level grouping (e.g., Project)</li>
+<li><strong>Level 2</strong> — The second-level grouping (e.g., Status)</li>
+<li><strong>Level 3</strong> — The third-level grouping (e.g., Zone)</li>
+</ul>
+<p>Click <strong>Confirm</strong> to apply the hierarchy configuration.</p>
+<figure><img alt="Setup Site &gt; Blasts hierarchy showing Level 1 (Project), Level 2 (Status), Level 3 (Zone)" src="assets/site-management-02.jpg"/><figcaption>Figure 11 — Setup Site &gt; Blasts hierarchy showing Level 1 (Project), Level 2 (Status), Level 3 (Zone)</figcaption></figure>
+
+<h4 id="control-points">Control Points</h4>
+<p>Manage fixed survey reference points for the site. The control points table displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Active</strong></td>
+<td>Status indicator (green = active, red = inactive)</td>
+</tr>
+<tr>
+<td><strong>Point number</strong></td>
+<td>Unique point identifier</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Descriptive name for the control point</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>X coordinate</td>
+</tr>
+<tr>
+<td><strong>Y</strong></td>
+<td>Y coordinate</td>
+</tr>
+<tr>
+<td><strong>Z</strong></td>
+<td>Altitude (meters)</td>
+</tr>
+<tr>
+<td><strong>PPV</strong></td>
+<td>Peak Particle Velocity reference value</td>
+</tr>
+<tr>
+<td><strong>K</strong></td>
+<td>Site-specific attenuation constant</td>
+</tr>
+<tr>
+<td><strong>α (Alpha)</strong></td>
+<td>Site-specific attenuation exponent</td>
+</tr>
+</tbody>
+</table></div>
+<p>Control points are used for positioning accuracy and as reference locations for vibration monitoring stations. Click <strong>+ Add</strong> to create a new control point.</p>
+<figure><img alt="Setup Site &gt; Control point with coordinates, PPV, K, and Alpha columns" src="assets/site-management-03.jpg"/><figcaption>Figure 5 — Setup Site &gt; Control point with coordinates, PPV, K, and Alpha columns</figcaption></figure>
+
+<h4 id="cost">Cost</h4>
+<p>Configure cost centers and cost parameters for the site. This allows tracking of operational costs associated with drilling, blasting, equipment, and materials.</p>
+<figure><img alt="Setup Site &gt; Cost configuration page" src="assets/site-management-04.jpg"/><figcaption>Figure 4e — Cost configuration page</figcaption></figure>
+
+<h4 id="drill-pause-reasons">Drill Pause Reasons</h4>
+<p>Define the list of reasons that can be selected when a drill operator records a pause during a drilling session. Common examples include equipment maintenance, shift change, fuel refill, or weather conditions. Each reason has a unique name and identifier.</p>
+<h4 id="dxf">DXF</h4>
+<p>Upload and manage DXF files (AutoCAD drawings) for the site. These files can represent mine plans, bench layouts, or design drawings and are overlaid on the interactive map for reference.</p>
+<figure><img alt="Setup Site &gt; DXF file management page" src="assets/site-management-05.jpg"/><figcaption>Figure 5b — DXF file management page</figcaption></figure>
+
+<h4 id="equipment">Equipment</h4>
+<p>Register equipment used on the site. The equipment list displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Equipment name or identifier</td>
+</tr>
+<tr>
+<td><strong>Model</strong></td>
+<td>Equipment model reference</td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Equipment type (e.g., MOBILE)</td>
+</tr>
+<tr>
+<td><strong>External connection</strong></td>
+<td>External connection status (true/false, for Hiboo integration)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Click <strong>+ Add</strong> to register a new piece of equipment. Use the <strong>Sync</strong> button to synchronize equipment data with the external fleet management system (Hiboo).</p>
+<figure><img alt="Setup Site &gt; Equipment list with Komatsu and Caterpillar machines" src="assets/site-management-06.jpg"/><figcaption>Figure 6 — Setup Site &gt; Equipment list with Name, Model, Type, and External connection columns</figcaption></figure>
+
+<h4 id="hole-tolerances">Hole Tolerances</h4>
+<p>Define acceptable tolerance thresholds for drilling accuracy on this site. For each metric (e.g., position, depth, azimuth, inclination), you can set:</p>
+<ul>
+<li><strong>As Designed</strong> maximum and minimum deviation — the range within which a hole is considered acceptably placed.</li>
+<li><strong>In Tolerance</strong> maximum and minimum deviation — a tighter range indicating ideal accuracy.</li>
+</ul>
+<p>These thresholds are used to color-code holes on the map and in quality reports, highlighting deviations from the planned design.</p>
+<figure><img alt="Setup Site &gt; Hole Tolerances with color-coded tolerance bars" src="assets/site-management-07.jpg"/><figcaption>Figure 6b — Hole Tolerances configuration with color-coded deviation ranges</figcaption></figure>
+
+<h4 id="kpi-display">KPI Display</h4>
+<p>Configure how KPIs are displayed for this site, including which KPIs are visible and their display order.</p>
+<figure><img alt="Setup Site &gt; KPI display configuration" src="assets/site-management-08.jpg"/><figcaption>Figure 6c — KPI display configuration</figcaption></figure>
+
+<h4 id="kpi-setup">KPI Setup</h4>
+<p>Configure which Key Performance Indicators are tracked for this site. The KPI setup table shows the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>KPI name and description</td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Category (e.g., Vibrations, Drilling operations, D&amp;B Design, Financials, Blast performance)</td>
+</tr>
+<tr>
+<td><strong>Calcul mode</strong></td>
+<td>Calculation method (Manual, Sum, Average)</td>
+</tr>
+<tr>
+<td><strong>Unit</strong></td>
+<td>Unit of measurement</td>
+</tr>
+<tr>
+<td><strong>Target value</strong></td>
+<td>Target value with Min/Max range</td>
+</tr>
+<tr>
+<td><strong>Access</strong></td>
+<td>Access level (Hidden, Read, Read-Write)</td>
+</tr>
+<tr>
+<td><strong>Enabled</strong></td>
+<td>Active/Inactive status</td>
+</tr>
+<tr>
+<td><strong>Details</strong></td>
+<td>Link to detailed KPI configuration</td>
+</tr>
+</tbody>
+</table></div>
+<p>At the bottom of the page, the <strong>Set predefined KPI config</strong> feature lets you apply a preset KPI profile from the <strong>Profil</strong> dropdown. Click <strong>Confirm</strong> to apply or <strong>Cancel</strong> to discard.</p>
+<figure><img alt="Setup Site &gt; KPI setup with KPIs including Air overpressure, Advance, Bench azimuth, Blast cost" src="assets/site-management-09.jpg"/><figcaption>Figure 7 — Setup Site &gt; KPI setup with all KPIs, types, calculation modes, and access levels</figcaption></figure>
+
+<h4 id="operators">Operators</h4>
+<p>Manage the list of operators (drill operators, blasters, and other field personnel) assigned to this site. The operators table displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>Operator identifier (typically an email address)</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Operator name</td>
+</tr>
+<tr>
+<td><strong>Roles</strong></td>
+<td>Assigned role (e.g., Blaster)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Click <strong>+ Add</strong> to register a new operator.</p>
+<figure><img alt="Setup Site &gt; Operators list with ID, Name, and Roles columns" src="assets/site-management-10.jpg"/><figcaption>Figure 8 — Setup Site &gt; Operators list with ID, Name, and Roles columns</figcaption></figure>
+
+<h4 id="orthophotos-aerial-imagery">Orthophotos (Aerial Imagery)</h4>
+<p>Upload and manage orthophotos (aerial images) for the site. Orthophotos provide a geo-referenced photographic background layer on the interactive map.</p>
+<p>To manage orthophotos:</p>
+<ol>
+<li>Click <strong>Add Orthophoto</strong> to upload a new image (supported formats: TIFF, GeoTIFF).</li>
+<li>Uploaded orthophotos appear in a list with preview thumbnail, name, and creation date.</li>
+<li>Use the <strong>up/down arrows</strong> to change the display order (layering priority on the map).</li>
+<li>Toggle the <strong>visibility checkbox</strong> to show or hide a layer.</li>
+<li>Click the <strong>delete</strong> button to remove an orthophoto.</li>
+</ol>
+<p>You can also initialize orthophotos from MapBox satellite imagery using the <strong>Bootstrap</strong> option.</p>
+<h4 id="rock-type">Rock Type</h4>
+<p>Define the rock types present on this site. Each rock type includes physical properties used for blast design optimization:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>---</td>
+</tr>
+<tr>
+<td>Compressive Strength</td>
+<td>MPa</td>
+</tr>
+<tr>
+<td>Young's Modulus</td>
+<td>GPa</td>
+</tr>
+<tr>
+<td>Shear Modulus</td>
+<td>GPa</td>
+</tr>
+<tr>
+<td>Theoretical Speed</td>
+<td>m/s</td>
+</tr>
+<tr>
+<td>Poisson Ratio</td>
+<td>---</td>
+</tr>
+<tr>
+<td>RQD</td>
+<td>%</td>
+</tr>
+<tr>
+<td>Density</td>
+<td>kg/m³</td>
+</tr>
+</tbody>
+</table></div>
+<figure><img alt="Setup Site &gt; Rock type configuration (empty, with Add button)" src="assets/site-management-11.jpg"/><figcaption>Figure 9 — Setup Site &gt; Rock type configuration (empty, with Add button)</figcaption></figure>
+
+<h4 id="seismograph">Seismograph</h4>
+<p>Configure the locations of seismograph (vibration monitoring) instruments on the site. Each seismograph control point has a name and GPS coordinates. These points are used to associate vibration records with specific monitoring locations.</p>
+<figure><img alt="Setup Site &gt; Seismograph configuration" src="assets/site-management-12.jpg"/><figcaption>Figure 9b — Seismograph configuration page</figcaption></figure>
+
+<h4 id="shift-configuration">Shift Configuration</h4>
+<p>Define the shift structure for the site. Select the number of <strong>Shifts per day</strong> from the dropdown. Available options include 2 × 12h and 3 × 8h.</p>
+<p>Then specify the <strong>First shift start hour</strong> (0–23). The system automatically calculates the start time for each subsequent shift. A table displays each shift with its number, editable <strong>Label</strong> (e.g., "Morning", "Day", "Night"), and calculated <strong>Start</strong> time.</p>
+<p>Click <strong>Confirm</strong> to apply the shift configuration.</p>
+<figure><img alt="Setup Site &gt; Shift Configuration showing 3x8h with Morning, Day, Night shifts" src="assets/site-management-13.jpg"/><figcaption>Figure 10 — Setup Site &gt; Shift Configuration showing 3x8h with Morning, Day, Night shifts</figcaption></figure>
+
+<h4 id="tab-features">Tab Features</h4>
+<p>Toggle site-specific feature tabs on or off. Tab Features allow administrators to enable or disable specific functionality tabs for this site, controlling which features are available to users. Available feature toggles include: Blast Design, Blast Load, 3D Viewer, Deliveries, Vibrations, Fragmentation, Load &amp; Haul, Fleet Management System, and Environment.</p>
+<figure><img alt="Setup Site &gt; Tab Features with toggle switches" src="assets/site-management-14.jpg"/><figcaption>Figure 10b — Tab Features with toggle switches for enabling/disabling site features</figcaption></figure>
+
+<h4 id="users">Users</h4>
+<p>Manage which users have access to this specific site. The users table displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Active</strong></td>
+<td>Status indicator (green = active, red = inactive)</td>
+</tr>
+<tr>
+<td><strong>User name</strong></td>
+<td>User login name (email address)</td>
+</tr>
+<tr>
+<td><strong>First name</strong></td>
+<td>User's first name</td>
+</tr>
+<tr>
+<td><strong>Last Name</strong></td>
+<td>User's last name</td>
+</tr>
+<tr>
+<td><strong>Email</strong></td>
+<td>Email address</td>
+</tr>
+<tr>
+<td><strong>Email Verified</strong></td>
+<td>Whether the email has been verified</td>
+</tr>
+</tbody>
+</table></div>
+<p>Click <strong>+ Add</strong> to add a user to this site. Use the <strong>Delete</strong> button to remove a user's access.</p>
+<figure><img alt="Setup Site &gt; Users list with Active, User name, First name, Last Name, Email, and Email Verified columns" src="assets/site-management-15.jpg"/><figcaption>Figure 12 — Setup Site &gt; Users list with Active, User name, First name, Last Name, Email, and Email Verified columns</figcaption></figure>
+
+<h4 id="workflows">Workflows</h4>
+<p>Assign and configure workflow templates for this site. Workflows define the approval process for blasts and other operational activities. See Chapter 12 for detailed workflow management.</p>
+<figure><img alt="Setup Site &gt; Workflows list with Drone-MDL, Log IREDES, and Tir avec relevé entries" src="assets/site-management-16.jpg"/><figcaption>Figure 12b — Setup Site &gt; Workflows list showing configured workflow templates</figcaption></figure>
+
+<h4 id="zones">Zones</h4>
+<p>Create and manage operational zones within the site. A zone represents a defined area (e.g., a pit, a bench level, or a working face). The zones table displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Zone name (e.g., P1, P2, P3)</td>
+</tr>
+<tr>
+<td><strong>Active</strong></td>
+<td>Status indicator</td>
+</tr>
+<tr>
+<td><strong>Burden (M)</strong></td>
+<td>Burden distance in meters</td>
+</tr>
+<tr>
+<td><strong>Spacing (M)</strong></td>
+<td>Spacing distance in meters</td>
+</tr>
+<tr>
+<td><strong>Min. burden (M)</strong></td>
+<td>Minimum burden in meters</td>
+</tr>
+<tr>
+<td><strong>Diameter (mm)</strong></td>
+<td>Drill hole diameter in millimeters</td>
+</tr>
+<tr>
+<td><strong>Inclination (°)</strong></td>
+<td>Default inclination angle in degrees</td>
+</tr>
+<tr>
+<td><strong>Subdrill (m)</strong></td>
+<td>Subdrill depth in meters</td>
+</tr>
+</tbody>
+</table></div>
+<p>A form at the top allows you to add new zones with the fields above, plus an <strong>Active</strong> toggle. Zones are used to organize blasts and drilling activities, and their default parameters serve as templates when creating new blast patterns.</p>
+<figure><img alt="Setup Site &gt; Zones with Name, Active, Burden, Spacing, Min.burden, Diameter, Inclination, Subdrill columns" src="assets/site-management-17.jpg"/><figcaption>Figure 13 — Setup Site &gt; Zones with Name, Active, Burden, Spacing, Min.burden, Diameter, Inclination, Subdrill columns</figcaption></figure>
+<hr/><h2 id="projects">5. Projects</h2><h3 id="my-projects-list">5.1 My Projects List</h3>
+<p>Navigate to <strong>Operations &gt; Projects</strong> in the left sidebar to view the list of projects for the current site. The list displays the following columns:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Project name</td>
+</tr>
+<tr>
+<td><strong>Is Finished</strong></td>
+<td>Checkbox indicating whether the project is complete</td>
+</tr>
+<tr>
+<td><strong>Planned Start Date</strong></td>
+<td>Expected project start date</td>
+</tr>
+<tr>
+<td><strong>Planned End Date</strong></td>
+<td>Expected project end date</td>
+</tr>
+<tr>
+<td><strong>Actual Start Date</strong></td>
+<td>Real start date</td>
+</tr>
+<tr>
+<td><strong>Actual End Date</strong></td>
+<td>Real end date</td>
+</tr>
+</tbody>
+</table></div>
+<p>By default, the list filters out finished projects and sorts by name in ascending order.</p>
+<figure><img alt="Projects list with Automation_tests and TestProjet entries" src="assets/projects-01.jpg"/><figcaption>Figure 14 — Projects list with Add, Export KPIs, and Reports actions</figcaption></figure>
+
+<h3 id="creating-and-editing-a-project">5.2 Creating and Editing a Project</h3>
+<p><em>Requires the create_project role.</em></p>
+<p>To create a new project, click the <strong>Add</strong> button (+ icon) at the bottom of the projects list. Fill in the project name, planned dates, and other required fields, then save.</p>
+<p>Note: A workflow must be configured for the site before projects can be created. If no workflow is available, a message "No workflow" is displayed.</p>
+<h3 id="viewing-project-details">5.3 Viewing Project Details</h3>
+<p>Click on a project in the list to open its detail view. The project detail page is divided into two panels:</p>
+<ul>
+<li><strong>Left panel</strong> — A tree view listing all blasts (tirs) within the project, organized hierarchically. Click on a blast to view its details in the right panel.</li>
+<li><strong>Right panel</strong> — Displays the selected content: project overview, blast details, or node information.</li>
+</ul>
+<figure><img alt="Project detail view showing blast hierarchy tree and KPI data" src="assets/projects-02.jpg"/><figcaption>Figure 15 — Project detail view with KPI and Files tabs and blast tree</figcaption></figure>
+
+<h3 id="analysis-data-and-csv-export">5.4 Analysis Data and CSV Export</h3>
+<p>From the projects list, two export options are available:</p>
+<ul>
+<li><strong>Export analysis data</strong> — Generates a CSV file containing all analysis/KPI data for selected projects within a specified date range.</li>
+<li>
+<p><strong>Reports</strong> — Generates Excel reports from predefined templates:</p>
+</li>
+<li>
+<p><strong>Deliveries Log Report</strong> — A record of all explosive deliveries with optional filtering by delivery and a resume mode.</p>
+</li>
+<li>
+<p><strong>Feedback Report</strong> — A compilation of customer and supplier survey responses filtered by blast.</p>
+</li>
+</ul>
+<p>Select the report type, choose the projects, set the date range and time window, then click <strong>Download</strong>.</p><hr/><h2 id="blasts-planning-and-execution">6. Blasts — Planning and Execution</h2><p>Blasts (called "tirs" in French) are the core operational unit in Explore. A blast represents a planned and executed detonation event on a mining site.</p>
+<p>Each blast is accessed via the project tree and has the following tabs: <strong>General</strong>, <strong>KPI</strong>, <strong>Design</strong>, <strong>Load</strong>, <strong>Holes</strong>, <strong>Deliveries</strong>, <strong>Vibrations</strong>, <strong>Fragmentation</strong>, <strong>Environment</strong>, and <strong>Drilling</strong>.</p>
+<h3 id="my-blasts-list">6.1 My Blasts List</h3>
+<p>Navigate to <strong>Operations &gt; Projects</strong>, then select a project and click on the <strong>Blasts</strong> view, or access blasts directly via the project tree view. The blasts list displays:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Blast name</td>
+</tr>
+<tr>
+<td><strong>Is Executed</strong></td>
+<td>Checkbox indicating whether the blast has been detonated</td>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>Parent project name</td>
+</tr>
+<tr>
+<td><strong>Zone</strong></td>
+<td>Zone where the blast is located</td>
+</tr>
+<tr>
+<td><strong>Planned Blast Date</strong></td>
+<td>Scheduled detonation date</td>
+</tr>
+<tr>
+<td><strong>Actual Blast Date</strong></td>
+<td>Real detonation date (filled after execution)</td>
+</tr>
+</tbody>
+</table></div>
+<p>By default, the list shows only non-executed blasts, sorted by project name.</p>
+<h3 id="creating-a-new-blast">6.2 Creating a New Blast</h3>
+<p>To create a new blast, navigate to the project tree view and use the blast creation function. Provide the blast name, zone, planned date, and blast type. The blast is created in a draft state.</p>
+<h3 id="blast-design">6.3 Blast Design</h3>
+<p>The <strong>Design</strong> tab is where the blast pattern is planned. The interface is divided into three panels:</p>
+<h4 id="left-panel-quality-data">Left panel — Quality data</h4>
+<p>A collapsible panel displaying quality metrics for the blast pattern. You can filter the view by:</p>
+<ul>
+<li><strong>State</strong> — Filter holes by their current status (actual, drilled, loaded, etc.)</li>
+<li><strong>Quality</strong> — Color-code holes by quality metrics with percentage values</li>
+<li><strong>Dates</strong> — Filter holes by drilling date (Day 1, Day 2, etc.)</li>
+</ul>
+<h4 id="center-panel-map-view">Center panel — Map view</h4>
+<p>An interactive 2D map displaying the blast pattern layout. Holes are shown as points on the map, color-coded according to the selected filter. A status chart summarizes hole states visually.</p>
+<h4 id="right-panel-holes-list">Right panel — Holes list</h4>
+<p>A searchable table listing all holes in the blast pattern. Features include:</p>
+<ul>
+<li><strong>Search</strong> field to filter holes by name</li>
+<li><strong>Add Hole</strong> button to manually add a new hole to the pattern</li>
+<li><strong>Column settings</strong> button to toggle which columns are visible</li>
+<li>Click on a row to select and highlight the hole on the map</li>
+</ul>
+<figure><img alt="Blast Design tab with Design/Dashboard sub-tabs, Status dropdown, and Holes panel" src="assets/blasts-planning-and-execution-01.jpg"/><figcaption>Figure 16 — Blast Design tab with 2D map view, status filter, and holes list</figcaption></figure>
+
+<h4 id="hole-positioning-pattern">Hole Positioning (Pattern)</h4>
+<p>Each hole in the blast pattern is defined by its planned position (X, Y coordinates or GPS), which determines its location on the bench. Holes can be added manually or imported from Expertab after field survey.</p>
+<h4 id="geometric-parameters">Geometric Parameters</h4>
+<p>Each blast hole has the following geometric properties:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Depth</strong></td>
+<td>m</td>
+<td>Planned depth of the hole</td>
+</tr>
+<tr>
+<td><strong>Azimuth</strong></td>
+<td>°</td>
+<td>Horizontal angle from north</td>
+</tr>
+<tr>
+<td><strong>Inclination</strong></td>
+<td>°</td>
+<td>Vertical angle from horizontal</td>
+</tr>
+<tr>
+<td><strong>Diameter</strong></td>
+<td>mm</td>
+<td>Drill hole diameter</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="blast-polygons">Blast Polygons</h4>
+<p>Blast polygons define the geographic outline of the blast area. From the map view, you can create polygons of different types:</p>
+<ul>
+<li><strong>Drilled</strong> — Outline of the area that has been drilled</li>
+<li><strong>Muckpile</strong> — Outline of the resulting muckpile after detonation</li>
+<li><strong>Danger Zone</strong> — Safety exclusion perimeter</li>
+</ul>
+<p>To create a polygon, click the polygon tool on the map, select the blast and polygon type, then draw the boundary.</p>
+<h3 id="blast-loading">6.4 Blast Loading</h3>
+<p>The <strong>Load</strong> tab manages the explosive charges assigned to each hole. The interface follows the same three-panel layout as the Design tab.</p>
+<h4 id="filters">Filters</h4>
+<p>In addition to State, Quality, and Date filters, the loading view adds a <strong>Delivery</strong> filter, allowing you to color-code holes by which delivery provided their explosive materials.</p>
+<figure><img alt="Blast Load tab showing Holes panel with Loading progress and Load/Dashboard sub-tabs" src="assets/blasts-planning-and-execution-02.jpg"/><figcaption>Figure 17 — Blast Load tab showing holes list, loading progress, and map view</figcaption></figure>
+
+<h4 id="hole-charge-details">Hole Charge Details</h4>
+<p>Select a hole to view its charge profile. The <strong>Hole Charge</strong> view displays a vertical bar visualization of the hole, showing:</p>
+<ul>
+<li><strong>Mine Type</strong> — The charge configuration type</li>
+<li><strong>Total weight</strong> (kg) — Sum of all explosive products in the hole</li>
+<li><strong>Tube length</strong> (m) — Total length of the hole</li>
+<li><strong>Charge segments</strong> — Stacked colored blocks representing each product, with product name, length, and proportion</li>
+</ul>
+<h4 id="explosive-product-assignment">Explosive Product Assignment</h4>
+<p>Products (bulk explosives, cartridges, detonators, detonating cord) are assigned to holes during the loading process. This can be done per-hole or in bulk via delivery records synced from Expertab.</p>
+<h3 id="blast-environment">6.5 Blast Environment</h3>
+<p>The <strong>Environment</strong> tab displays CO2 emission data for the blast, organized into four categories:</p>
+<ul>
+<li><strong>Transport</strong> — CO2 from moving explosive materials from factory to storage to site. Displayed per factory/storage route in kg.</li>
+<li><strong>Drilling</strong> — CO2 generated during the drilling phase, by drill type. Shows drilled meters, CO2 per meter, and total.</li>
+<li><strong>Detonation</strong> — CO2 from the explosive detonation itself, by product. Shows quantity, CO2 per unit, and total.</li>
+<li><strong>Production</strong> — CO2 from manufacturing the explosive products. Shows quantity, CO2 per unit, and total.</li>
+</ul>
+<p>A <strong>donut chart</strong> on the left summarizes total CO2 (in kg) with a percentage breakdown by category.</p>
+<figure><img alt="Blast Environment tab (no data available)" src="assets/blasts-planning-and-execution-03.jpg"/><figcaption>Figure 18 — Blast Environment tab (no data available)</figcaption></figure>
+
+<h3 id="3d-blast-visualization">6.6 3D Blast Visualization</h3>
+<p>The <strong>Holes</strong> tab provides a 3D view of the blast pattern using a WebGL canvas. Features include:</p>
+<ul>
+<li><strong>3D rendering</strong> of all drill holes with depth, inclination, and charge visualization</li>
+<li><strong>Add Holes</strong> — Import hole data from files</li>
+<li><strong>Add OBJ</strong> — Load 3D terrain models (.obj, .mtl, textures) to visualize holes in context with the topography. Supports drag-and-drop.</li>
+<li><strong>Save Terrain</strong> — Save the loaded terrain model for future use</li>
+<li><strong>Export</strong> — Export the 3D view</li>
+</ul>
+<p><strong>Interactive information panels:</strong></p>
+<ul>
+<li>Click on a <strong>charge</strong> to see: product name, depth (m), hole name, length (m), quantity (kg or units)</li>
+<li>Click on a <strong>discontinuity</strong> to see: from/to depth (m), interval, name, and associated hole</li>
+</ul>
+<figure><img alt="Blast Holes tab with 3D map, Add Holes, Add obj, Save terrain, Export buttons" src="assets/blasts-planning-and-execution-04.jpg"/><figcaption>Figure 19 — 3D Holes viewer showing drill holes with charge visualization</figcaption></figure>
+
+<h3 id="copying-an-existing-blast">6.7 Copying an Existing Blast</h3>
+<p>To copy a blast, open the blast you want to duplicate and use the <strong>Copy</strong> function. This creates a new blast with the same hole pattern, geometry, and design parameters. You can then modify the copy as needed. This is useful when designing similar blasts on adjacent benches.</p>
+<h3 id="fragmentation-analysis">6.8 Fragmentation Analysis</h3>
+<p>The <strong>Fragmentation</strong> tab allows analysis of the rock size distribution after a blast has been executed.</p>
+<p><strong>Chart controls:</strong></p>
+<ul>
+<li><strong>Fragmentation Distribution</strong> toggle — Shows the size distribution histogram</li>
+<li><strong>Fragmentation Cumulative Percentage</strong> toggle — Shows the cumulative percentage curve</li>
+<li>Y-axis displays <strong>Percentage</strong></li>
+</ul>
+<p><strong>Interval analysis:</strong></p>
+<ul>
+<li>Enter <strong>Min</strong> and <strong>Max</strong> values (in mm) to calculate the percentage of material within that size range</li>
+</ul>
+<p><strong>Diameter sizes (D1, D2, D3):</strong></p>
+<ul>
+<li>Enter a percentage (0–100%) to find the corresponding diameter. For example, D2 at 50% gives the median fragment size (D50).</li>
+</ul>
+<p><strong>Muckpile image:</strong></p>
+<ul>
+<li>View the post-blast muckpile photograph used for fragmentation analysis. Click the image to enlarge.</li>
+</ul>
+<figure><img alt="Fragmentation analysis with cumulative percentage curve and diameter size controls" src="assets/blasts-planning-and-execution-05.jpg"/><figcaption>Figure 20 — Fragmentation analysis with cumulative percentage curve and diameter size controls</figcaption></figure>
+
+<h3 id="blast-kpi-and-analysis-data">6.9 Blast KPI and Analysis Data</h3>
+<p>The <strong>KPI</strong> tab displays key performance metrics for the blast. Each KPI is shown with its <strong>Name</strong> (and description), <strong>Type</strong> category, and <strong>Final</strong> value. KPIs are grouped by type (e.g., D&amp;B Design, Financials, Blast performance, Safety &amp; environment). Click the edit icon to enter or modify a value, or click <strong>Details</strong> to view the full history and configuration of a specific KPI.</p>
+<figure><img alt="Blast KPI tab showing Blast volume 21,477 m3, Burden 5m, with edit and Details buttons" src="assets/blasts-planning-and-execution-06.jpg"/><figcaption>Figure 21 — Blast KPI tab displaying analysis metrics with Name, Type, and Final value columns</figcaption></figure>
+
+<h3 id="blast-general-information">6.10 Blast General Information</h3>
+<p>The <strong>General</strong> tab is divided into two panels:</p>
+<ul>
+<li><strong>Progress</strong> — Shows the workflow history for this blast. When no workflow history is available, the message "No history data available" is displayed.</li>
+<li><strong>Document Storage</strong> — Organizes blast-related documents into numbered categories (e.g., 01 - Photos, 02 - OBJ, 03 - EXT, 04 - Documents de tir). Each category has an access level dropdown and a file count. Click <strong>Download All</strong> to download all documents at once.</li>
+</ul>
+<figure><img alt="Blast General tab showing map, Progress, Document Storage with Photos, OBJ, EXT sections" src="assets/blasts-planning-and-execution-07.jpg"/><figcaption>Figure 22 — Blast General tab showing Progress (workflow history) and Document Storage categories</figcaption></figure>
+
+<h3 id="blast-drilling">6.11 Blast Drilling</h3>
+<p>The <strong>Drilling</strong> tab tracks all drill sessions associated with the blast. It displays total drilled length, engine hours, and drilling rate metrics.</p>
+<figure><img alt="Blast Drilling tab with sessions, total drilled length 395m" src="assets/blasts-planning-and-execution-08.jpg"/><figcaption>Figure 23 — Blast Drilling tab with sessions, total drilled length 395m</figcaption></figure>
+
+<h3 id="blast-deliveries">6.12 Blast Deliveries</h3>
+<p>The <strong>Deliveries</strong> tab lists all explosive material deliveries for this blast, including delivery dates, quantities, and personnel involved.</p>
+<figure><img alt="Blast Deliveries tab (empty, with column headers)" src="assets/blasts-planning-and-execution-09.jpg"/><figcaption>Figure 24 — Blast Deliveries tab (empty, with column headers)</figcaption></figure>
+
+<h3 id="blast-vibrations">6.13 Blast Vibrations</h3>
+<p>The <strong>Vibrations</strong> tab displays vibration monitoring records captured during or after the blast execution.</p>
+<figure><img alt="Blast Vibrations tab showing seismograph location with Overpressure, Distance, and PPV data" src="assets/blasts-planning-and-execution-10.jpg"/><figcaption>Figure 25 — Blast Vibrations tab</figcaption></figure>
+
+<h3 id="post-blast-status">6.14 Post-Blast Status</h3>
+<p>Once a blast has been detonated, its status is updated to <strong>Blasted</strong> using the toggle switch on the blast information card. Once marked as blasted, additional fields become available:</p>
+<ul>
+<li><strong>Actual date</strong> and <strong>time</strong> of detonation</li>
+<li><strong>Planned date</strong> (for comparison)</li>
+<li><strong>Blast type</strong></li>
+</ul>
+<p>The blast information card also displays: zone, region, site, and project context. Use the <strong>Create Report</strong> button to generate a blast report, or the <strong>Edit</strong> button to modify blast details.</p><hr/><h2 id="drilling-operations">7. Drilling Operations</h2><h3 id="drill-sessions-overview">7.1 Drill Sessions — Overview</h3>
+<p>Drill sessions are recorded periods of drilling activity on a site. Each session captures the drill rig used, operator, shift, date, duration, and drilled length. Sessions are associated with a blast and provide the actual drilling data to compare against the planned design.</p>
+<p>Access drill sessions from the <strong>Drilling</strong> tab within a blast detail view.</p>
+<p><strong>Summary KPIs</strong> are displayed at the top of the drilling panel:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Total Drilled Length</strong></td>
+<td>m</td>
+<td>Actual meters drilled vs. target, with progress bar</td>
+</tr>
+<tr>
+<td><strong>Engine Operation Hours</strong></td>
+<td>h</td>
+<td>Total engine running time</td>
+</tr>
+<tr>
+<td><strong>Drilling Rate</strong></td>
+<td>m/h</td>
+<td>Average drilling speed</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="drill-activity-chart">7.2 Drill Activity Chart</h3>
+<p>Navigate to <strong>Operations &gt; Operations</strong> in the left sidebar, then select <strong>Drill Activity Chart</strong> from the sub-menu. This page displays a Gantt-style chart showing drilling activity over time:</p>
+<ul>
+<li>Horizontal axis: time (navigable by date)</li>
+<li>Rows: drill rigs and operators</li>
+<li>Bars: individual drill sessions with start/end times</li>
+</ul>
+<p>You can adjust the time scale and date range. Click on a blast or session in the chart to navigate to its detail page.</p>
+<figure><img alt="Drill Activity Chart showing weekly schedule with Color by Rig/Operator and morning/day/night shifts" src="assets/drilling-operations-01.jpg"/><figcaption>Figure 26 — Drill Activity Chart showing weekly drilling schedule by rig and shift</figcaption></figure>
+
+<h3 id="drill-session-details">7.3 Drill Session Details</h3>
+<p>Each drill session record shows:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Drill Rig</strong></td>
+<td>Equipment used for drilling</td>
+</tr>
+<tr>
+<td><strong>Operator</strong></td>
+<td>Name of the drill operator</td>
+</tr>
+<tr>
+<td><strong>Shift</strong></td>
+<td>Shift label (with visual indicator)</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>Session date</td>
+</tr>
+<tr>
+<td><strong>Shift Duration</strong></td>
+<td>Total shift time (hours)</td>
+</tr>
+<tr>
+<td><strong>Engine Op. Hours</strong></td>
+<td>Actual engine operation time (hours)</td>
+</tr>
+<tr>
+<td><strong>Pause Duration</strong></td>
+<td>Total pause time (hours)</td>
+</tr>
+<tr>
+<td><strong>Drilled Length</strong></td>
+<td>Meters drilled with progress bar vs. target</td>
+</tr>
+</tbody>
+</table></div>
+<p>The table footer displays totals for all numeric columns.</p>
+<p>To add a new session, click the <strong>Add Session</strong> button. To edit an existing session, click the <strong>menu icon</strong> (⋮) on its row and select <strong>Edit</strong>.</p>
+<p>When no sessions have been recorded yet, a placeholder message is displayed: "No drilling sessions recorded yet" with an <strong>Add Session</strong> button.</p>
+<h3 id="pause-management-and-stop-reasons">7.4 Pause Management and Stop Reasons</h3>
+<p>During drilling, operators can record pauses with associated reasons. Pause reasons are predefined in the site configuration (see <a href="#drill-pause-reasons">Drill Pause Reasons</a>). The total pause duration is calculated and displayed for each drill session. This data feeds into KPI calculations for equipment utilization and operational efficiency.</p>
+<h3 id="drill-reports">7.5 Drill Reports</h3>
+<p>Drill reports can be generated from the projects page. Select the <strong>Reports</strong> option and choose the appropriate report template. Reports are generated as Excel files and include drill session data, hole progress, and operational metrics for the selected time period.</p>
+<h3 id="synchronization-with-expertab-field-tablet">7.6 Synchronization with Expertab (Field Tablet)</h3>
+<p>Expertab is the companion tablet application used by drill operators in the field. It provides:</p>
+<ul>
+<li>Display of the blast pattern and hole locations</li>
+<li>GPS-guided navigation to each hole position</li>
+<li>Real-time recording of drill session data (depth, timestamps, pauses)</li>
+<li>Geological observation entry per depth interval</li>
+<li>Delivery record capture</li>
+</ul>
+<p><strong>Synchronization behavior:</strong></p>
+<ul>
+<li>Expertab operates in <strong>offline-first</strong> mode — data is captured locally even without connectivity.</li>
+<li>When the tablet connects to the network, it syncs all captured data to the Explore server.</li>
+<li>The sync protocol handles duplicates idempotently, so repeated syncs are safe.</li>
+<li>Blast patterns only appear on Expertab when they are in an <strong>Approved</strong> status.</li>
+<li>Synced data (drill sessions, geology logs, deliveries) appears in Explore after successful synchronization.</li>
+</ul><hr/><h2 id="deliveries-and-logistics">8. Deliveries and Logistics</h2><h3 id="explosive-delivery-tracking">8.1 Explosive Delivery Tracking</h3>
+<p>The <strong>Deliveries</strong> tab within a blast detail view shows all explosive material deliveries associated with that blast. Each delivery record includes:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Date</strong></td>
+<td>Delivery date</td>
+</tr>
+<tr>
+<td><strong>Start / End Time</strong></td>
+<td>Delivery time window</td>
+</tr>
+<tr>
+<td><strong>Blaster</strong></td>
+<td>Person responsible for the delivery</td>
+</tr>
+<tr>
+<td><strong>Operators</strong></td>
+<td>Personnel involved</td>
+</tr>
+<tr>
+<td><strong>Hole Count</strong></td>
+<td>Number of holes loaded</td>
+</tr>
+<tr>
+<td><strong>KG Sent</strong></td>
+<td>Total explosive weight delivered (kg)</td>
+</tr>
+<tr>
+<td><strong>Detonators</strong></td>
+<td>Number of detonators delivered</td>
+</tr>
+<tr>
+<td><strong>Cartridges</strong></td>
+<td>Number of cartridges delivered</td>
+</tr>
+<tr>
+<td><strong>Boosters</strong></td>
+<td>Number of boosters delivered</td>
+</tr>
+</tbody>
+</table></div>
+<p>Click the <strong>Modify</strong> button on a delivery to open the delivery modal, which has two tabs:</p>
+<ul>
+<li><strong>Delivery tab</strong> — Edit delivery details, move, merge, or update the delivery record.</li>
+<li><strong>Holes tab</strong> — View and manage the holes loaded in this delivery. Options include splitting a delivery or updating hole-level data.</li>
+</ul>
+<h3 id="delivery-activity-chart">8.2 Delivery Activity Chart</h3>
+<p>Navigate to <strong>Operations &gt; Operations</strong> in the left sidebar, then select <strong>Delivery Activity Chart</strong> from the sub-menu. This chart displays delivery activity over time in a timeline format, similar to the drill activity chart.</p>
+<p>Features include:</p>
+<ul>
+<li>Time-based navigation (date range, time scale)</li>
+<li>Shift-based filtering</li>
+<li>Click on a row to navigate to the associated blast</li>
+<li>Click on a delivery to view its details</li>
+<li><strong>Generate delivery report</strong> button with selection summary showing the number of shifts and deliveries selected</li>
+</ul>
+<figure><img alt="Delivery Activity Chart with Color by Equipment/Operator and Generate delivery report button" src="assets/deliveries-and-logistics-01.jpg"/><figcaption>Figure 27 — Delivery Activity Chart with timeline view and report generation</figcaption></figure>
+<hr/><h2 id="geology">9. Geology</h2><p><em>Geological data in Explore captures rock composition and quality information observed during drilling. This data is used for mine planning, resource estimation, and blast design optimization.</em></p>
+<h3 id="drill-logs">9.1 Drill Logs</h3>
+<p>Drill logs record discontinuity types encountered during drilling. The drill log management interface (accessible via site or region setup) displays a table with:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>Unique identifier (read-only)</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Discontinuity type name</td>
+</tr>
+<tr>
+<td><strong>Short Name</strong></td>
+<td>Abbreviated code</td>
+</tr>
+<tr>
+<td><strong>Color</strong></td>
+<td>Display color (with color picker)</td>
+</tr>
+</tbody>
+</table></div>
+<p>You can <strong>add</strong>, <strong>edit</strong>, or <strong>delete</strong> drill log entries. The name and short name fields are required.</p>
+<figure><img alt="Setup Area &gt; Geology &gt; Drill log with color-coded types" src="assets/geology-01.jpg"/><figcaption>Figure 28 — Setup Area &gt; Geology &gt; Drill log with color-coded types</figcaption></figure>
+
+<h3 id="lithology-data-entry-and-viewing">9.2 Lithology — Data Entry and Viewing</h3>
+<p>Lithology defines the rock type classifications used on a site or region. The lithology management interface displays:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Rock type name</td>
+</tr>
+<tr>
+<td><strong>Code</strong></td>
+<td>Numeric classification code</td>
+</tr>
+<tr>
+<td><strong>Rock Type</strong></td>
+<td>Parent rock type category</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>Detailed description</td>
+</tr>
+<tr>
+<td><strong>Color</strong></td>
+<td>Display color (with color picker)</td>
+</tr>
+</tbody>
+</table></div>
+<p>All fields except ID are required when creating a new entry. Lithology data is captured by operators during drilling via Expertab or entered manually through the Explore web interface.</p>
+<h3 id="mineralization">9.3 Mineralization</h3>
+<p>Mineralization records describe ore-bearing mineral characteristics encountered during drilling. The management interface allows creating entries with:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>Short Name</strong></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Mineralization data is linked to specific depth intervals within drill holes.</p>
+<h3 id="hole-conditions">9.4 Hole Conditions</h3>
+<p>Hole conditions describe the physical state of a drill hole. The management interface displays:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><strong>Short Name</strong></td>
+<td>Abbreviated condition code</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>Full condition description</td>
+</tr>
+</tbody>
+</table></div>
+<p>Common hole conditions include intact, collapsed, partially collapsed, water-filled, or abandoned.</p>
+<h3 id="rock-types">9.5 Rock Types</h3>
+<p>Rock types are configured at the site level (see <a href="#rock-type">Rock Type</a>) with physical properties including compressive strength, Young's modulus, shear modulus, theoretical speed, Poisson ratio, RQD, and density. These properties are used in blast design calculations.</p>
+<h3 id="assay-data">9.6 Assay Data</h3>
+<p>Assay data records the chemical composition of rock samples taken at specific depth intervals during drilling. This information is used for ore-grade estimation and mine planning. Assay results are typically captured through geological logging and synced from field data collection tools.</p><hr/><h2 id="vibration-monitoring">10. Vibration Monitoring</h2><h3 id="seismograph-control-points">10.1 Seismograph Control Points</h3>
+<p>Seismograph control points are the physical locations where vibration monitoring instruments are placed. These are configured in the site setup (see <a href="#seismograph">Seismograph</a>) and serve as reference points for assigning vibration records.</p>
+<h3 id="recording-and-viewing-vibrations">10.2 Recording and Viewing Vibrations</h3>
+<p>The <strong>Vibrations</strong> tab within a blast detail view displays all vibration records associated with that blast. Records can be filtered by:</p>
+<ul>
+<li><strong>Assigned Records</strong> — Records already linked to a control point</li>
+<li><strong>Unassigned Records</strong> — Records not yet assigned</li>
+<li><strong>All</strong> — Both assigned and unassigned</li>
+</ul>
+<p>The list is paginated with navigation controls (First, Previous, page numbers, Next, Last) and displays the total record count.</p>
+<p>Each record shows a summary with vibration measurements across three axes:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Axis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>V</strong></td>
+<td>Vertical</td>
+<td>Vertical ground velocity</td>
+</tr>
+<tr>
+<td><strong>L</strong></td>
+<td>Longitudinal</td>
+<td>Longitudinal ground velocity</td>
+</tr>
+<tr>
+<td><strong>T</strong></td>
+<td>Transverse</td>
+<td>Transverse ground velocity</td>
+</tr>
+<tr>
+<td><strong>VS</strong></td>
+<td>Vector Sum</td>
+<td>Combined vector magnitude</td>
+</tr>
+</tbody>
+</table></div>
+<p>Additional measurements include <strong>Air Overpressure</strong> (in Pa and dB(L)).</p>
+<h3 id="vibration-charts">10.3 Vibration Charts</h3>
+<p>Select a vibration record to view its detailed charts. Three chart types are available via tabs:</p>
+<h4 id="signal-tab">Signal tab</h4>
+<p>Displays the raw vibration waveform for each channel (Channel 1, 2, 3), showing the transducer type, axis orientation, and raw peak value in mm/s or Pa.</p>
+<h4 id="frequency-tab">Frequency tab</h4>
+<p>Displays the FFT (Fast Fourier Transform) analysis for each channel, showing the frequency spectrum with peak frequency values in Hz.</p>
+<h4 id="standard-tab">Standard tab</h4>
+<p>Displays weighted vibration values according to a selectable weighting standard. Shows the PPV Max (Peak Particle Velocity maximum) in mm/s for each channel.</p>
+<h3 id="assigning-records-to-a-blast">10.4 Assigning Records to a Blast</h3>
+<p>Vibration records from seismographs can be assigned to specific blasts. From the vibration detail page:</p>
+<ol>
+<li>Select one or more unassigned records.</li>
+<li>Click the <strong>Multi-assignment</strong> button or assign individually to a control point.</li>
+<li>The record is then linked to the blast and its distance to the blast can be recorded.</li>
+</ol>
+<h3 id="record-details">10.5 Record Details</h3>
+<p>The full record detail view displays:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Date and Time</strong></td>
+<td>Timestamp of the recording</td>
+</tr>
+<tr>
+<td><strong>V / L / T / VS</strong></td>
+<td>Peak velocities per axis (mm/s)</td>
+</tr>
+<tr>
+<td><strong>Air Overpressure</strong></td>
+<td>Pa and dB(L)</td>
+</tr>
+<tr>
+<td><strong>PPV Max</strong></td>
+<td>Maximum peak particle velocity (mm/s)</td>
+</tr>
+<tr>
+<td><strong>Distance</strong></td>
+<td>Distance from blast to monitoring point (m) — editable</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Dominant frequency (Hz)</td>
+</tr>
+<tr>
+<td><strong>Device</strong></td>
+<td>Seismograph identifier</td>
+</tr>
+<tr>
+<td><strong>Control Point</strong></td>
+<td>Assigned monitoring location</td>
+</tr>
+<tr>
+<td><strong>Notes</strong></td>
+<td>Three editable note fields</td>
+</tr>
+</tbody>
+</table></div>
+<p>Available actions:</p>
+<ul>
+<li><strong>Edit Distance</strong> — Update the blast-to-sensor distance</li>
+<li><strong>Edit Notes</strong> — Add or modify up to three notes</li>
+<li><strong>View in VibraData</strong> — Open the record in the external VibraData tool</li>
+<li><strong>Download File</strong> — Download the raw vibration data file (if available)</li>
+<li><strong>Delete Record</strong> — Remove the record</li>
+</ul><hr/><h2 id="products-and-suppliers">11. Products and Suppliers</h2><p><em>This chapter covers the management of explosive products and their suppliers. Products are configured at the regional level and made available to sites within that region.</em></p>
+<h3 id="products-dashboard">11.1 Products Dashboard</h3>
+<p>Navigate to the Products section (via region setup or site setup). The dashboard is divided into two panels:</p>
+<ul>
+<li><strong>Left panel — Providers</strong>: A searchable list of suppliers with select-all checkbox, add (+), edit, and delete actions.</li>
+<li><strong>Right panel — Products</strong>: A list of products filtered by type, with add (+), edit, and delete actions.</li>
+</ul>
+<p>Use the <strong>Type selector</strong> dropdown to switch between product categories: Explosives, Detonators, or Detcords.</p>
+<p>A <strong>Copy to Region</strong> feature at the bottom allows copying the current product configuration to another region.</p>
+<figure><img alt="Setup Area &gt; Products with Manufacturers and Explosives" src="assets/products-and-suppliers-01.jpg"/><figcaption>Figure 29 — Setup Area &gt; Products with Manufacturers and Explosives</figcaption></figure>
+
+<h3 id="explosives-management-bulk-cartridges">11.2 Explosives Management (Bulk, Cartridges)</h3>
+<p>When adding or editing an explosive, select the type:</p>
+<h4 id="bulk-explosives">Bulk Explosives</h4>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product Type</strong></td>
+<td>Usage type (from dropdown)</td>
+</tr>
+<tr>
+<td><strong>Explosive ID</strong></td>
+<td>Select existing or create new</td>
+</tr>
+<tr>
+<td><strong>Properties</strong></td>
+<td>Via explosive form sub-component</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="cartridges">Cartridges</h4>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Diameter</strong></td>
+<td>Cartridge diameter (mm)</td>
+</tr>
+<tr>
+<td><strong>Weight</strong></td>
+<td>Cartridge weight (g)</td>
+</tr>
+<tr>
+<td><strong>Explosive ID</strong></td>
+<td>Select existing or create new</td>
+</tr>
+<tr>
+<td><strong>Properties</strong></td>
+<td>Via explosive form sub-component</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="detonator-management">11.3 Detonator Management</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Commercial Name</strong></td>
+<td>Yes</td>
+<td>Brand/commercial name (max 50 characters)</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+<td>Internal reference name (max 50 characters)</td>
+</tr>
+<tr>
+<td><strong>Length</strong></td>
+<td>Yes</td>
+<td>Detonator length</td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Yes</td>
+<td>Detonator type (from dropdown)</td>
+</tr>
+<tr>
+<td><strong>Delay</strong></td>
+<td>Yes</td>
+<td>Delay time in milliseconds</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>Yes</td>
+<td>Supplier (from dropdown)</td>
+</tr>
+<tr>
+<td><strong>GES Fields</strong></td>
+<td>---</td>
+<td>Greenhouse gas emission data</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="detonating-cord-management">11.4 Detonating Cord Management</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+<td>Cord name (max 50 characters)</td>
+</tr>
+<tr>
+<td><strong>Linear Weight</strong></td>
+<td>Yes</td>
+<td>Weight per linear meter</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>Yes</td>
+<td>Supplier (from dropdown)</td>
+</tr>
+<tr>
+<td><strong>GES Fields</strong></td>
+<td>---</td>
+<td>Greenhouse gas emission data</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="supplier-management">11.5 Supplier Management</h3>
+<p><em>Requires the Provider Editor role.</em></p>
+<p>To manage suppliers, use the Providers panel on the left side of the products dashboard.</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+<td>Supplier name (max 50 characters)</td>
+</tr>
+<tr>
+<td><strong>Code</strong></td>
+<td>Yes</td>
+<td>Short code, uppercase (max 5 characters)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Actions available: create, edit, delete suppliers, and apply settings to one or multiple suppliers.</p>
+<h3 id="product-sources-factories-and-warehouses">11.6 Product Sources (Factories and Warehouses)</h3>
+<p>Navigate to <strong>Setup Organization</strong> to manage product sources — the physical locations where explosive products are manufactured and stored.</p>
+<p>The interface has two tabs: <strong>Warehouses</strong> and <strong>Factory</strong>, each showing a searchable list with a map view.</p>
+<figure><img alt="Setup Organization with Warehouses and Factories tabs and map" src="assets/products-and-suppliers-02.jpg"/><figcaption>Figure 30 — Setup Organization with Warehouses and Factories tabs and map</figcaption></figure>
+
+<h4 id="factories">Factories</h4>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+<td>Factory name (max 256 characters)</td>
+</tr>
+<tr>
+<td><strong>Latitude</strong></td>
+<td>Yes</td>
+<td>GPS latitude (-90 to 90, 4 decimals)</td>
+</tr>
+<tr>
+<td><strong>Longitude</strong></td>
+<td>Yes</td>
+<td>GPS longitude (-180 to 180, 4 decimals)</td>
+</tr>
+<tr>
+<td><strong>Is Active</strong></td>
+<td>---</td>
+<td>Active/inactive toggle (edit mode only)</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="warehouses">Warehouses</h4>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Yes</td>
+<td>Warehouse name (max 256 characters)</td>
+</tr>
+<tr>
+<td><strong>Factory</strong></td>
+<td>Yes</td>
+<td>Parent factory (from dropdown)</td>
+</tr>
+<tr>
+<td><strong>Latitude</strong></td>
+<td>Yes</td>
+<td>GPS latitude (4 decimals)</td>
+</tr>
+<tr>
+<td><strong>Longitude</strong></td>
+<td>Yes</td>
+<td>GPS longitude (4 decimals)</td>
+</tr>
+<tr>
+<td><strong>CO2 per KM</strong></td>
+<td>---</td>
+<td>CO2 emission factor per kilometer (4 decimals)</td>
+</tr>
+<tr>
+<td><strong>Is Active</strong></td>
+<td>---</td>
+<td>Active/inactive toggle (edit mode only)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Factory and warehouse locations are displayed on the map and used in CO2 transport calculations (see <a href="#blast-environment">Blast Environment</a>).</p><hr/><h2 id="workflows-and-approvals">12. Workflows and Approvals</h2><h3 id="workflow-principles-in-explore">12.1 Workflow Principles in Explore</h3>
+<p>Workflows in Explore define the approval process that blasts and other operational objects must follow before execution. A workflow is a sequence of steps, each with conditions, validators, and document requirements. Workflows ensure that every blast goes through the proper review and authorization process before detonation.</p>
+<h3 id="creating-and-configuring-a-workflow-template">12.2 Creating and Configuring a Workflow Template</h3>
+<p>Workflow templates can be managed at two levels:</p>
+<ul>
+<li><strong>Site level</strong> — Navigate to site setup &gt; Workflow Templates</li>
+<li><strong>Region level</strong> — Navigate to region setup &gt; Workflows</li>
+</ul>
+<p>The workflow template list displays all available templates sorted by name. Click on a template to edit it, or use the <strong>Add</strong> button to create a new one.</p>
+<figure><img alt="Setup Area &gt; Workflows list (Drone-MDL, Log IREDES, etc.)" src="assets/workflows-and-approvals-01.jpg"/><figcaption>Figure 31 — Setup Area &gt; Workflows list (Drone-MDL, Log IREDES, etc.)</figcaption></figure>
+
+<h3 id="steps-conditions-and-validators">12.3 Steps, Conditions, and Validators</h3>
+<p>Each workflow template consists of ordered steps. For each step, you can define:</p>
+<ul>
+<li><strong>Step name</strong> — A descriptive label for the approval stage</li>
+<li><strong>Conditions</strong> — Requirements that must be met before the step can be completed</li>
+<li><strong>Validators</strong> — Users or roles authorized to approve the step</li>
+<li><strong>Transitions</strong> — Rules governing progression to the next step</li>
+</ul>
+<h3 id="tracking-workflow-progress">12.4 Tracking Workflow Progress</h3>
+<p>When a blast is associated with a workflow, its progress through the steps is visible in the blast detail view. Each step shows its current status (pending, in progress, approved, rejected) and any associated documents.</p>
+<h3 id="document-management-per-step">12.5 Document Management per Step</h3>
+<p>Each workflow step can have associated documents. The file explorer component allows:</p>
+<ul>
+<li><strong>Go to Root / Go to Parent</strong> — Navigate the folder structure</li>
+<li><strong>Add Files</strong> — Upload documents (PDF, images, etc.)</li>
+<li><strong>Create Folder</strong> — Organize documents into folders</li>
+<li><strong>Rename</strong> — Rename files or folders</li>
+<li><strong>Download</strong> — Download selected items</li>
+<li><strong>Cut / Paste</strong> — Move items between folders</li>
+<li><strong>Delete</strong> — Remove selected items</li>
+<li><strong>Select All</strong> — Select all items in current folder</li>
+<li><strong>Sort</strong> — Toggle alphabetical sort order</li>
+</ul>
+<p>The file table shows: file name, extension, size (MB), and creation date. Folders are listed first, followed by files. A footer displays information about the selected items (count, total size).</p><hr/><h2 id="mapping-and-visualization">13. Mapping and Visualization</h2><h3 id="interactive-map-mapbox">13.1 Interactive Map (MapBox)</h3>
+<p>The interactive map is the central visualization tool in Explore. Powered by MapBox, it provides a geospatial view of the mining site with multiple layers and interactive elements.</p>
+<p><strong>Map view modes</strong> (top-right buttons):</p>
+<ul>
+<li><strong>Map</strong> — Standard map view</li>
+<li><strong>Plan</strong> — Simplified plan view</li>
+<li><strong>3D</strong> — Three-dimensional view (when available)</li>
+</ul>
+<p><strong>Map tools</strong> (right side):</p>
+<ul>
+<li><strong>Ruler</strong> — Measure distances between points on the map</li>
+<li><strong>Polygon</strong> — Draw polygons for blast areas, muckpiles, or danger zones</li>
+</ul>
+<p><strong>Scale bar</strong> — Displayed at the bottom right, showing the current scale (e.g., "100 m").</p>
+<h3 id="displaying-drill-holes-and-blast-patterns">13.2 Displaying Drill Holes and Blast Patterns</h3>
+<p>Drill holes appear as points on the map, positioned according to their GPS coordinates. Holes can be visualized in two modes (via the <strong>Holes Legend</strong> panel):</p>
+<h4 id="state-mode">State mode</h4>
+<p>Color-code holes by their current status: actual position, planned, drilled, loaded, fired, etc. Select a specific status to highlight only those holes.</p>
+<h4 id="feature-mode">Feature mode</h4>
+<p>Color-code holes by a specific feature: all holes, water presence, tube condition, or deviation.</p>
+<p><strong>Hole popup</strong> — Click on a hole to see:</p>
+<ul>
+<li>Hole name, planned depth (m), measured depth (m), diameter (mm)</li>
+<li>Loading information (bulk kg, cartridge count)</li>
+<li>Status indicator</li>
+<li>Links to details and polygon creation</li>
+</ul>
+<p><strong>Blast popup</strong> — Click on a blast to see:</p>
+<ul>
+<li>Blast name, planned/effective dates, zone, level</li>
+<li>KPI value</li>
+<li>Links to blast details and polygon management</li>
+</ul>
+<h3 id="terrain-layers-and-orthophotos">13.3 Terrain Layers and Orthophotos</h3>
+<p>Orthophotos (aerial imagery) are displayed as background layers on the map. Use the <strong>Orthophoto panel</strong> (bottom-right button) to:</p>
+<ul>
+<li>View all uploaded orthophoto layers</li>
+<li>Reorder layers (up/down arrows)</li>
+<li>Toggle visibility for each layer</li>
+<li>Add new orthophotos</li>
+<li>Delete layers</li>
+</ul>
+<h3 id="mapbox-layer-management">13.4 MapBox Layer Management</h3>
+<p>Explore uses MapBox for both base map rendering and custom layer management. Terrain layers, geological overlays, and operational data are rendered as MapBox layers. The filter panel (accessible via the filter button) allows toggling visibility of:</p>
+<ul>
+<li>Holes</li>
+<li>Automatic polygons</li>
+<li>Drilled polygons</li>
+<li>Muckpile polygons</li>
+<li>Danger zone polygons</li>
+<li>Orthophoto layers</li>
+<li>Control points</li>
+</ul>
+<p>Coloring modes can be switched between:</p>
+<ul>
+<li><strong>KPI mode</strong> — Color holes by a selected KPI metric, with a gauge showing min/max bounds</li>
+<li><strong>Zones mode</strong> — Color areas by zone</li>
+</ul>
+<h3 id="dxf-file-import">13.5 DXF File Import</h3>
+<p>DXF (AutoCAD Drawing Exchange Format) files can be uploaded via the site setup (see <a href="#dxf">DXF</a>) and overlaid on the map. These files typically contain mine plans, bench layouts, or geological boundaries.</p><hr/><h2 id="data-analysis-and-key-performance-indicators-kpis">14. Data Analysis and Key Performance Indicators (KPIs)</h2><h3 id="indicator-configuration">14.1 Indicator Configuration</h3>
+<p>Navigate to <strong>Operations &gt; Indicators</strong> in the left sidebar to configure KPIs for the current site. This page allows you to define which metrics are tracked, their units, target values, and display preferences.</p>
+<figure><img alt="Indicators &gt; KPI display with Type, Zone, Time span, X-axis scale, Blast type, KPI, Problems filters" src="assets/data-analysis-and-key-performance-indicators-kpis-01.jpg"/><figcaption>Figure 32 — Indicators &gt; KPI display with filter controls</figcaption></figure>
+
+<h3 id="analysis-data-entry">14.2 Analysis Data Entry</h3>
+<p>Analysis data can be entered at the project or blast level. When an analysis configuration is defined for the site, dedicated data entry fields appear in the blast detail view (the <strong>Analysis Data</strong> tab). The tab shows a completion indicator (checkmark) when data has been entered.</p>
+<p>Data entries include: quantity values, dates, reference measurements, and categorized metrics as defined in the analysis configuration.</p>
+<h3 id="entry-profiles">14.3 Entry Profiles</h3>
+<p>KPI entry profiles are predefined templates that group related analysis fields together. Profiles can be selected from the <strong>Profiles</strong> section to quickly apply a standard set of KPI configurations to a site.</p>
+<h3 id="metabase-dashboards-and-reports">14.4 Metabase Dashboards and Reports</h3>
+<p>Explore's primary analytics and reporting interface is powered by <strong>Metabase</strong>, an embedded business intelligence tool. Metabase dashboards are available at multiple levels:</p>
+<ul>
+<li><strong>Site Dashboard</strong> — Accessed via the Dashboard page in Operations, or the Dashboard tab on the My Site page. Shows site-specific drilling, blasting, and operational metrics.</li>
+<li><strong>Region Dashboard</strong> — Available to regional and organization managers, showing cross-site analytics.</li>
+<li><strong>Client View</strong> — Organization-level reporting dashboard.</li>
+<li><strong>Equipment Blast Dashboard</strong> — Equipment performance metrics for a specific blast.</li>
+<li><strong>StevinRock Dashboard</strong> — Geological analytics and insights.</li>
+</ul>
+<p>Dashboards are automatically filtered to your current context (site, region, or organization) and provide interactive charts, tables, and visualizations.</p>
+<figure><img alt="Site Dashboard General tab showing 187 blasts, Blasts per month chart, Blast Locations map" src="assets/data-analysis-and-key-performance-indicators-kpis-02.jpg"/><figcaption>Figure 31b — Dashboard General tab with Blasts per month histogram, Blast Locations map, and blast dates list</figcaption></figure>
+
+<figure><img alt="Dashboard Drilling tab with 104.1k m total drilled, Diameter, Burden, Spacing donut charts" src="assets/data-analysis-and-key-performance-indicators-kpis-03.jpg"/><figcaption>Figure 31c — Dashboard Drilling tab with KPI donut charts and Face height histogram</figcaption></figure>
+
+<figure><img alt="Dashboard Vibration tab with Pic vibration/Max PPV timeline and control points list" src="assets/data-analysis-and-key-performance-indicators-kpis-04.jpg"/><figcaption>Figure 33 — Site Dashboard showing blasts per month, blast locations map, and zone distribution</figcaption></figure>
+
+<h3 id="vibration-indicators">14.5 Vibration Indicators</h3>
+<p>The <strong>Vibrations</strong> indicator page displays vibration monitoring data with visualization tools.</p>
+<figure><img alt="Indicators &gt; Vibrations with Time span, Predefined span, Control point filters and action buttons" src="assets/data-analysis-and-key-performance-indicators-kpis-05.jpg"/><figcaption>Figure 34 — Indicators &gt; Vibrations with time span and control point filters</figcaption></figure>
+
+<h3 id="operational-tracking-data">14.6 Operational Tracking Data</h3>
+<p>Operational tracking data captures day-to-day metrics for monitoring site performance. This data is entered alongside blast and project activities and feeds into KPI calculations and Metabase dashboards.</p>
+<h3 id="data-export">14.7 Data Export</h3>
+<p>Analysis data can be exported in multiple formats:</p>
+<ul>
+<li><strong>CSV export</strong> — From the projects page, use the <strong>Export analysis data</strong> button to generate a CSV file with all KPI data for selected projects.</li>
+<li><strong>Excel reports</strong> — Generate formatted Excel reports from templates (see <a href="#analysis-data-and-csv-export">Analysis Data and CSV Export</a>).</li>
+<li><strong>Metabase exports</strong> — Metabase dashboards support native export of charts and data tables.</li>
+</ul><hr/><h2 id="equipment-and-fleet">15. Equipment and Fleet</h2><h3 id="drilling-equipment-management">15.1 Drilling Equipment Management</h3>
+<p>Equipment is configured at the site level (see <a href="#equipment">Equipment</a>). Each piece of equipment has a name, type (e.g., drill rig, truck, loader), and optional external identifier for integration with Hiboo.</p>
+<p>Equipment records are used to:</p>
+<ul>
+<li>Track which drill rig performed each drill session</li>
+<li>Display equipment positions on the map</li>
+<li>Calculate utilization KPIs</li>
+</ul>
+<h3 id="equipment-path-tracking">15.2 Equipment Path Tracking</h3>
+<p>Equipment paths (GPS trajectories) can be viewed on the interactive map. From the map's equipment panel:</p>
+<ol>
+<li>Select a <strong>date range</strong> using the date picker and navigation arrows.</li>
+<li>Choose a <strong>shift</strong> from the dropdown.</li>
+<li>Adjust the <strong>time slider</strong> to filter by hour range.</li>
+<li>Toggle <strong>Split route mode</strong> to separate routes by stops.</li>
+<li>Toggle <strong>Assign mode</strong> to link equipment routes to blasts.</li>
+</ol>
+<p>The equipment list shows expandable cards grouped by equipment type. Each equipment shows its routes with:</p>
+<ul>
+<li>Color-coded path</li>
+<li>Route date</li>
+<li>Time range (start to end)</li>
+<li>Blast assignment status</li>
+<li><strong>Merge</strong>, <strong>Zoom</strong>, and <strong>Unassign</strong> actions</li>
+</ul>
+<p><strong>Equipment popup</strong> — Click on an equipment marker on the map to see:</p>
+<ul>
+<li>Equipment name and display name</li>
+<li>External ID</li>
+<li>Date, time, and GPS coordinates</li>
+<li>Assignment status with options to assign or unassign</li>
+</ul>
+<h3 id="hiboo-dashboard">15.3 Hiboo Dashboard</h3>
+<p>For sites with Hiboo integration enabled, the <strong>Hiboo</strong> tab on the My Site page displays fleet management metrics from the Hiboo platform:</p>
+<ul>
+<li><strong>Equipment utilization</strong> — Machine operating hours vs. available hours</li>
+<li><strong>Fuel consumption</strong> — Fuel usage per machine</li>
+<li><strong>Machine health</strong> — Equipment condition alerts and status</li>
+</ul>
+<p>Note: Hiboo data is supplementary. If the Hiboo service is unavailable, core Explore functionality continues to operate normally.</p><hr/><h2 id="reports-and-exports">16. Reports and Exports</h2><h3 id="excel-report-generation">16.1 Excel Report Generation</h3>
+<p>Excel reports can be generated from the projects page. Two report templates are available:</p>
+<h4 id="deliveries-log-report">Deliveries Log Report</h4>
+<p>A detailed log of all explosive deliveries for selected projects within a specified time period. Configurable options include:</p>
+<ul>
+<li>Project selection (multi-select)</li>
+<li>Date range with start/end time selection</li>
+<li>Delivery filter (multi-select specific deliveries)</li>
+<li>Resume mode toggle (summary vs. detailed)</li>
+</ul>
+<h4 id="feedback-report">Feedback Report</h4>
+<p>A compilation of customer and supplier survey responses. Filter by:</p>
+<ul>
+<li>Project selection</li>
+<li>Date range</li>
+<li>Blasts with survey responses</li>
+</ul>
+<p>Click <strong>Download</strong> to generate the Excel file.</p>
+<h3 id="analysis-data-export-csv">16.2 Analysis Data Export (CSV)</h3>
+<p>From the projects list, click <strong>Export analysis data</strong> to generate a CSV file containing all KPI and analysis entries for the selected projects. The export preparation message "Export preparation…" is displayed while the file is being generated. If no data is available, the message "No data to export" appears.</p>
+<h3 id="metabase-analytical-dashboards">16.3 Metabase Analytical Dashboards</h3>
+<p>Metabase provides the richest reporting and analytics capabilities in Explore. See <a href="#metabase-dashboards-and-reports">Metabase Dashboards and Reports</a> for details on the available dashboards. Metabase natively supports exporting individual charts and tables to CSV, Excel, or image formats.</p><hr/><h2 id="satisfaction-surveys">17. Satisfaction Surveys</h2><h3 id="customer-feedback-post-blast">17.1 Customer Feedback (Post-Blast)</h3>
+<p>The <strong>Customer Feedback</strong> tab within a blast detail view allows collecting structured feedback from customers about the blast results. The survey form is dynamically generated from configured questions and supports multiple question types:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Question Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Yes/No Toggle</strong></td>
+<td>Binary question with toggle switch</td>
+</tr>
+<tr>
+<td><strong>2-Point Scale</strong></td>
+<td>Two-option rating scale</td>
+</tr>
+<tr>
+<td><strong>3-Point Scale</strong></td>
+<td>Three-option rating scale</td>
+</tr>
+<tr>
+<td><strong>Dropdown</strong></td>
+<td>Selection from predefined options</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>Date picker input</td>
+</tr>
+<tr>
+<td><strong>Number</strong></td>
+<td>Numeric value input</td>
+</tr>
+<tr>
+<td><strong>Free Text</strong></td>
+<td>Open text area (with maximum character limit)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Fill in the responses and click <strong>Submit</strong> to save the feedback. The submit button is disabled until at least one answer has been modified.</p>
+<h3 id="supplier-feedback">17.2 Supplier Feedback</h3>
+<p>The <strong>Supplier Feedback</strong> tab works identically to customer feedback but targets supplier performance evaluation. The same question types are available, and the form is configured separately to capture supplier-specific metrics.</p>
+<p>Survey responses are compiled into the Feedback Report (see <a href="#excel-report-generation">Excel Report Generation</a>).</p><hr/><h2 id="administration">18. Administration</h2><p><em>This chapter covers features available to users with administrative roles.</em></p>
+<h3 id="user-management">18.1 User Management</h3>
+<p><em>Requires the manage_user role.</em></p>
+<p>Navigate to <strong>Config &gt; Users</strong> in the left sidebar to view and manage user accounts. The user list displays all users accessible to your organization.</p>
+<p>For each user, you can view and manage:</p>
+<ul>
+<li>User details (name, email)</li>
+<li><strong>Assigned regions</strong> — Which regions the user has access to</li>
+<li><strong>Assigned sites</strong> — Which sites the user can access</li>
+<li><strong>Groups</strong> — Keycloak groups and roles assigned to the user</li>
+</ul>
+<p>Use the user detail page to modify assignments and permissions.</p>
+<h3 id="user-dashboard">18.2 User Dashboard</h3>
+<p><em>Requires the manage_site role.</em></p>
+<p>Navigate to <strong>Config &gt; User Dashboard</strong> to view analytics about user activity and account status. This dashboard provides insights into user engagement, login activity, and license utilization.</p>
+<figure><img alt="User Dashboard page (empty)" src="assets/administration-01.jpg"/><figcaption>Figure 35 — User Dashboard page (empty)</figcaption></figure>
+
+<h3 id="region-management">18.3 Region Management</h3>
+<p><em>Requires the manage_area role.</em></p>
+<p>Navigate to <strong>Config &gt; Areas</strong> in the left sidebar to manage regions. A region groups multiple mining sites under a common organizational unit. The list shows all regions you have access to, with options to view detailed information.</p>
+<figure><img alt="Areas list with Name, Users, Sites columns" src="assets/administration-02.jpg"/><figcaption>Figure 36 — Areas list with Name, Users, Sites columns</figcaption></figure>
+
+<p>From the region list, you can:</p>
+<ul>
+<li>View all regions (with area manager permissions)</li>
+<li>Access detailed region data (with system admin permissions)</li>
+<li>View regions filtered by your current user access</li>
+<li>View region statistics</li>
+</ul>
+<h3 id="area-dashboard">18.4 Area Dashboard</h3>
+<p><em>Requires the org_manager role.</em></p>
+<p>Navigate to <strong>Config &gt; Area Dashboard</strong> to view cross-region analytics. This Metabase-powered dashboard provides organization-wide KPIs and metrics, allowing comparison across regions and sites.</p>
+<h3 id="organization-and-company-management">18.5 Organization and Company Management</h3>
+<p>Organizations represent the top-level entities in Explore's multi-tenant architecture. An organization contains regions, which contain sites.</p>
+<p><strong>Company management:</strong></p>
+<ul>
+<li>View all accessible companies</li>
+<li>View companies with associated user information</li>
+<li>Create new companies (requires Company Creator role)</li>
+<li>Update company details (requires Area Creator role)</li>
+<li>Delete companies</li>
+</ul>
+<h3 id="organization-setup-product-sources">18.6 Organization Setup (Product Sources)</h3>
+<p><em>Requires the manage_site role.</em></p>
+<p>Navigate to <strong>Config &gt; Setup Organization</strong> to manage organization-wide product sources — factories and warehouses where explosive materials are manufactured and stored. See <a href="#product-sources-factories-and-warehouses">Product Sources (Factories and Warehouses)</a> for details.</p>
+<h3 id="user-licensing">18.7 User Licensing</h3>
+<p>The platform tracks user licenses to manage access capacity. License information is available through the administration interface.</p><hr/><h2 id="appendices">Appendices</h2><h3 id="appendix-a-navigation-shortcuts-and-tips">Appendix A — Navigation Shortcuts and Tips</h3>
+<ul>
+<li>Click the <strong>EPC Group logo</strong> in the top-left corner to return to the home page from any screen.</li>
+<li>Use the <strong>site selector search</strong> field in the top bar to quickly find and switch between sites.</li>
+<li>The <strong>breadcrumb</strong> trail allows quick navigation back to parent pages when deep within projects or blasts.</li>
+<li>Collapse the <strong>left sidebar</strong> sections (Config / Operations) to reduce visual clutter.</li>
+<li>Use <strong>Select All</strong> in lists to quickly act on multiple items.</li>
+<li>In the file explorer, use <strong>Cut / Paste</strong> to reorganize documents between folders.</li>
+</ul>
+<h3 id="appendix-b-common-error-messages-and-troubleshooting">Appendix B — Common Error Messages and Troubleshooting</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Your username and/or password are incorrect"</td>
+<td>Wrong credentials</td>
+<td>Verify username and password. Use the "Forgotten password?" link if needed.</td>
+</tr>
+<tr>
+<td>"Your account has been deactivated"</td>
+<td>Account disabled</td>
+<td>Contact your site manager or administrator.</td>
+</tr>
+<tr>
+<td>"Your authentication token has expired"</td>
+<td>Password reset link expired</td>
+<td>Request a new password reset email from your administrator.</td>
+</tr>
+<tr>
+<td>"An error occurred while retrieving data, please try again later"</td>
+<td>Server communication issue</td>
+<td>Refresh the page. If persistent, contact support.</td>
+</tr>
+<tr>
+<td>"No workflow" message when creating a project</td>
+<td>No workflow template assigned to site</td>
+<td>Ask your site manager to configure a workflow template.</td>
+</tr>
+<tr>
+<td>"No data to export"</td>
+<td>No analysis data for selected criteria</td>
+<td>Verify the project selection and date range.</td>
+</tr>
+<tr>
+<td>Map not loading</td>
+<td>MapBox token issue</td>
+<td>Refresh the page. If persistent, verify network connectivity and contact support.</td>
+</tr>
+<tr>
+<td>Passwords do not match</td>
+<td>Confirmation password differs</td>
+<td>Re-enter both password fields carefully.</td>
+</tr>
+<tr>
+<td>"The password must contain at least 10 characters"</td>
+<td>Password too short</td>
+<td>Choose a longer password.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="appendix-c-detailed-roles-and-permissions">Appendix C — Detailed Roles and Permissions</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Internal Code</th>
+<th>Key Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Field Operator</strong></td>
+<td>explore_app_user</td>
+<td>View site, projects, blasts, operations charts, indicators, dashboard. Submit surveys.</td>
+</tr>
+<tr>
+<td><strong>Site Manager</strong></td>
+<td>manage_site</td>
+<td>All operator permissions + create/configure sites, manage zones/operators/equipment, configure KPIs and workflows, manage costs, access user dashboard, setup organization.</td>
+</tr>
+<tr>
+<td><strong>Regional Manager</strong></td>
+<td>manage_area</td>
+<td>Manage regions, configure region-level products and workflows, manage geology reference data, access area setup.</td>
+</tr>
+<tr>
+<td><strong>User Administrator</strong></td>
+<td>manage_user</td>
+<td>Create and manage user accounts, assign roles and site/region access.</td>
+</tr>
+<tr>
+<td><strong>Organization Manager</strong></td>
+<td>org_manager</td>
+<td>Access area dashboard with organization-wide analytics.</td>
+</tr>
+<tr>
+<td><strong>Project Creator</strong></td>
+<td>create_project</td>
+<td>Create new projects within a site.</td>
+</tr>
+<tr>
+<td><strong>Provider Editor</strong></td>
+<td>ProviderEditor</td>
+<td>Create, edit, and delete product suppliers.</td>
+</tr>
+<tr>
+<td><strong>Product Viewer</strong></td>
+<td>ProductViewer</td>
+<td>View product catalog.</td>
+</tr>
+<tr>
+<td><strong>Company Creator</strong></td>
+<td>CompanyCreator</td>
+<td>Create new companies.</td>
+</tr>
+<tr>
+<td><strong>Area Creator</strong></td>
+<td>AreaCreator</td>
+<td>Create and update regions/areas and companies.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="appendix-d-supported-file-formats">Appendix D — Supported File Formats</h3>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DXF</strong></td>
+<td>.dxf</td>
+<td>AutoCAD mine plan drawings, overlaid on the map</td>
+</tr>
+<tr>
+<td><strong>GeoTIFF / TIFF</strong></td>
+<td>.tif, .tiff</td>
+<td>Orthophoto aerial imagery</td>
+</tr>
+<tr>
+<td><strong>PDF</strong></td>
+<td>.pdf</td>
+<td>Reports, documents, workflow attachments</td>
+</tr>
+<tr>
+<td><strong>JPEG</strong></td>
+<td>.jpg, .jpeg</td>
+<td>Images (muckpile photos, orthophoto textures, 3D terrain textures)</td>
+</tr>
+<tr>
+<td><strong>PNG</strong></td>
+<td>.png</td>
+<td>Images (muckpile photos, 3D terrain textures)</td>
+</tr>
+<tr>
+<td><strong>OBJ</strong></td>
+<td>.obj</td>
+<td>3D terrain model for blast visualization</td>
+</tr>
+<tr>
+<td><strong>MTL</strong></td>
+<td>.mtl</td>
+<td>3D model material definition (companion to OBJ)</td>
+</tr>
+<tr>
+<td><strong>CSV</strong></td>
+<td>.csv</td>
+<td>Data exports (analysis data, KPIs)</td>
+</tr>
+<tr>
+<td><strong>XLSX</strong></td>
+<td>.xlsx</td>
+<td>Excel reports (deliveries, feedback)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="appendix-e-external-integrations">Appendix E — External Integrations</h3>
+<h4 id="expertab">Expertab</h4>
+<p>EPC Group's proprietary tablet application for field operations. Expertab runs on Android tablets and provides:</p>
+<ul>
+<li>Blast pattern display and hole-by-hole navigation</li>
+<li>GPS-guided drill positioning</li>
+<li>Real-time drill session data capture</li>
+<li>Geological observation logging</li>
+<li>Delivery record capture</li>
+<li>Offline-first architecture with automatic sync</li>
+</ul>
+<p>Blast patterns must be in <strong>Approved</strong> status to appear on tablets. Data synchronization is idempotent and handles intermittent connectivity.</p>
+<h4 id="hiboo">Hiboo</h4>
+<p>Third-party fleet management platform providing:</p>
+<ul>
+<li>Equipment utilization hours</li>
+<li>Fuel consumption data</li>
+<li>Machine health alerts and status</li>
+<li>Equipment list synchronization</li>
+</ul>
+<p>Configuration requires an API key and base URL. The integration degrades gracefully when Hiboo is unavailable.</p>
+<h4 id="mapbox">MapBox</h4>
+<p>Mapping and geospatial visualization provider. Explore uses MapBox for:</p>
+<ul>
+<li>Interactive 2D site maps</li>
+<li>Base map rendering (satellite, street, terrain)</li>
+<li>Drill hole and blast pattern visualization</li>
+<li>Layer management and styling</li>
+<li>Token management is handled server-side for security</li>
+</ul>
+<h4 id="keycloak">Keycloak</h4>
+<p>Open-source identity and access management platform. Keycloak provides:</p>
+<ul>
+<li>User authentication (login/logout)</li>
+<li>JWT token issuance and validation</li>
+<li>Role-based access control</li>
+<li>Password management (creation, reset)</li>
+<li>Session management and token refresh</li>
+</ul>
+<p>The Keycloak realm used by Explore is vertex. Users are managed through the Explore admin interface, which communicates with Keycloak behind the scenes.</p>
+<p><em>This document was generated based on the Explore platform source code (version develop branch, April 2026). For the most up-to-date information, consult your site administrator or EPC Group support.</em></p></div><!-- /content-wrap -->
+<footer style="background:#005542; color:#6ecfb8; text-align:center; padding:28px; font-size:13px; margin-top:40px;">
+<strong style="color:#a0ddd0;">Explore — User Documentation</strong><br/>
+  EPC Groupe — DTI  |  Platform: Web  |  All rights reserved
+</footer>
+</main>
+<button id="back-to-top" title="Back to top">⇧</button>
+<script>
+var isScrolling = false;
+
+// Calcule le temps nécessaire pour scroller vers un élément (distance / vitesse estimée)
+function estimateScrollDuration(targetEl) {
+  var dist = Math.abs(targetEl.getBoundingClientRect().top);
+  // ~1px/ms pour smooth scroll, minimum 600ms, maximum 2500ms
+  return Math.min(2500, Math.max(600, dist * 0.6));
+}
+
+// Handle chapter click: accordion behavior + scroll to section
+function handleChapterClick(event, el) {
+  event.preventDefault();
+  event.stopPropagation();
+  var section = el.closest('.nav-section');
+  var target = el.getAttribute('data-target');
+
+  // Accordion: close all OTHER sections before opening clicked one
+  var allSections = document.querySelectorAll('.nav-section');
+  for (var i = 0; i < allSections.length; i++) {
+    if (allSections[i] !== section) {
+      allSections[i].classList.remove('open');
+    }
+  }
+
+  // Toggle the clicked section
+  section.classList.toggle('open');
+
+  // Scroll to target with dynamic guard based on distance
+  if (target) {
+    var targetEl = document.getElementById(target);
+    if (targetEl) {
+      isScrolling = true;
+      var duration = estimateScrollDuration(targetEl);
+      var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      clearTimeout(window._scrollTimer);
+      window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+    }
+  }
+
+  // Close mobile sidebar
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+// Scroll spy — only update active highlights, NEVER open/close sections
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    window.requestAnimationFrame(function() {
+      updateActiveNav();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// Back to top click
+document.getElementById('back-to-top').addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+function updateActiveNav() {
+  if (isScrolling) return;
+
+  var sections = document.querySelectorAll('h2[id], h3[id], h4[id]');
+  var current = '';
+  for (var i = 0; i < sections.length; i++) {
+    var top = sections[i].getBoundingClientRect().top;
+    if (top < 120) current = sections[i].id;
+  }
+
+  // Only update active highlights — never touch open/close state
+  var navItems = document.querySelectorAll('.nav-item, .nav-subitem, .nav-chapter');
+  for (var j = 0; j < navItems.length; j++) {
+    navItems[j].classList.remove('active');
+    var href = navItems[j].getAttribute('href');
+    var dataTarget = navItems[j].getAttribute('data-target');
+    if ((href && href === '#' + current) || (dataTarget && dataTarget === current)) {
+      navItems[j].classList.add('active');
+    }
+  }
+
+  var btn = document.getElementById('back-to-top');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+}
+
+// Search
+document.getElementById('search-input').addEventListener('input', function(e) {
+  var query = e.target.value.toLowerCase();
+  var sections = document.querySelectorAll('.nav-section');
+  for (var i = 0; i < sections.length; i++) {
+    var text = sections[i].textContent.toLowerCase();
+    if (query === '' || text.indexOf(query) !== -1) {
+      sections[i].style.display = '';
+      if (query) sections[i].classList.add('open');
+    } else {
+      sections[i].style.display = 'none';
+    }
+  }
+});
+
+// Click nav-item/subitem -> scroll with dynamic guard + close mobile sidebar
+var navLinks = document.querySelectorAll('#sidebar .nav-item, #sidebar .nav-subitem');
+for (var k = 0; k < navLinks.length; k++) {
+  navLinks[k].addEventListener('click', function(ev) {
+    var href = this.getAttribute('href');
+    if (href) {
+      var targetEl = document.querySelector(href);
+      if (targetEl) {
+        ev.preventDefault();
+        isScrolling = true;
+        var duration = estimateScrollDuration(targetEl);
+        var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        clearTimeout(window._scrollTimer);
+        window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+      }
+    }
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  });
+}
+
+// Open first section by default
+var firstSection = document.querySelector('.nav-section');
+if (firstSection) firstSection.classList.add('open');
+
+// Inject .num circles into chapter h2s (style ExperTab)
+(function() {
+  var chapterH2s = document.querySelectorAll('.content-wrap > h2');
+  chapterH2s.forEach(function(h2) {
+    var text = h2.textContent.trim();
+    // Extract leading number if present (e.g. "1. Introduction" or "Appendices")
+    var match = text.match(/^(\d+)\.\s*/);
+    var appMatch = text.match(/^Appendices/i);
+    var numLabel = '';
+    if (match) {
+      numLabel = match[1];
+      h2.textContent = text.replace(/^\d+\.\s*/, '');
+    } else if (appMatch) {
+      numLabel = 'A';
+    }
+    if (numLabel) {
+      var span = document.createElement('span');
+      span.className = 'num';
+      span.textContent = numLabel;
+      h2.insertBefore(span, h2.firstChild);
+    }
+  });
+})();
+</script>
+</body>
+</html>

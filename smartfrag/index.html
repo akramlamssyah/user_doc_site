@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartFrag — User Documentation</title>
+<style>
+  :root {
+    --teal: #00C79A;
+    --teal-light: #DFF8F3;
+    --teal-mid: #30D2AE;
+    --teal-dark: #008668;
+    --dark: #005542;
+    --grey-bg: #F4F6F7;
+    --grey-line: #CCCCCC;
+    --amber: #E67E22;
+    --red: #C0392B;
+    --green: #1D8A5E;
+    --white: #ffffff;
+    --text: #2c3e50;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: #f9fafb;
+    line-height: 1.7;
+  }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #ffffff;
+    color: var(--text);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--grey-line);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+  .app-logo svg { display: block; width: 145px; height: auto; margin-bottom: 4px; }
+  .app-logo .app-sub {
+    font-size: 13px;
+    color: #5a6a7a;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .sidebar-search {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--grey-line);
+    flex-shrink: 0;
+  }
+  .sidebar-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--grey-line);
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    background: #f8f9fa;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .sidebar-search input:focus { border-color: var(--teal); }
+
+  .sidebar-nav-content { flex: 1; overflow-y: auto; padding: 8px 0; }
+
+  .sidebar nav { padding: 0; }
+  /* Accordion */
+  .nav-chapter {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; text-decoration: none; color: #2c3e50;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    border: none; background: none; width: 100%; text-align: left;
+    user-select: none;
+  }
+  .nav-chapter:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-chapter.active { color: var(--teal); }
+  .ch-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 22px; border-radius: 4px;
+    background: var(--teal-light); color: var(--teal);
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .ch-title { flex: 1; }
+  .chevron {
+    flex-shrink: 0; transition: transform 0.3s;
+    color: #5a6a7a; opacity: 0.6;
+    font-size: 12px; display: inline-block;
+  }
+  .acc-section.open > .nav-chapter .chevron { transform: rotate(90deg); }
+  .nav-items { display: none; padding-left: 0; overflow: hidden; }
+  .acc-section.open > .nav-items { display: block; }
+  .nav-item {
+    display: block; padding: 5px 16px 5px 46px;
+    text-decoration: none; color: #5a6a7a;
+    font-size: 12.5px; line-height: 1.5;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { color: var(--teal); background: var(--teal-light); }
+  .nav-item.active {
+    color: var(--teal); border-left-color: var(--teal);
+    font-weight: 600; background: var(--teal-light);
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-x: hidden; margin-left: 280px; }
+
+  /* ── BACK TO TOP ── */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 200;
+    transition: background 0.2s;
+  }
+  #back-to-top:hover { background: var(--teal-dark); }
+  #back-to-top.visible { display: flex; }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--dark) 100%);
+    color: white;
+    padding: 80px 60px 70px;
+  }
+  .cover h1 { font-size: 56px; font-weight: 800; letter-spacing: 2px; line-height: 1.1; }
+  .cover .subtitle { font-size: 22px; opacity: .85; margin-top: 10px; }
+  .cover .tagline { font-size: 14px; opacity: .6; margin-top: 30px; letter-spacing: .5px; }
+  .cover .meta { display: flex; gap: 30px; margin-top: 40px; }
+  .cover .meta-item { background: rgba(255,255,255,.1); border-radius: 8px; padding: 12px 20px; font-size: 13px; }
+  .cover .meta-item span { display: block; font-size: 10px; opacity: .65; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 3px; }
+
+  /* ── TOC ── */
+  .toc-section { background: var(--white); border-bottom: 1px solid var(--grey-line); padding: 50px 60px; }
+  .toc-section h2 { color: var(--teal); font-size: 22px; margin-bottom: 24px; padding-bottom: 10px; border-bottom: 3px solid var(--teal); display: inline-block; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 6px; }
+  .toc-grid a { display: block; color: var(--teal); text-decoration: none; font-size: 14px; padding: 5px 0; border-bottom: 1px dotted #d0dfe0; }
+  .toc-grid a:hover { color: var(--dark); }
+  .toc-grid a .toc-num { font-weight: 700; margin-right: 6px; }
+
+  /* ── CONTENT SECTIONS ── */
+  .content { padding: 0 60px 80px; }
+  .section { padding-top: 60px; }
+  .section + .section { border-top: 1px solid #e8ecee; }
+
+  h1.section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+    padding-bottom: 12px;
+    border-bottom: 4px solid var(--teal);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h1.section-title .num {
+    background: var(--teal);
+    color: white;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; flex-shrink: 0;
+  }
+
+  h2.sub-title {
+    font-size: 19px;
+    color: var(--dark);
+    margin: 36px 0 14px;
+    padding-left: 14px;
+    border-left: 4px solid var(--teal);
+  }
+  h3.sub-sub-title {
+    font-size: 15px;
+    color: var(--teal);
+    margin: 24px 0 8px;
+    font-weight: 700;
+  }
+
+  p { margin: 8px 0 10px; }
+
+  ul, ol { padding-left: 28px; margin: 10px 0 14px; }
+  ul li, ol li { margin-bottom: 5px; }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--teal); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--grey-bg); }
+  tbody tr:hover { background: var(--teal-light); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid #e5eaeb; vertical-align: top; }
+  tbody td:first-child { font-weight: 600; color: var(--dark); white-space: nowrap; }
+
+  /* ── NOTE / CALLOUT ── */
+  .note {
+    background: #fff8ee;
+    border-left: 4px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #5a4010;
+  }
+  .note strong { color: var(--amber); }
+  .note-info {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--dark);
+  }
+  .note-info strong { color: var(--teal-dark); }
+  .note-red {
+    background: #fdecea;
+    border-left: 4px solid var(--red);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #6b1010;
+  }
+
+  /* ── STATUS BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .badge-planned   { background: #e8f0fe; color: #1a56db; }
+  .badge-drilled   { background: #dcfce7; color: #166534; }
+  .badge-loading   { background: #fef3c7; color: #92400e; }
+  .badge-filled    { background: #d1fae5; color: #065f46; }
+  .badge-blasted   { background: #f3e8ff; color: #6b21a8; }
+  .badge-missing   { background: #fce7f3; color: #9d174d; }
+  .badge-collapsed { background: #fee2e2; color: #991b1b; }
+  .badge-adjust    { background: #fff7ed; color: #c2410c; }
+  .badge-redrill   { background: #ecfccb; color: #365314; }
+
+  /* ── ROLE CARDS ── */
+  .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+  .role-card {
+    background: white;
+    border: 2px solid var(--teal-light);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .role-card .role-name { font-weight: 800; color: var(--teal); font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
+  .role-card .role-menu { font-size: 12px; color: #666; margin-top: 4px; }
+  .role-card .role-desc { font-size: 13px; color: var(--text); margin-top: 8px; line-height: 1.5; }
+
+  /* ── FAQ ── */
+  .faq-item { margin: 18px 0; }
+  .faq-q {
+    background: var(--grey-bg);
+    border-left: 4px solid var(--teal);
+    padding: 10px 14px;
+    font-weight: 600;
+    border-radius: 0 6px 6px 0;
+    color: var(--dark);
+    cursor: pointer;
+  }
+  .faq-a { padding: 10px 14px 4px; font-size: 14px; }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 14px 0; }
+  .steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .steps li::before {
+    content: counter(step);
+    background: var(--teal);
+    color: white;
+    min-width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    color: #6a8a8d;
+    text-align: center;
+    padding: 28px;
+    font-size: 13px;
+    margin-top: 60px;
+  }
+  footer strong { color: #a0bec1; }
+
+  /* ── PRINT ── */
+  @media print {
+    .sidebar { display: none; }
+    .cover { break-after: page; }
+    .section { break-inside: avoid; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 16px rgba(0,0,0,0.15); }
+    .main { margin-left: 0; }
+    .cover, .toc-section, .content { padding-left: 24px; padding-right: 24px; }
+    .cover h1 { font-size: 36px; }
+  }
+
+.app-logo {
+  padding: 12px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* GTS Logo */
+.gts-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.gts-text {
+  line-height: 1.2;
+}
+.gts-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #D63384 0%, #7B2FF7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* GTS Logo */
+.gts-logo {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gts-logo svg {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+</style>
+<style>
+  /* ── SmartFrag additions ── */
+  .ui {
+    display: inline-block;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border: 1px solid #b8ece0;
+    border-radius: 4px;
+    padding: 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  tbody td:first-child .ui { font-weight: 700; }
+  .kbd {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #b9c2c7;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 0 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12.5px;
+    color: #2c3e50;
+  }
+  code {
+    background: var(--grey-bg);
+    border: 1px solid #e2e7e9;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    color: #7E003F;
+  }
+  .shot {
+    border: 2px dashed var(--teal-mid);
+    background: repeating-linear-gradient(45deg, #f7fdfb, #f7fdfb 10px, #eefaf6 10px, #eefaf6 20px);
+    border-radius: 8px;
+    padding: 22px 18px;
+    margin: 18px 0;
+    font-size: 13.5px;
+    color: var(--teal-dark);
+    font-style: italic;
+    text-align: center;
+  }
+  .shot::before {
+    content: "\1F4F7";
+    display: block;
+    font-size: 20px;
+    font-style: normal;
+    margin-bottom: 6px;
+    opacity: .8;
+  }
+  .doc-shot {
+    margin: 18px 0 22px;
+    text-align: center;
+  }
+  .doc-shot img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--grey-line);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  }
+  .doc-shot figcaption {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #5a6a7a;
+    font-style: italic;
+  }
+  tbody td:first-child { white-space: normal; }
+  a { color: var(--teal-dark); }
+  .cover .subtitle { font-weight: 500; }
+
+  /* ── Project-tree map ── */
+  .tree-map {
+    background: var(--white);
+    border: 1px solid #e2e7e9;
+    border-left: 4px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    margin: 18px 0 22px;
+  }
+  .tree-line { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; flex-wrap: wrap; }
+  .tree-line.l1 { padding-left: 26px; }
+  .tree-line.l2 { padding-left: 52px; }
+  .tree-line.l1::before, .tree-line.l2::before {
+    content: "\21B3";
+    color: #a8b6bc;
+    margin-left: -18px;
+    margin-right: -2px;
+  }
+  .tn {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 2px 11px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .tn-ortho { background: #e8f0fe; color: #1a56db; }
+  .tn-clip  { background: #dcfce7; color: #166534; }
+  .tn-res   { background: #fef3c7; color: #92400e; }
+  .tn-vol   { background: #f3e8ff; color: #6b21a8; }
+  .tree-note { font-size: 13.5px; color: #5a6a7a; }
+</style>
+</head>
+<body>
+<div class="layout">
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<nav class="sidebar" id="sidebar">
+<div class="gts-logo">
+<svg fill="none" height="38" viewbox="0 0 145 38" width="145" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4005_30414)">
+<path d="M96.7249 23.612C100.619 23.612 103.773 26.7747 103.773 30.6727C103.773 34.5708 100.619 37.7334 96.7249 37.7334C92.8307 37.7334 89.6768 34.5708 89.6768 30.6727C89.6768 26.7747 92.8337 23.612 96.7249 23.612ZM95.3422 27.8626C95.1005 27.8626 94.9078 28.0618 94.9078 28.3039C94.9078 28.546 95.1066 28.739 95.3483 28.736L98.2207 28.7145L94.0176 32.9865C93.8493 33.1581 93.8493 33.4339 94.0237 33.6055C94.195 33.774 94.4703 33.774 94.6386 33.6024L98.8417 29.3305L98.8631 32.2081C98.8631 32.4502 99.062 32.6432 99.3037 32.6402C99.5453 32.6402 99.738 32.441 99.735 32.2019L99.7075 28.2702C99.7075 28.0281 99.5086 27.835 99.27 27.835L95.3452 27.8626H95.3422Z" fill="#00C79A"></path>
+<path d="M30.1191 31.1971L30.1161 31.2029C30.1161 32.3031 30.2629 33.0634 30.5566 33.4832C30.8503 33.9061 31.3275 34.1142 31.9913 34.1142C32.4624 34.1142 32.9029 33.9487 33.3128 33.6147C33.735 33.2837 34.0715 32.8148 34.3284 32.2142C34.5823 31.6135 34.7108 30.9363 34.7108 30.1824V26.0606H37.1611V36.1827H34.7108V35.5484C34.7108 35.2664 34.7353 35.0305 34.7873 34.8405C34.8393 34.6352 34.9158 34.4114 35.0167 34.1694C35.0809 34.0039 35.1115 33.9027 35.1115 33.8629C35.1115 33.7464 35.0595 33.6821 34.9586 33.6698H34.9005C34.8118 33.6698 34.7353 33.7464 34.671 33.8997C34.3529 34.5402 33.9063 35.1071 33.3312 35.6066C32.7714 36.0908 32.0922 36.336 31.303 36.336C30.1803 36.336 29.2932 35.9713 28.6447 35.2419C27.9931 34.5126 27.6688 33.4461 27.6688 32.0398V26.0576H30.1191V31.1971ZM5.79355 22.3985C6.9039 22.3985 7.82765 22.5979 8.56791 22.9932C9.30818 23.3884 9.85575 23.9125 10.2137 24.5652C10.5716 25.218 10.7553 25.9261 10.7675 26.6922H8.29874C8.29874 26.1437 8.09379 25.65 7.68693 25.2149C7.28007 24.7675 6.63449 24.5436 5.75351 24.5436C4.87255 24.5437 4.24248 24.7094 3.86009 25.0434C3.47774 25.3744 3.28505 25.733 3.28505 26.1161C3.28511 27.0352 4.15991 27.5929 5.90646 27.7829C7.06582 27.9239 8.02952 28.1356 8.79734 28.4173C9.57435 28.6869 10.1832 29.1068 10.6146 29.6829C11.0489 30.259 11.2661 31.0374 11.2661 32.0211C11.2661 32.775 11.0489 33.471 10.6146 34.1114C10.1924 34.7516 9.56835 35.2603 8.73937 35.6465C7.91037 36.0173 6.91595 36.2011 5.75351 36.2011C4.55441 36.2011 3.53895 35.9713 2.70997 35.5116C1.88096 35.0519 1.26294 34.4513 0.853025 33.7097C0.446199 32.9681 0.241211 32.1621 0.241211 31.2948H2.76791C2.79238 32.0119 3.02188 32.6493 3.4562 33.2132C3.89059 33.7771 4.65536 34.056 5.75351 34.056C6.4418 34.056 7.00488 33.961 7.43927 33.7679C7.88583 33.5629 8.19779 33.3205 8.37522 33.0389C8.56794 32.7447 8.6629 32.4563 8.6629 32.1744C8.6629 31.6748 8.45164 31.2737 8.03258 30.9672C7.61042 30.6485 6.85171 30.4187 5.75351 30.2777C4.4902 30.1122 3.48998 29.8606 2.74971 29.5297C2.02165 29.1834 1.50164 28.7513 1.18044 28.2273C0.862294 27.691 0.700072 27.026 0.700072 26.2353C0.700072 25.5335 0.90503 24.8869 1.31189 24.2985C1.71871 23.7102 2.30911 23.2505 3.07382 22.9195C3.85079 22.5733 4.7594 22.4018 5.79024 22.4018L5.79355 22.3985ZM67.8436 25.9108C68.9663 25.9108 69.8537 26.2752 70.505 27.0045C71.1566 27.7339 71.4809 28.8003 71.4809 30.2069V36.1889H69.0305V31.0497C69.0305 29.9495 68.8837 29.1895 68.59 28.7697C68.2964 28.3498 67.8191 28.1384 67.1553 28.1384C66.6842 28.1384 66.2376 28.3039 65.8154 28.6379C65.4086 28.9689 65.0751 29.438 64.8212 30.0387C64.5673 30.639 64.4389 31.3163 64.4389 32.0702V36.1922H61.9886V26.0698H64.4389V26.7045C64.4389 26.9984 64.4144 27.2466 64.3624 27.4519C64.3104 27.6573 64.2339 27.8659 64.133 28.0835C64.0687 28.2368 64.0381 28.3409 64.0381 28.39C64.0381 28.5031 64.0901 28.5677 64.1911 28.58H64.2492C64.3379 28.58 64.4144 28.5031 64.4786 28.3501C64.7601 27.725 65.1945 27.1611 65.7787 26.6647C66.3661 26.1651 67.0544 25.9166 67.8467 25.9166L67.8436 25.9108ZM17.2406 25.7606C18.2622 25.7606 19.1555 25.9905 19.9202 26.4501C20.685 26.9098 21.2724 27.5347 21.6792 28.3284C22.086 29.1221 22.291 30.0047 22.291 30.9761C22.291 31.9476 22.086 32.8271 21.6792 33.6208C21.2724 34.4114 20.685 35.0397 19.9202 35.4994C19.1555 35.959 18.2622 36.1889 17.2406 36.1889C16.2188 36.1889 15.3253 35.959 14.5606 35.4994C13.7959 35.0397 13.2084 34.4145 12.8016 33.6208C12.3948 32.8302 12.1898 31.9476 12.1898 30.9761C12.1898 30.0047 12.3948 29.1221 12.8016 28.3284C13.2085 27.538 13.7959 26.9098 14.5606 26.4501C15.3284 25.9905 16.2188 25.7606 17.2406 25.7606ZM42.5145 26.064H45.2738V28.2122H42.5176V32.8335C42.5176 33.2408 42.5298 33.523 42.5543 33.6763C42.594 33.8292 42.6766 33.9306 42.8021 33.9827C42.9428 34.0226 43.1967 34.0406 43.5668 34.0406H45.2707V36.1889H43.0498C42.3493 36.1889 41.7803 36.1 41.3459 35.9192C40.9115 35.7261 40.5873 35.4074 40.3701 34.96C40.1651 34.5126 40.0642 33.8874 40.0642 33.0814V28.2122H38.2257V26.064H40.0642V23.3026H42.5145V26.064ZM55.7022 25.7606C56.7239 25.7606 57.6171 25.9905 58.3819 26.4501C59.1467 26.9098 59.734 27.5347 60.1409 28.3284C60.5477 29.1221 60.7527 30.0047 60.7527 30.9761C60.7527 31.9476 60.5477 32.8271 60.1409 33.6208C59.734 34.4114 59.1467 35.0397 58.3819 35.4994C57.6171 35.959 56.7239 36.1889 55.7022 36.1889C54.6804 36.1889 53.7872 35.959 53.0224 35.4994C52.2576 35.0397 51.6672 34.4145 51.2604 33.6208C50.8535 32.8302 50.6486 31.9476 50.6486 30.9761C50.6486 30.0047 50.8535 29.1221 51.2604 28.3284C51.6703 27.5347 52.2576 26.9098 53.0224 26.4501C53.7902 25.9905 54.6804 25.7606 55.7022 25.7606ZM77.3362 25.7576C78.6226 25.7579 79.6369 26.0643 80.3766 26.6769C81.1169 27.2776 81.5177 28.0559 81.5819 29.0151H79.1714C79.1316 28.6321 78.9664 28.3134 78.6727 28.056C78.3913 27.8016 77.9263 27.6729 77.2747 27.6729C76.0633 27.6729 75.4576 28.0192 75.4576 28.7087C75.4576 28.9018 75.5035 29.0608 75.5922 29.1864C75.6932 29.3152 75.9043 29.4285 76.2224 29.5327C76.5406 29.6339 77.0147 29.7169 77.6388 29.7813C78.9786 29.9222 80.0187 30.2345 80.759 30.7218C81.5115 31.1937 81.8878 31.9111 81.8878 32.8703C81.8878 33.9306 81.4871 34.7489 80.6825 35.325C79.8902 35.9008 78.7553 36.1889 77.2747 36.1889C75.8465 36.1889 74.7357 35.8763 73.9465 35.2484C73.1695 34.6079 72.7534 33.7342 72.7045 32.6218H75.115C75.1273 33.0814 75.3016 33.471 75.632 33.7927C75.9777 34.1111 76.5497 34.2705 77.3543 34.2705C78.0946 34.2705 78.6238 34.1632 78.9419 33.9459C79.2723 33.7284 79.4406 33.4339 79.4406 33.0634C79.4406 32.8213 79.3335 32.634 79.1163 32.5084C78.9113 32.3797 78.6235 32.285 78.2536 32.2206C77.8835 32.144 77.3023 32.061 76.513 31.9721C75.1364 31.8066 74.2034 31.4358 73.7201 30.8597C73.249 30.2713 73.0134 29.6002 73.0134 28.8463C73.0134 28.2824 73.1786 27.7737 73.5121 27.311C73.8425 26.839 74.335 26.4624 74.9865 26.1805C75.6366 25.8991 76.4179 25.7582 77.3362 25.7576ZM25.9772 36.1858H23.5269V22.3832H25.9772V36.1858ZM49.4127 36.1858H46.9627V26.064H49.4127V36.1858ZM17.2373 27.9852C16.4328 27.9882 15.7934 28.2735 15.3224 28.8497C14.8636 29.4105 14.6341 30.1211 14.6341 30.9761C14.6341 31.8311 14.8635 32.5452 15.3224 33.1213C15.7965 33.6821 16.4328 33.964 17.2373 33.964C18.0418 33.964 18.6751 33.6852 19.1339 33.1213C19.605 32.5482 19.8408 31.8311 19.8408 30.9761C19.8407 30.1211 19.605 29.4135 19.1339 28.8497C18.672 28.2735 18.0418 27.9852 17.2373 27.9852ZM55.7022 27.9852C54.8976 27.9852 54.2583 28.2735 53.7872 28.8497C53.3283 29.4105 53.0989 30.1211 53.0989 30.9761C53.0989 31.8311 53.3283 32.5452 53.7872 33.1213C54.2613 33.6821 54.9007 33.964 55.7022 33.964C56.5036 33.964 57.1369 33.6852 57.5957 33.1213C58.0668 32.5482 58.3024 31.8311 58.3024 30.9761C58.3024 30.1211 58.0668 29.4135 57.5957 28.8497C57.1369 28.2735 56.5067 27.9852 55.7022 27.9852ZM49.4127 24.8381H46.9627V22.3832H49.4127V24.8381ZM32.5695 4.31784C32.5695 4.66413 32.4777 5.01364 32.3003 5.37219C32.288 5.41203 32.2635 5.47034 32.2238 5.54696C32.1993 5.62047 32.1871 5.68492 32.1871 5.73699C32.1871 5.80128 32.2177 5.8504 32.2819 5.89021L32.3584 5.90848C32.4471 5.90845 32.5144 5.86864 32.5511 5.79206C32.5909 5.71544 32.6153 5.66935 32.6276 5.65709C32.958 5.08106 33.3862 4.62754 33.9093 4.2966C34.4477 3.95031 35.084 3.77858 35.8243 3.77858C36.6808 3.77858 37.4395 4.00848 38.1033 4.46809C38.7794 4.92777 39.3025 5.5529 39.6726 6.34661V6.35289C40.0397 7.14654 40.2263 8.02912 40.2263 9.00051C40.2263 9.97193 40.0428 10.8515 39.6726 11.6452C39.3025 12.4389 38.7794 13.064 38.1033 13.5237C37.4395 13.9833 36.6778 14.2132 35.8243 14.2132C35.0962 14.2132 34.4569 14.0447 33.9093 13.7137C33.374 13.3674 32.9457 12.9017 32.6276 12.3134C32.6276 12.3012 32.6031 12.2551 32.5511 12.1784C32.5113 12.1019 32.441 12.0806 32.34 12.1204C32.2513 12.1572 32.2054 12.2153 32.2054 12.2919C32.2054 12.3807 32.236 12.479 32.3003 12.5801C32.4807 12.9386 32.5695 13.2849 32.5695 13.6159V14.057H30.1191V0.254384H32.5695V4.31784ZM77.287 3.78155C78.116 3.78158 78.8869 3.95935 79.6027 4.31784C80.3277 4.66107 80.915 5.21899 81.3616 5.98509C81.8205 6.73893 82.0499 7.69812 82.0499 8.85958L82.0561 8.86586C82.0561 9.07115 82.0377 9.31931 81.9979 9.61342H74.65C74.7388 10.3795 75.0202 10.9802 75.4913 11.4153C75.9624 11.8505 76.5834 12.068 77.3482 12.068C78.3791 12.068 79.0643 11.5563 79.3947 10.5328H81.8817C81.6523 11.6452 81.1536 12.54 80.3889 13.2172C79.6363 13.8791 78.6146 14.2132 77.3267 14.2132C76.2652 14.2132 75.3536 13.9896 74.5889 13.5422C73.8241 13.0948 73.2429 12.4789 72.8483 11.7005C72.4536 10.9068 72.2548 10.0057 72.2548 8.99754C72.2548 7.94948 72.4598 7.03312 72.8666 6.25474C73.2735 5.46415 73.8547 4.85747 74.6072 4.43457C75.372 3.99941 76.2652 3.78155 77.287 3.78155ZM46.2435 3.77858C47.5956 3.77858 48.6663 4.10961 49.4586 4.77455V4.77154C50.2509 5.43654 50.6455 6.66232 50.6455 8.45196V14.051H48.1952V13.3429C48.1952 12.9599 48.29 12.5891 48.4827 12.2305C48.5347 12.1019 48.5592 12.007 48.5592 11.9426C48.5592 11.866 48.5286 11.8139 48.4644 11.7894L48.3879 11.7709C48.3114 11.7709 48.2533 11.8107 48.2166 11.8873C48.1768 11.9485 48.1585 11.9884 48.1585 12.0007C47.5589 13.4717 46.3965 14.2072 44.6742 14.2072C44.0471 14.2072 43.4597 14.0785 42.9122 13.8242C42.3768 13.5698 41.9486 13.2172 41.6304 12.7698C41.3123 12.3224 41.1532 11.8229 41.1532 11.2744C41.1532 10.2264 41.4836 9.45424 42.1474 8.95473C42.8235 8.44295 43.7167 8.1548 44.8272 8.09044L45.803 8.05364C46.6718 8.02912 47.2897 7.97099 47.6599 7.88215C48.03 7.79328 48.2074 7.57542 48.1952 7.22913C48.183 6.79409 48.0361 6.44477 47.7547 6.17512C47.4732 5.90851 46.944 5.77349 46.167 5.77349C45.3747 5.77352 44.8119 5.91473 44.4815 6.19666C44.1511 6.46634 43.9461 6.83712 43.8697 7.30905H41.4591C41.6243 6.10779 42.1535 5.21899 43.0468 4.64286C43.94 4.06673 45.0076 3.77858 46.2435 3.77858ZM135.893 3.77858C137.245 3.77858 138.319 4.10955 139.108 4.77455L139.102 4.77154C139.891 5.43654 140.289 6.66232 140.289 8.45196V14.051H137.838V13.3429C137.838 12.9599 137.933 12.5891 138.126 12.2305C138.178 12.1019 138.202 12.007 138.202 11.9426C138.202 11.866 138.172 11.8139 138.107 11.7894L138.031 11.7709C137.954 11.7709 137.896 11.8107 137.86 11.8873C137.823 11.9485 137.802 11.9884 137.802 12.0007C137.202 13.4717 136.043 14.2072 134.32 14.2072C133.693 14.2072 133.106 14.0785 132.558 13.8242C132.023 13.5698 131.595 13.2172 131.277 12.7698C130.958 12.3224 130.799 11.8229 130.799 11.2744C130.799 10.2264 131.13 9.45424 131.794 8.95473C132.473 8.44295 133.363 8.1548 134.473 8.09044L135.449 8.05364C136.318 8.02912 136.936 7.97099 137.306 7.88215C137.676 7.79328 137.854 7.57542 137.841 7.22913C137.829 6.79406 137.682 6.44477 137.401 6.17512C137.119 5.90851 136.59 5.77349 135.813 5.77349C135.024 5.77352 134.461 5.91473 134.131 6.19666C133.8 6.46634 133.595 6.83718 133.519 7.30905H131.108C131.273 6.10776 131.803 5.21899 132.696 4.64286C133.589 4.06673 134.654 3.77858 135.893 3.77858ZM7.02014 0.404607C8.2193 0.404607 9.25318 0.62847 10.122 1.07586C10.9907 1.52328 11.6668 2.10541 12.1501 2.81941C12.6334 3.53648 12.9546 4.3149 13.1075 5.15761H10.5228C10.2934 4.41609 9.89873 3.82166 9.33595 3.37425C8.77312 2.92686 8.01434 2.70302 7.05688 2.70299C6.16364 2.70299 5.39865 2.90832 4.75931 3.3159C4.13532 3.71122 3.65514 4.26286 3.32476 4.96458C3.00664 5.65406 2.84739 6.43554 2.84739 7.30277C2.84739 8.15771 3.00037 8.93922 3.30625 9.64097C3.62436 10.3304 4.09258 10.879 4.70434 11.2896C5.32836 11.6972 6.08398 11.9025 6.9619 11.9025C7.87962 11.9025 8.62613 11.6451 9.20123 11.1364C9.78854 10.6246 10.1895 9.95958 10.4066 9.14445H7.13336V6.99632H13.1045V14.051H10.4249V13.1684C10.4249 12.7333 10.538 12.2365 10.7705 11.6727C10.7827 11.6482 10.789 11.6023 10.789 11.538C10.789 11.4369 10.749 11.3785 10.6725 11.3662C10.6481 11.354 10.6144 11.348 10.5778 11.348C10.5013 11.348 10.4371 11.4001 10.3851 11.5012C10.1159 12.1662 9.64486 12.7853 8.9688 13.3615C8.30499 13.9253 7.46353 14.2042 6.4418 14.2042C5.17849 14.2042 4.07423 13.8977 3.13209 13.2849C2.20217 12.672 1.48638 11.8414 0.987747 10.7934C0.489118 9.74537 0.241211 8.58374 0.241211 7.30277C0.241211 6.01264 0.50111 4.84187 1.02418 3.79384C1.54728 2.74581 2.32138 1.9216 3.33999 1.32096C4.36172 0.708086 5.58535 0.401634 7.01387 0.401604L7.02014 0.404607ZM88.1467 3.77858C89.0522 3.77858 89.8506 3.9657 90.5389 4.33341C91.2272 4.70418 91.7625 5.19745 92.1449 5.81032C92.5395 6.4109 92.7689 7.06371 92.8332 7.76542H90.4226C90.3461 7.25374 90.1106 6.83077 89.716 6.49984C89.3214 6.16887 88.7982 6.00035 88.1467 6.00035C87.3177 6.00035 86.6664 6.27631 86.1953 6.82483C85.7242 7.37335 85.4883 8.09648 85.4883 8.99123C85.4883 9.88607 85.7242 10.6094 86.1953 11.158C86.6664 11.7065 87.3177 11.9824 88.1467 11.9824C88.7982 11.9824 89.3214 11.817 89.716 11.483C90.1106 11.152 90.3461 10.7288 90.4226 10.217H92.8332C92.7689 10.9188 92.5395 11.5778 92.1449 12.1907C91.7625 12.7913 91.2272 13.2786 90.5389 13.6464C89.8628 14.0171 89.0644 14.2009 88.1467 14.2009C87.1402 14.2009 86.2439 13.9774 85.4669 13.53C84.7022 13.0825 84.1026 12.4634 83.6682 11.6697C83.246 10.876 83.035 9.98425 83.035 8.98525C83.035 7.98622 83.2399 7.09451 83.6468 6.3008C84.0689 5.50709 84.6685 4.88796 85.4455 4.44054C86.2225 3.99319 87.1249 3.7696 88.1436 3.7696L88.1467 3.77858ZM125.204 3.77858C126.11 3.77858 126.908 3.96567 127.596 4.33341C128.285 4.70115 128.82 5.19745 129.202 5.81032C129.597 6.4109 129.83 7.06371 129.891 7.76542H127.48C127.404 7.25371 127.168 6.83077 126.771 6.49984C126.376 6.1689 125.853 6.00035 125.201 6.00035C124.372 6.00035 123.721 6.27631 123.25 6.82483C122.778 7.37335 122.54 8.09648 122.54 8.99123C122.54 9.88607 122.775 10.6094 123.25 11.158C123.721 11.7065 124.372 11.9824 125.201 11.9824C125.853 11.9824 126.376 11.817 126.771 11.483C127.165 11.152 127.404 10.7288 127.48 10.217H129.891C129.827 10.9188 129.597 11.5778 129.202 12.1907C128.82 12.7913 128.285 13.2786 127.596 13.6464C126.92 14.0172 126.122 14.2009 125.204 14.2009C124.198 14.2009 123.305 13.9773 122.525 13.53C121.76 13.0825 121.16 12.4634 120.726 11.6697C120.307 10.876 120.096 9.98428 120.096 8.98525C120.096 7.98625 120.301 7.09451 120.707 6.3008C121.127 5.50712 121.729 4.88796 122.506 4.44054C123.283 3.99312 124.183 3.7696 125.204 3.7696V3.77858ZM23.8358 3.69299C24.8575 3.69299 25.7508 3.92282 26.5155 4.3825C27.2803 4.84218 27.8677 5.46731 28.2745 6.26102C28.6814 7.0547 28.8863 7.93722 28.8863 8.90864C28.8863 9.88009 28.6814 10.7596 28.2745 11.5533C27.8677 12.347 27.2803 12.9721 26.5155 13.4318C25.7508 13.8914 24.8575 14.1213 23.8358 14.1213C22.8141 14.1213 21.9209 13.8915 21.1561 13.4318C20.3913 12.9721 19.801 12.347 19.3942 11.5533C18.9873 10.7626 18.7823 9.88009 18.7823 8.90864C18.7823 7.93722 18.9843 7.0547 19.3942 6.26102C19.8041 5.46731 20.3913 4.84218 21.1561 4.3825C21.9239 3.92282 22.8141 3.69299 23.8358 3.69299ZM73.1572 2.63867H69.1009V14.1153H66.4976V2.63867H62.4413V0.337279H73.1572V2.63867ZM111.091 3.77858C112.213 3.77885 113.1 4.14365 113.751 4.8727C114.403 5.60206 114.727 6.66857 114.727 8.07518V14.057H112.277V8.91792C112.277 7.81776 112.13 7.0577 111.836 6.6348C111.542 6.21193 111.065 6.00336 110.401 6.00332C109.93 6.00332 109.484 6.16911 109.062 6.50312C108.655 6.83405 108.322 7.3028 108.068 7.90339C107.814 8.504 107.685 9.18132 107.685 9.93513V14.057H105.235V3.9318H107.685V4.56625C107.685 4.86035 107.657 5.10855 107.609 5.31381C107.557 5.51913 107.48 5.7277 107.379 5.94528C107.315 6.09851 107.284 6.2027 107.284 6.25173C107.284 6.36509 107.333 6.42951 107.437 6.44176H107.495C107.584 6.4417 107.661 6.36509 107.725 6.21193C108.006 5.58676 108.441 5.02289 109.025 4.52644C109.612 4.02732 110.3 3.77895 111.091 3.77858ZM17.5494 14.054H15.0992V0.251381H17.5494V14.054ZM55.0934 14.054H52.6431V0.251381H55.0934V14.054ZM96.5102 4.56625L96.5071 4.56325C96.5071 4.85735 96.4826 5.10554 96.4306 5.31084C96.3786 5.51616 96.3022 5.7247 96.2012 5.94228C96.1373 6.0955 96.1064 6.1997 96.1064 6.24873C96.1064 6.36206 96.1553 6.4265 96.2593 6.43876H96.3175C96.4062 6.4387 96.4826 6.36206 96.5469 6.20892C96.8283 5.58376 97.2627 5.01989 97.847 4.52344C98.4343 4.02392 99.1226 3.77557 99.9149 3.77557C101.038 3.77557 101.925 4.14034 102.576 4.8697C103.228 5.59902 103.552 6.66541 103.552 8.07187V14.054H101.102V8.91461C101.102 7.81455 100.955 7.0547 100.661 6.63179C100.368 6.20889 99.8904 6.00035 99.2266 6.00035C98.7555 6.00035 98.3089 6.16584 97.8868 6.49984C97.4799 6.83077 97.1465 7.29977 96.8926 7.90041C96.6387 8.50103 96.5102 9.17828 96.5102 9.93216V14.054H94.0599V0.251381H96.5102V4.56625ZM118.86 14.054H116.409V3.9318H118.86V14.054ZM144.743 14.054H142.292V0.251381H144.743V14.054ZM48.1982 8.84131C47.9413 9.12315 47.6048 9.31922 47.1826 9.43564C46.7727 9.53984 46.1303 9.63499 45.2493 9.72386C44.6987 9.78822 44.2857 9.93513 44.0043 10.165C43.7381 10.3825 43.6035 10.7075 43.6035 11.1427C43.6035 11.5135 43.7442 11.814 44.0257 12.0438C44.3194 12.2736 44.6956 12.3867 45.1545 12.3867C45.3197 12.3867 45.4481 12.3807 45.5369 12.3685C46.2894 12.2673 46.9134 11.9393 47.4121 11.3908H47.4151C47.9229 10.8423 48.186 9.99041 48.1982 8.84131ZM137.85 8.84131C137.594 9.12322 137.254 9.31922 136.835 9.43564C136.425 9.53984 135.783 9.63499 134.902 9.72386C134.351 9.78822 133.938 9.93516 133.656 10.165C133.39 10.3825 133.256 10.7075 133.256 11.1427C133.256 11.5135 133.394 11.814 133.675 12.0438C133.969 12.2735 134.345 12.3867 134.804 12.3867C134.969 12.3867 135.097 12.3807 135.186 12.3685C135.939 12.2674 136.563 11.9393 137.061 11.3908H137.064C137.575 10.8423 137.838 9.99044 137.85 8.84131ZM35.2523 6.00663C34.7292 6.00663 34.2611 6.13829 33.8543 6.40796C33.4443 6.67458 33.1262 7.03941 32.8968 7.49908C32.6796 7.95873 32.5725 8.45828 32.5725 8.99454C32.5728 9.5308 32.6796 10.0303 32.8968 10.49C33.1262 10.9496 33.4474 11.3112 33.8543 11.5808C34.2642 11.8474 34.7292 11.9824 35.2523 11.9824C36.069 11.9824 36.6931 11.7035 37.1275 11.1397V11.1427C37.5619 10.5696 37.779 9.85251 37.779 8.99754C37.779 8.14254 37.5619 7.43448 37.1275 6.87061C36.6931 6.29454 36.069 6.00663 35.2523 6.00663ZM23.8358 5.91773C23.0313 5.91776 22.392 6.20567 21.9209 6.78174C21.462 7.34255 21.2326 8.05364 21.2326 8.90864C21.2326 9.76364 21.462 10.4777 21.9209 11.0538C22.395 11.6146 23.0343 11.8965 23.8358 11.8965C24.6372 11.8965 25.2706 11.6177 25.7294 11.0538C26.2005 10.4807 26.436 9.76361 26.436 8.90864C26.436 8.05364 26.2005 7.34561 25.7294 6.78174C25.2706 6.20564 24.6403 5.91773 23.8358 5.91773ZM77.3604 5.77051C75.9073 5.77054 75.0324 6.48767 74.7388 7.91865H79.5996C79.5476 7.27826 79.3304 6.76044 78.948 6.36515C78.5657 5.96983 78.0364 5.77051 77.3604 5.77051ZM118.86 0.251381V2.706H116.409V0.251381H118.86Z" fill="url(#paint0_linear_4005_30414)"></path>
+</g>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_4005_30414" x1="144.743" x2="0.241211" y1="18.2937" y2="18.2937">
+<stop stop-color="#00C79A"></stop>
+<stop offset="0.502824" stop-color="#E92184"></stop>
+<stop offset="1" stop-color="#6C1D45"></stop>
+</lineargradient>
+<clippath id="clip0_4005_30414">
+<rect fill="white" height="38" width="145"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<div class="sidebar-search">
+<input id="sidebar-search-input" placeholder="Search the manual…" type="text"/>
+</div>
+<div class="sidebar-nav-content">
+<nav id="sidebar-nav"><div class="acc-section" data-section="overview"><div class="nav-chapter" data-target="overview" onclick="handleChapterClick(event,this)"><span class="ch-num">1</span><span class="ch-title">Application Overview</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#what-is-smartfrag">1.1 What is SmartFrag?</a><a class="nav-item" href="#who-is-it-for">1.2 Who is it for?</a><a class="nav-item" href="#business-context">1.3 Business context</a><a class="nav-item" href="#how-smartfrag-works">1.4 How SmartFrag works</a><a class="nav-item" href="#conventions-used-in-this-document">1.5 Conventions used in this document</a></div></div><div class="acc-section" data-section="install"><div class="nav-chapter" data-target="install" onclick="handleChapterClick(event,this)"><span class="ch-num">2</span><span class="ch-title">Installation &amp; First Steps</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#requirements">2.1 Requirements</a><a class="nav-item" href="#installing-smartfrag">2.2 Installing SmartFrag</a><a class="nav-item" href="#starting-the-application">2.3 Starting the application</a><a class="nav-item" href="#signing-in-to-explore">2.4 Signing in to Explore</a><a class="nav-item" href="#interface-overview">2.5 Interface overview</a><a class="nav-item" href="#settings">2.6 Settings</a></div></div><div class="acc-section" data-section="projects"><div class="nav-chapter" data-target="projects" onclick="handleChapterClick(event,this)"><span class="ch-num">3</span><span class="ch-title">Projects &amp; Data Import</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#creating-a-project">3.1 Creating a project</a><a class="nav-item" href="#loading-an-existing-project">3.2 Loading an existing project</a><a class="nav-item" href="#opening-an-orthomosaic">3.3 Opening an orthomosaic</a><a class="nav-item" href="#setting-the-scale">3.4 Setting the scale</a><a class="nav-item" href="#opening-a-dem">3.5 Opening a DEM</a><a class="nav-item" href="#opening-dxf-str">3.6 Opening DXF / STR</a><a class="nav-item" href="#the-project-tree">3.7 The project tree</a></div></div><div class="acc-section" data-section="clip"><div class="nav-chapter" data-target="clip" onclick="handleChapterClick(event,this)"><span class="ch-num">4</span><span class="ch-title">Delimiting the Muckpile</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#why-clipping-matters">4.1 Why clipping matters</a><a class="nav-item" href="#clip-muckpile-manual">4.2 Clip muckpile (manual)</a><a class="nav-item" href="#clip-muckpile-ia">4.3 Clip muckpile IA</a><a class="nav-item" href="#clipping-from-a-dxfstr-string">4.4 Clipping from a DXF/STR string</a><a class="nav-item" href="#contour-editor-reference">4.5 Contour Editor reference</a></div></div><div class="acc-section" data-section="frag"><div class="nav-chapter" data-target="frag" onclick="handleChapterClick(event,this)"><span class="ch-num">5</span><span class="ch-title">Fragmentation Analysis</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#running-the-analysis">5.1 Running the analysis</a><a class="nav-item" href="#what-is-measured">5.2 What is measured</a><a class="nav-item" href="#distribution-graph-kpis">5.3 Distribution graph &amp; KPIs</a><a class="nav-item" href="#colormap">5.4 Colormap</a><a class="nav-item" href="#thresholds-colours">5.5 Thresholds &amp; colours</a><a class="nav-item" href="#histogram">5.6 Histogram</a><a class="nav-item" href="#inspecting-one-rock">5.7 Inspecting one rock</a><a class="nav-item" href="#ruler">5.8 Ruler</a></div></div><div class="acc-section" data-section="correct"><div class="nav-chapter" data-target="correct" onclick="handleChapterClick(event,this)"><span class="ch-num">6</span><span class="ch-title">Correcting the Segmentation</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#when-to-correct">6.1 When to correct</a><a class="nav-item" href="#opening-the-editor">6.2 Opening the editor</a><a class="nav-item" href="#toolbar-reference">6.3 Toolbar reference</a><a class="nav-item" href="#editing-a-rock-outline">6.4 Editing a rock outline</a><a class="nav-item" href="#saving-corrections">6.5 Saving corrections</a></div></div><div class="acc-section" data-section="volume"><div class="nav-chapter" data-target="volume" onclick="handleChapterClick(event,this)"><span class="ch-num">7</span><span class="ch-title">Volume Estimation</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#prerequisites">7.1 Prerequisites</a><a class="nav-item" href="#computing-from-the-panel">7.2 Computing from the panel</a><a class="nav-item" href="#volume-details-dialog">7.3 Volume Details dialog</a><a class="nav-item" href="#the-volume-view">7.4 The volume view</a></div></div><div class="acc-section" data-section="explore"><div class="nav-chapter" data-target="explore" onclick="handleChapterClick(event,this)"><span class="ch-num">8</span><span class="ch-title">Explore Integration</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#connecting">8.1 Connecting</a><a class="nav-item" href="#the-explore-page">8.2 The Explore Page</a><a class="nav-item" href="#sending-retrieving">8.3 Sending &amp; retrieving</a></div></div><div class="acc-section" data-section="export"><div class="nav-chapter" data-target="export" onclick="handleChapterClick(event,this)"><span class="ch-num">9</span><span class="ch-title">Exports &amp; Reporting</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#the-pdf-report">9.1 The PDF report</a><a class="nav-item" href="#the-report-form">9.2 The report form</a><a class="nav-item" href="#image-data-exports">9.3 Image &amp; data exports</a></div></div><div class="acc-section" data-section="reference"><div class="nav-chapter" data-target="reference" onclick="handleChapterClick(event,this)"><span class="ch-num">10</span><span class="ch-title">Reference</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#menu-reference">10.1 Menu reference</a><a class="nav-item" href="#toolbar-reference-2">10.2 Toolbar reference</a><a class="nav-item" href="#keyboard-mouse">10.3 Keyboard &amp; mouse</a><a class="nav-item" href="#file-formats">10.4 File formats</a><a class="nav-item" href="#settings-reference">10.5 Settings reference</a><a class="nav-item" href="#where-data-is-stored">10.6 Where data is stored</a></div></div><div class="acc-section" data-section="faq"><div class="nav-chapter" data-target="faq" onclick="handleChapterClick(event,this)"><span class="ch-num">11</span><span class="ch-title">Troubleshooting &amp; FAQ</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#start-up-licence">11.1 Start-up &amp; licence</a><a class="nav-item" href="#loading-files">11.2 Loading files</a><a class="nav-item" href="#clipping">11.3 Clipping</a><a class="nav-item" href="#fragmentation">11.4 Fragmentation</a><a class="nav-item" href="#volume-2">11.5 Volume</a><a class="nav-item" href="#explore-exports">11.6 Explore &amp; exports</a></div></div><div class="acc-section" data-section="glossary"><div class="nav-chapter" data-target="glossary" onclick="handleChapterClick(event,this)"><span class="ch-num">12</span><span class="ch-title">Glossary</span><span class="chevron">▸</span></div><div class="nav-items"></div></div><div class="acc-section" data-section="appendix"><div class="nav-chapter" data-target="appendix" onclick="handleChapterClick(event,this)"><span class="ch-num">13</span><span class="ch-title">Appendix — Technical Notes</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#a1-inside-a-fragmentation-run">13.1 A.1 Inside a fragmentation run</a><a class="nav-item" href="#a2-the-ai-models">13.2 A.2 The AI models</a><a class="nav-item" href="#a3-files-locations">13.3 A.3 Files &amp; locations</a><a class="nav-item" href="#a4-known-limitations-of-version-079">13.4 A.4 Known limitations of version 0.7.9</a></div></div></nav>
+</div>
+</nav>
+<button id="back-to-top" title="Back to top">⇧</button>
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main">
+<!-- COVER -->
+<div class="cover">
+<h1>SmartFrag</h1>
+<div class="subtitle">User Documentation</div>
+<div class="tagline">Muckpile Fragmentation Tool — Post-Blast Quality Control · Windows Desktop Application</div>
+<div class="meta">
+<div class="meta-item"><span>Version</span>0.7.9</div>
+<div class="meta-item"><span>Platform</span>Windows 64-bit</div>
+<div class="meta-item"><span>Language</span>English · Français · Español</div>
+</div>
+</div>
+<!-- TOC -->
+<div class="toc-section">
+<h2>Table of Contents</h2>
+<div class="toc-grid"><a href="#overview"><span class="toc-num">1.</span>Application Overview</a><a href="#install"><span class="toc-num">2.</span>Installation &amp; First Steps</a><a href="#projects"><span class="toc-num">3.</span>Projects &amp; Data Import</a><a href="#clip"><span class="toc-num">4.</span>Delimiting the Muckpile</a><a href="#frag"><span class="toc-num">5.</span>Fragmentation Analysis</a><a href="#correct"><span class="toc-num">6.</span>Correcting the Segmentation</a><a href="#volume"><span class="toc-num">7.</span>Volume Estimation</a><a href="#explore"><span class="toc-num">8.</span>Explore Integration</a><a href="#export"><span class="toc-num">9.</span>Exports &amp; Reporting</a><a href="#reference"><span class="toc-num">10.</span>Reference</a><a href="#faq"><span class="toc-num">11.</span>Troubleshooting &amp; FAQ</a><a href="#glossary"><span class="toc-num">12.</span>Glossary</a><a href="#appendix"><span class="toc-num">13.</span>Appendix — Technical Notes</a></div>
+</div>
+<div class="content"><div class="section" id="overview"><h1 class="section-title"><span class="num">1</span>Application Overview</h1><h2 class="sub-title" id="what-is-smartfrag">1.1 What is SmartFrag?</h2>
+<p><strong>SmartFrag</strong> is a post-blast quality-control application for the mining and quarrying industry. It measures the <em>fragmentation</em> of a blasted muckpile — the size distribution of the broken rock — from aerial imagery captured by drone, and estimates the <em>volume</em> of the pile from an elevation model.</p>
+<p>The workflow is deliberately short: you load an orthomosaic of the blast, draw (or let the AI detect) the outline of the muckpile, run the fragmentation analysis, and read the results as a size-distribution curve, a colour-coded map of the pile and a set of passing-size KPIs. A three-page PDF report can be produced in one click, and results can be pushed to the <span class="ui">Explore</span> web platform for long-term traceability.</p>
+<div class="note-info"><strong>In one sentence.</strong> SmartFrag turns a drone photo of a muckpile into a granulometry curve, a colour map and a signed report — without any manual sieving or sampling.</div>
+<h2 class="sub-title" id="who-is-it-for">1.2 Who is it for?</h2>
+<div class="role-grid"><div class="role-card"><div class="role-name">Blasting Engineer</div><div class="role-menu">Primary user</div><div class="role-desc">Validates fragmentation against the design intent, adjusts the next blast pattern, checks P80/P50 against contract KPIs.</div></div><div class="role-card"><div class="role-name">Site / Quarry Manager</div><div class="role-menu">Reporting</div><div class="role-desc">Reads the PDF report, tracks fragmentation quality blast after blast, shares evidence with the client.</div></div><div class="role-card"><div class="role-name">Drone / Survey Operator</div><div class="role-menu">Data provider</div><div class="role-desc">Produces the orthomosaic and the DEM from the photogrammetric flight, checks the georeferencing and the ground resolution.</div></div><div class="role-card"><div class="role-name">Technical Services</div><div class="role-menu">Volume &amp; reconciliation</div><div class="role-desc">Uses the volume module for stockpile inventory and reconciliation between planned and actual excavated volume.</div></div></div>
+<p>No specialist image-processing knowledge is required. Familiarity with drill-and-blast vocabulary (muckpile, oversize, fines, passing size) and with your own photogrammetry output is assumed.</p>
+<h2 class="sub-title" id="business-context">1.3 Business context</h2>
+<p>Fragmentation drives the whole downstream chain: loading rates, crusher throughput, energy consumption, secondary breakage costs. Measuring it used to mean image-by-image manual delineation or physical sieving of a sample — slow, subjective and unrepresentative.</p>
+<p>SmartFrag automates the detection of individual rocks with a deep-learning segmentation model, then derives the whole distribution from the detected population plus a correction for the un-detected fine material. The result is repeatable, auditable and fast enough to be produced between two blasts.</p>
+<h2 class="sub-title" id="how-smartfrag-works">1.4 How SmartFrag works</h2>
+<p>Every analysis follows the same five stages. Each one produces an object in the project tree, so you can always go back a step.</p>
+<ol class="steps">
+<li><span class="step-body"><strong>Import.</strong> An orthomosaic (and optionally a DEM and design strings) is loaded into a project. SmartFrag reads the georeferencing to know how many metres a pixel represents.</span></li>
+<li><span class="step-body"><strong>Clip.</strong> You delimit the muckpile with a polygon — by hand, from an imported DXF/STR string, or with the AI contour model. Everything outside the polygon is excluded from the analysis.</span></li>
+<li><span class="step-body"><strong>Detect.</strong> The fragmentation engine tiles the clipped image and detects every visible rock, returning an outline, a bounding box, a surface area and a confidence score for each.</span></li>
+<li><span class="step-body"><strong>Analyse.</strong> Rock surfaces are converted to diameters, binned into a cumulative passing curve, corrected for fines, and summarised as D10…D100 percentiles.</span></li>
+<li><span class="step-body"><strong>Deliver.</strong> Results are displayed as a graph and a colour map, corrected if needed, exported as PDF / PNG / GeoTIFF / JSON, and optionally pushed to Explore.</span></li>
+</ol>
+<h2 class="sub-title" id="conventions-used-in-this-document">1.5 Conventions used in this document</h2>
+<table>
+<thead>
+<tr>
+<th>Convention</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Open Orthomosaic</span></td>
+<td>A label exactly as it appears in the SmartFrag interface.</td>
+</tr>
+<tr>
+<td><span class="ui">Project</span> › <span class="ui">New Project</span></td>
+<td>A menu path: open the first menu, then choose the second item.</td>
+</tr>
+<tr>
+<td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span></td>
+<td>A keyboard shortcut.</td>
+</tr>
+<tr>
+<td><em>muckpile</em></td>
+<td>A domain term — see the <a href="#glossary">Glossary</a>.</td>
+</tr>
+</tbody>
+</table>
+<div class="note-info"><strong>Screenshots.</strong> Placeholders marked <em>« Screenshot »</em> indicate where a capture of the running application should be inserted. They are described precisely enough to be reproduced on any site dataset.</div>
+<div class="note-info"><strong>How this manual is organised.</strong> Chapters 1 to 9 follow the order in which you actually work, from installing the application to delivering the report. Chapters 10 to 12 are lookup material — menus, shortcuts, formats, troubleshooting, vocabulary. The <a href="#appendix">Appendix</a> records the behaviour behind the interface for support and training; you never need it to use SmartFrag.</div></div><div class="section" id="install"><h1 class="section-title"><span class="num">2</span>Installation &amp; First Steps</h1><h2 class="sub-title" id="requirements">2.1 Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operating system</td>
+<td>Windows 10 or 11, 64-bit. SmartFrag is a Windows-only desktop application.</td>
+</tr>
+<tr>
+<td>Disk space</td>
+<td>Approximately 1.5 GB for the installed application. Allow additional space for your projects: SmartFrag does <em>not</em> copy your imagery, but reports and exported images accumulate.</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>16 GB RAM recommended. The full-resolution orthomosaic is held in memory during processing; a large survey on a machine with 8 GB may become unresponsive.</td>
+</tr>
+<tr>
+<td>Graphics</td>
+<td>No dedicated GPU is required. If a CUDA-capable GPU is present it is used automatically for the AI contour model, which is faster.</td>
+</tr>
+<tr>
+<td>Screen</td>
+<td>1920×1080 or larger. The three-panel layout is cramped below that.</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Only needed for Explore sign-in and data exchange. Fragmentation and volume run entirely offline.</td>
+</tr>
+<tr>
+<td>Licence</td>
+<td>A valid licence is required. It is obtained by signing in to Explore once, after which the application can run offline as long as the local licence remains valid.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="installing-smartfrag">2.2 Installing SmartFrag</h2>
+<p>SmartFrag is delivered as a compressed archive, for example <code>smartfrag-v0.7.9-windows.zip</code>. It is a portable application — there is no installer and no administrator right is required.</p>
+<ol class="steps">
+<li><span class="step-body">Copy the archive to the machine, ideally to a local disk rather than a network share.</span></li>
+<li><span class="step-body">Right-click the archive and choose <strong>Extract All…</strong>. Extract it to a permanent location such as <code>C:\SmartFrag\</code>.</span></li>
+<li><span class="step-body">Open the extracted folder. It contains <code>SmartFrag.exe</code> and an <code>_internal</code> folder.</span></li>
+<li><span class="step-body">Double-click <code>SmartFrag.exe</code> to start the application. Create a desktop shortcut if you use it regularly.</span></li>
+</ol>
+<div class="note-red"><strong>Do not move or rename the <code>_internal</code> folder.</strong> It holds the AI models, the detection engine and the interface resources. Separating it from <code>SmartFrag.exe</code>, or running the executable from inside the still-zipped archive, will prevent the application from starting.</div>
+<div class="note"><strong>Antivirus.</strong> The first launch may be delayed by a few seconds while the antivirus scans the bundle, and some corporate policies flag unsigned portable executables. If SmartFrag does not appear after a minute, ask IT to whitelist the installation folder.</div>
+<h2 class="sub-title" id="starting-the-application">2.3 Starting the application</h2>
+<p>On launch SmartFrag checks your licence before showing the main window:</p>
+<ul>
+<li>If a valid local licence is found, the main window opens directly on the start page.</li>
+<li>If it is missing or expired, the <span class="ui">Connection Page</span> dialog appears first and you must sign in to Explore (see below).</li>
+</ul>
+<p>The start page shows two large buttons, <span class="ui">New Project</span> and <span class="ui">Load Project</span>. Until you choose one, all import and processing commands stay greyed out — this is normal.</p>
+<figure class="fig"><img alt="Screenshot — the SmartFrag start page with the two large buttons, the empty left panel and the greyed-out toolbar." src="assets/install-01.png"/><figcaption>Screenshot — the SmartFrag start page with the two large buttons, the empty left panel and the greyed-out toolbar.</figcaption></figure>
+
+<h3 class="sub-sub-title" id="the-status-bar">The status bar</h3>
+<p>The bar at the bottom of the window always shows four indicators:</p>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Version 0.7.9</span></td>
+<td>The application version. Quote it in any support request.</td>
+</tr>
+<tr>
+<td><span class="ui">Muckpile Fragmentation Tool</span></td>
+<td>The product name.</td>
+</tr>
+<tr>
+<td><span class="ui">Tester License</span></td>
+<td>The licence type currently in force.</td>
+</tr>
+<tr>
+<td><span class="ui">Explore</span> + coloured dot</td>
+<td>Connection state to the Explore platform: green = connected, red = not connected. Fragmentation works either way.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="signing-in-to-explore">2.4 Signing in to Explore</h2>
+<p>Explore is the EPC web platform where blast data is centralised. Signing in does two things: it validates your SmartFrag licence, and it lets you exchange data with the platform.</p>
+<ol class="steps">
+<li><span class="step-body">Choose <span class="ui">Explore</span> › <span class="ui">Log in</span>, or wait for the dialog to appear automatically at start-up.</span></li>
+<li><span class="step-body">Enter your Explore <span class="ui">Username</span> and <span class="ui">Password</span>. The eye icon at the right of the password field reveals what you typed.</span></li>
+<li><span class="step-body">Click <span class="ui">Log in</span>. On success a <span class="ui">Login Successful</span> message confirms it and the Explore dot turns green.</span></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>What it means &amp; what to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Login Failed</span> — <em>Please enter both username and password.</em></td>
+<td>One of the two fields is empty.</td>
+</tr>
+<tr>
+<td><span class="ui">Login Failed</span> — <em>Invalid username or password.</em></td>
+<td>Credentials rejected by Explore. Check the caps lock and your Explore account.</td>
+</tr>
+<tr>
+<td><span class="ui">Access Denied</span> — <em>Your account does not have access to SmartFrag.</em></td>
+<td>Your Explore account is valid but is not entitled to SmartFrag. Contact your administrator to have the entitlement added.</td>
+</tr>
+<tr>
+<td><em>No internet connection or Explore server is unreachable…</em></td>
+<td>Network or server problem. Reconnect and retry, or close the dialog to continue offline if your local licence is still valid.</td>
+</tr>
+</tbody>
+</table>
+<p>To sign out, use <span class="ui">Explore</span> › <span class="ui">Log out</span>. This clears the stored token; the Explore dot turns red and the <span class="ui">Explore</span> › <span class="ui">Export</span> command is disabled until you sign in again.</p>
+<h2 class="sub-title" id="interface-overview">2.5 Interface overview</h2>
+<p>The main window is divided into five zones.</p>
+<figure class="fig"><img alt="Screenshot — the full main window with a loaded project, annotated: menu bar, toolbar, left panel, central tabs, right panel, status bar." src="assets/install-02.png"/><figcaption>Screenshot — the full main window with a loaded project, annotated: menu bar, toolbar, left panel, central tabs, right panel, status bar.</figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Menu bar</td>
+<td>The four menus <span class="ui">Project</span>, <span class="ui">Process</span>, <span class="ui">Explore</span> and <span class="ui">Settings</span>. At its right end, the label <span class="ui">Open/Close :</span> with two toggle buttons, <span class="ui">Left panel</span> and <span class="ui">Right Panel</span>, that show or hide the side panels.</td>
+</tr>
+<tr>
+<td>Toolbar</td>
+<td>Icon shortcuts for the most-used commands, grouped by purpose: import, export, clipping, processing, polygon editing, settings. Icons are greyed out when the command does not apply to what is selected.</td>
+</tr>
+<tr>
+<td>Left panel</td>
+<td>The <strong>project tree</strong>, headed <span class="ui">Project</span>. Every image, clip, result and volume in the project appears here. Selecting a node is what opens its view and enables the relevant commands.</td>
+</tr>
+<tr>
+<td>Central area</td>
+<td>Tabbed views. Each selected node opens its own tab; editors such as the Contour Editor also open here. Tabs can be closed with their ×. When no tab is open the SmartFrag logo is shown.</td>
+</tr>
+<tr>
+<td>Right panel</td>
+<td>The <strong>settings panel</strong> of the selected node — file information and resolution for an image, KPIs for a graph, threshold and colour controls for a colormap, volume controls for a clip with a DEM. It hides itself automatically when there is nothing to show.</td>
+</tr>
+</tbody>
+</table>
+<div class="note-info"><strong>The golden rule of the interface.</strong> Almost every command is enabled or disabled by <em>what is selected in the project tree</em>. If a menu item is greyed out, select the right node first — <a href="#the-project-tree">The project tree</a> gives the exact rules.</div>
+<h2 class="sub-title" id="settings">2.6 Settings</h2>
+<p>Open the settings with <span class="ui">Settings</span> in the menu bar or the gear icon at the right of the toolbar. The dialog has five fields.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Default save path :</span></td>
+<td>The folder proposed when you create a new project. Use <span class="ui">Browse</span> to pick it.</td>
+</tr>
+<tr>
+<td><span class="ui">Explore :</span></td>
+<td>Which Explore environment to talk to: <span class="ui">Production</span>, <span class="ui">Staging</span> or <span class="ui">Local</span>. Leave it on <span class="ui">Production</span> unless instructed otherwise; <span class="ui">Local</span> reveals an extra field for a local server address.</td>
+</tr>
+<tr>
+<td><span class="ui">Select Language :</span></td>
+<td>Interface language: <strong>En</strong>, <strong>Fr</strong> or <strong>Es</strong>.</td>
+</tr>
+<tr>
+<td><span class="ui">Threshold :</span></td>
+<td>The default intermediate size thresholds of the colormap, in millimetres, separated by semicolons — for example <code>100;200;300</code>.</td>
+</tr>
+<tr>
+<td><span class="ui">Threshold master :</span></td>
+<td>The full threshold set including the minimum and maximum bounds, for example <code>0;100;200;300;1000</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><span class="ui">Save and Quit</span> stores the settings; <span class="ui">Cancel</span> discards them.</p>
+<div class="note"><strong>Changing the language.</strong> A message titled <span class="ui">Language modification</span> reminds you that <em>« You need to close and open again the tool to apply the language modification »</em>. Restart SmartFrag for the new language to take effect.</div>
+<div class="note-info">Settings belong to your Windows account, not to a project: they are the same in every project and they survive an update of SmartFrag. Each person on a shared machine keeps their own.</div></div><div class="section" id="projects"><h1 class="section-title"><span class="num">3</span>Projects &amp; Data Import</h1><p>A SmartFrag <strong>project</strong> is a folder that collects the fragmentation results of one or more muckpiles. It stores results and references to your imagery — not the imagery itself.</p>
+<h2 class="sub-title" id="creating-a-project">3.1 Creating a project</h2>
+<ol class="steps">
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">New Project</span>, or click the large <span class="ui">New Project</span> button on the start page.</span></li>
+<li><span class="step-body">In the dialog, fill in <span class="ui">Project name :</span>. A dated default such as <code>SmartFrag Project 2026_8_25__14_30</code> is proposed; replace it with something meaningful, for example the blast reference.</span></li>
+<li><span class="step-body">Check <span class="ui">Save path :</span>, or click <span class="ui">Browse</span> to choose another folder.</span></li>
+<li><span class="step-body">Click <span class="ui">Create new project</span>.</span></li>
+</ol>
+<p>SmartFrag creates a folder named after the project inside the save path, resets the workspace, and enables <span class="ui">Open Orthomosaic</span>. The folder is empty until the first fragmentation run.</p>
+<div class="note"><strong>Choose a name that does not already exist</strong> in the save path. If a folder of the same name is already there, SmartFrag reuses it silently and later results will be appended to the existing project file rather than starting a clean one.</div>
+<h2 class="sub-title" id="loading-an-existing-project">3.2 Loading an existing project</h2>
+<ol class="steps">
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">Load Project</span>, or the <span class="ui">Load Project</span> button on the start page.</span></li>
+<li><span class="step-body">Navigate to the project folder and select its <code>.mpk</code> file — it is named <code>Project_v43.mpk</code>.</span></li>
+<li><span class="step-body">Wait for the <span class="ui">Loading project…</span> progress dialog to close.</span></li>
+</ol>
+<p>SmartFrag re-opens the source orthomosaic from the path recorded in the project, rebuilds the clip polygons, restores every rock detection and re-creates the <span class="ui">Distribution graph</span> and <span class="ui">Colormap</span> nodes.</p>
+<table>
+<thead>
+<tr>
+<th>Restored</th>
+<th>Not restored</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orthomosaic reference, ground resolution, clip polygons, all rock detections, distribution graph, colormap.</td>
+<td>DEM, DXF/STR overlays, computed volumes, manually typed resolutions and colormap thresholds. Re-import and recompute these if you need them.</td>
+</tr>
+</tbody>
+</table>
+<div class="note"><strong>If the imagery has moved.</strong> When the orthomosaic is no longer at the recorded path, a <span class="ui">File Not Found</span> warning appears, followed by a <span class="ui">Select New File Location</span> dialog. Point it at the new location; the answer is reused for every other result that referenced the same file.</div>
+<div class="note-red"><strong>Project version.</strong> Only files whose name ends in <code>_v43.mpk</code> can be opened by version 0.7.9. Any other <code>.mpk</code> raises <span class="ui">Wrong project version</span>. Older projects must be opened with the version of SmartFrag that produced them.</div>
+<h2 class="sub-title" id="opening-an-orthomosaic">3.3 Opening an orthomosaic</h2>
+<p>The orthomosaic is the top-down, geometrically corrected image of the muckpile produced by your photogrammetry software. It is the foundation of every analysis.</p>
+<ol class="steps">
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">Open Orthomosaic</span>, the toolbar icon, or <span class="ui">Open</span> › <span class="ui">Open Orthomosaic</span> in the left panel.</span></li>
+<li><span class="step-body">In the <span class="ui">Choose a file to open</span> dialog, select your image.</span></li>
+<li><span class="step-body">The image opens in a new tab and appears as a top-level node in the project tree.</span></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>.tif</strong> (georeferenced GeoTIFF)</td>
+<td><strong>Recommended.</strong> The coordinate system, the affine transform and the pixel size are read automatically, and the ground resolution in metres per pixel is filled in for you. This is the only format that also allows a DEM and DXF/STR strings to be used.</td>
+</tr>
+<tr>
+<td><strong>.tif</strong> (no georeferencing)</td>
+<td>Opens normally, but the resolution stays at 0. You <em>must</em> set the scale by hand (<a href="#setting-the-scale">Setting the scale</a>) before running a fragmentation, otherwise every diameter is meaningless.</td>
+</tr>
+<tr>
+<td><strong>.png</strong>, <strong>.jpg</strong>, <strong>.jpeg</strong></td>
+<td>Accepted for a quick look. A resize dialog appears first and the image is resampled to the dimensions you enter (default 640×640, allowed range 64–4096 px per side). The aspect ratio is not preserved and there is no georeferencing, so the scale must be set by hand.</td>
+</tr>
+</tbody>
+</table>
+<div class="note"><strong>The extension must be exactly <code>.tif</code></strong> — <code>.tiff</code> is not in the file filter and will not be listed. Rename the file if your photogrammetry software wrote the long form.</div>
+<div class="note-info"><strong>Large images are handled.</strong> SmartFrag only draws the part of the image you are actually looking at, so panning and zooming stay fluid even on a survey of several hundred megapixels. Give it a moment on the first display of a very large file.</div>
+<figure class="fig"><img alt="Screenshot — a loaded orthomosaic in the central tab, with the project tree showing the ortho node and the right panel showing Filename, Image size an" src="assets/projects-01.png"/><figcaption>Screenshot — a loaded orthomosaic in the central tab, with the project tree showing the ortho node and the right panel showing <span class="ui">Filename</span>, <span class="ui">Image size</span> and <span class="ui">Resolution (m/pixel)</span>.</figcaption></figure>
+
+<h2 class="sub-title" id="setting-the-scale">3.4 Setting the scale</h2>
+<p>Every diameter SmartFrag reports is a pixel measurement multiplied by the ground resolution. Getting the scale right is therefore the single most important input of the whole analysis.</p>
+<p>With an image node selected, the right panel shows:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Filename</span></td>
+<td>The name of the loaded file.</td>
+</tr>
+<tr>
+<td><span class="ui">Image size</span></td>
+<td>The dimensions in pixels.</td>
+</tr>
+<tr>
+<td><span class="ui">Resolution (m/pixel)</span></td>
+<td>Two editable boxes, X and Y. Filled automatically for a georeferenced GeoTIFF; zero otherwise.</td>
+</tr>
+<tr>
+<td><span class="ui">Find Resolution</span></td>
+<td>A checkbox that turns on the on-image ruler.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="sub-sub-title" id="measuring-the-scale-on-the-image">Measuring the scale on the image</h3>
+<p>Use this when the resolution is unknown and you can identify a feature of known length in the image — a vehicle, a bench face, a survey target, a length of drill rod.</p>
+<ol class="steps">
+<li><span class="step-body">Tick <span class="ui">Find Resolution</span>, or press <span class="kbd">R</span> over the image. The cursor becomes a crosshair.</span></li>
+<li><span class="step-body">Click the first end of the known feature. As you move, a live readout shows <span class="ui">Distance: n pixels</span>.</span></li>
+<li><span class="step-body">Click the second end. The <span class="ui">Find the scale</span> dialog opens, showing <span class="ui">Length in pixels :</span> already filled in.</span></li>
+<li><span class="step-body">Type the true length in <span class="ui">Length in meter :</span> and click <span class="ui">Submit</span>. Both resolution boxes are updated.</span></li>
+</ol>
+<div class="note-red"><strong>Never leave a resolution box empty.</strong> The value is re-read on every keystroke and a blank or non-numeric entry causes an error. Select the content and type over it rather than clearing the field first.</div>
+<div class="note"><strong>Sanity check.</strong> A typical drone survey of a muckpile is in the range 0.005–0.05 m/pixel. A resolution off by a factor of ten shifts every reported diameter by the same factor — if all your rocks come out at several metres, the scale is wrong, not the blast.</div>
+<h2 class="sub-title" id="opening-a-dem">3.5 Opening a DEM</h2>
+<p>A Digital Elevation Model adds the third dimension. It is required for volume estimation and can also feed the AI contour model.</p>
+<ol class="steps">
+<li><span class="step-body">Select the <strong>orthomosaic</strong> node in the project tree — <span class="ui">Open DEM</span> is only enabled there.</span></li>
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">Open DEM</span> and select a <strong>.tif</strong> elevation raster.</span></li>
+</ol>
+<p>SmartFrag reprojects and resamples the DEM onto the exact grid of the orthomosaic, so the two do not need to share the same extent or pixel size — they only need to overlap and to be georeferenced. The DEM then appears as a <span class="ui">DEM</span> entry in the <span class="ui">DEM/DXF items</span> list of the right panel, and the <span class="ui">Volume</span> command becomes available.</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The parent orthomosaic must be a georeferenced GeoTIFF</td>
+<td>The DEM is aligned using the ortho's coordinate system and transform. A PNG/JPG ortho has none.</td>
+</tr>
+<tr>
+<td>The DEM must declare a <em>nodata</em> value</td>
+<td>Void cells are masked and then filled with the mean elevation. A DEM without a declared nodata value fails to load.</td>
+</tr>
+<tr>
+<td>Only one DEM per orthomosaic</td>
+<td>Loading a second DEM replaces the first.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="opening-dxf-str">3.6 Opening DXF / STR</h2>
+<p>Design strings from your mine-planning package can be overlaid on the orthomosaic, and used directly as the muckpile boundary.</p>
+<ol class="steps">
+<li><span class="step-body">Select the <strong>orthomosaic</strong> node.</span></li>
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">Open DXF/STR</span>.</span></li>
+<li><span class="step-body">Pick a <strong>.dxf</strong> or <strong>.str</strong> file. No file filter is applied, so make sure you select the right extension — any other file is ignored without a message.</span></li>
+</ol>
+<p>Imported polygons are listed in the right panel under <span class="ui">DEM/DXF items</span>. Selecting one draws it on the image as a red outline; deselecting removes it. Several can be selected at once. A selected polygon can be used as the clip boundary — see <a href="#clipping-from-a-dxfstr-string">Clipping from a DXF/STR string</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>.dxf</strong></td>
+<td>Every polyline in the file is imported and positioned on the image. Export from your CAD package with the model space active — a DXF saved without it cannot be placed and will not load.</td>
+</tr>
+<tr>
+<td><strong>.str</strong></td>
+<td>Surpac-style string file. Each string in the file becomes its own polygon in the list.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="the-project-tree">3.7 The project tree</h2>
+<p>The tree in the left panel mirrors the way you work: each orthomosaic you load sits at the top, and everything you derive from it hangs underneath.</p>
+<div class="tree-map">
+<div class="tree-line"><span class="tn tn-ortho">Orthomosaic</span> <span class="tree-note">the image you loaded</span></div>
+<div class="tree-line l1"><span class="tn tn-clip">Clip</span> <span class="tree-note">a muckpile you delimited — one per analysis</span></div>
+<div class="tree-line l2"><span class="tn tn-res">Distribution graph</span> <span class="tree-note">the size curve and the KPIs</span></div>
+<div class="tree-line l2"><span class="tn tn-res">Colormap</span> <span class="tree-note">the pile coloured by rock size</span></div>
+<div class="tree-line l1"><span class="tn tn-vol">Volume</span> <span class="tree-note">a computed volume, when a DEM is loaded</span></div>
+</div>
+<p>Click a node to open its view in the central area and its controls in the right panel. To remove one, right-click it and choose <span class="ui">🗑️ Delete</span> — the node and everything under it disappear.</p>
+<div class="note"><strong>Delete only clears the display.</strong> Nothing is removed from your disk. To discard results for good, delete the project folder in Windows Explorer.</div>
+<h3 class="sub-sub-title" id="which-commands-are-available-when">Which commands are available when</h3>
+<p>This table is worth bookmarking — it explains every greyed-out icon.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Enabled when the selected node is…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Open Orthomosaic</span></td>
+<td>Any — from the moment a project is created or loaded.</td>
+</tr>
+<tr>
+<td><span class="ui">Open DEM</span>, <span class="ui">Open DXF/STR</span></td>
+<td>an <strong>orthomosaic</strong></td>
+</tr>
+<tr>
+<td><span class="ui">Clip muckpile</span>, <span class="ui">Clip muckpile IA</span></td>
+<td>an <strong>orthomosaic</strong> — and no clipping tab is already open</td>
+</tr>
+<tr>
+<td><span class="ui">Fragmentation</span></td>
+<td>a <strong>clip</strong> that has not been analysed yet — one with no results under it</td>
+</tr>
+<tr>
+<td><span class="ui">Correct Segmentation</span></td>
+<td>a <strong>colormap</strong> — and no correction tab is already open</td>
+</tr>
+<tr>
+<td><span class="ui">Volume</span></td>
+<td>anything, once a DEM has been loaded for that orthomosaic</td>
+</tr>
+<tr>
+<td><span class="ui">Export</span> items</td>
+<td>Always available, but they act on the current selection — select a clip or one of its results first.</td>
+</tr>
+</tbody>
+</table>
+<div class="note-info"><strong>Why can I not re-run a fragmentation?</strong> Because the clip already has results. Create a new clip, or delete the <span class="ui">Distribution graph</span> and <span class="ui">Colormap</span> children first.</div></div><div class="section" id="clip"><h1 class="section-title"><span class="num">4</span>Delimiting the Muckpile</h1><h2 class="sub-title" id="why-clipping-matters">4.1 Why clipping matters</h2>
+<p>The orthomosaic covers far more than the blasted rock: benches, haul roads, vegetation, equipment, undisturbed ground. Everything inside the clip polygon is analysed; everything outside is masked out. A sloppy boundary is the most common cause of a wrong distribution — road gravel counted as fines, a bench face counted as oversize.</p>
+<div class="note-info"><strong>Rule of thumb.</strong> Follow the visible toe of the muckpile. Exclude the free face, the crest of the bench behind, any equipment, and any area still covered by the previous shot. Rocks that touch the boundary are automatically discarded from the statistics, so a slightly tight boundary is safer than a generous one.</div>
+<p>SmartFrag offers three ways to obtain the boundary, all producing the same kind of <strong>clipped</strong> node:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Clip muckpile</span></td>
+<td>Full manual control. The default when the pile edge is ambiguous.</td>
+</tr>
+<tr>
+<td><span class="ui">Clip muckpile IA</span></td>
+<td>A fast first guess on a clean, well-contrasted muckpile. The result is always editable.</td>
+</tr>
+<tr>
+<td>From a DXF/STR string</td>
+<td>When survey has already delivered the blast outline — the most repeatable option.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="clip-muckpile-manual">4.2 Clip muckpile (manual)</h2>
+<ol class="steps">
+<li><span class="step-body">Select the <strong>orthomosaic</strong> node.</span></li>
+<li><span class="step-body">Choose <span class="ui">Process</span> › <span class="ui">Clip muckpile</span> or click the toolbar icon. A new tab named <span class="ui">Clip muckpile</span> opens, already in drawing mode.</span></li>
+<li><span class="step-body">Click around the muckpile to place the vertices of the boundary. Zoom with the wheel and pan by dragging between clicks.</span></li>
+<li><span class="step-body"><strong>Right-click</strong> to close the polygon (or press the <span class="ui">Confirm Polygon Mode</span> button). It is added to the list on the left with a checkbox <span class="ui">Poly n°1</span> and a colour swatch.</span></li>
+<li><span class="step-body">Optionally draw more polygons: press <span class="ui">Create Polygon Mode</span> or <span class="kbd">Ctrl</span>+<span class="kbd">P</span>, then repeat.</span></li>
+<li><span class="step-body">Adjust the shape if needed — drag a vertex, double-click an edge to insert one, double-click a vertex to remove it.</span></li>
+<li><span class="step-body">Click <span class="ui">Finish Editing</span> and confirm. The tab closes and a new <strong>clipped</strong> node appears under the ortho.</span></li>
+</ol>
+<figure class="fig"><img alt="Screenshot — the Clip muckpile tab with a polygon being drawn around a muckpile, the Poly n°1 checkbox visible and the three buttons at the bottom." src="assets/clip-01.png"/><figcaption>Screenshot — the <span class="ui">Clip muckpile</span> tab with a polygon being drawn around a muckpile, the <span class="ui">Poly n°1</span> checkbox visible and the three buttons at the bottom.</figcaption></figure>
+
+<div class="note"><strong>A polygon needs at least three points.</strong> Right-clicking with fewer simply does nothing and you stay in drawing mode.</div>
+<div class="note"><strong>Unticked polygons are not saved.</strong> The confirmation prompt says so explicitly. If two ticked polygons overlap, they are merged into one boundary.</div>
+<div class="note-red">There is <strong>no undo</strong> in the Contour Editor. If a boundary goes badly wrong, close the tab without finishing and start again.</div>
+<h2 class="sub-title" id="clip-muckpile-ia">4.3 Clip muckpile IA</h2>
+<p>The AI contour model detects the muckpile outline automatically from the orthomosaic.</p>
+<ol class="steps">
+<li><span class="step-body">Select the <strong>orthomosaic</strong> node.</span></li>
+<li><span class="step-body">Choose <span class="ui">Process</span> › <span class="ui">Clip muckpile IA</span>. The <span class="ui">AI-based Contour Detection</span> dialog opens and the model <strong>starts immediately</strong> — a progress bar fills while the controls stay disabled.</span></li>
+<li><span class="step-body">When the model finishes, the dialog closes on its own and a <span class="ui">Clip muckpile IA</span> tab opens containing the detected contours.</span></li>
+<li><span class="step-body">Review and correct them exactly as in the manual editor, then click <span class="ui">Finish Editing</span>.</span></li>
+</ol>
+<p>The dialog also contains a <span class="ui">Model Selection</span> box with <span class="ui">Select a model:</span> and a <span class="ui">Run Model</span> button, offering <span class="ui">Ortho Based Model</span> and <span class="ui">DEM Based Model</span>.</p>
+<div class="note"><strong>In version 0.7.9 only </strong>Ortho Based Model<strong> is operational</strong>, and it is the one launched automatically. <span class="ui">DEM Based Model</span> is greyed out unless a DEM is loaded and, when selected, does not produce a result.</div>
+<div class="note-info"><strong>What to expect from it.</strong> The model returns at most <strong>three areas</strong>, the largest ones it found. Small isolated patches are dropped by design, and the outline it draws is a simplified one — it follows the general shape of the pile rather than every indentation of the toe.</div>
+<div class="note-red"><strong>Always review the AI contour before finishing.</strong> The model is a time-saver, not an authority: it tends to follow the visual texture of broken rock, which may include spillage on the haul road or exclude a shadowed toe. Correcting the polygon takes seconds; a wrong boundary invalidates the whole analysis.</div>
+<div class="note">If the progress bar stalls and the dialog never closes, the inference failed. Close the dialog manually and use the manual clip instead; on a machine without a GPU, a very large orthomosaic is the usual cause.</div>
+<h2 class="sub-title" id="clipping-from-a-dxfstr-string">4.4 Clipping from a DXF/STR string</h2>
+<p>If survey has already provided the blast outline, use it directly — it is faster and perfectly repeatable from one blast to the next.</p>
+<ol class="steps">
+<li><span class="step-body">Load the string with <span class="ui">Project</span> › <span class="ui">Open DXF/STR</span> (<a href="#opening-dxf-str">Opening DXF / STR</a>).</span></li>
+<li><span class="step-body">In the right panel, under <span class="ui">DEM/DXF items</span>, click the polygon you want to use. It is drawn in red on the image.</span></li>
+<li><span class="step-body">Choose <span class="ui">Process</span> › <span class="ui">Clip muckpile</span>.</span></li>
+</ol>
+<p>The Contour Editor is skipped entirely: the clipped node is created straight from the selected string.</p>
+<div class="note">Only the <strong>first</strong> selected polygon is used, even if several are highlighted. Select exactly the one you want.</div>
+<h2 class="sub-title" id="contour-editor-reference">4.5 Contour Editor reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Left click</td>
+<td>Add a vertex (in drawing mode)</td>
+</tr>
+<tr>
+<td>Left drag</td>
+<td>Pan the view</td>
+</tr>
+<tr>
+<td>Mouse wheel</td>
+<td>Zoom in / out</td>
+</tr>
+<tr>
+<td>Right click</td>
+<td>Close the current polygon</td>
+</tr>
+<tr>
+<td>Double-click a vertex</td>
+<td>Delete that vertex</td>
+</tr>
+<tr>
+<td>Double-click an edge</td>
+<td>Insert a vertex there</td>
+</tr>
+<tr>
+<td>Drag a vertex</td>
+<td>Reshape the polygon</td>
+</tr>
+<tr>
+<td><span class="kbd">Ctrl</span>+<span class="kbd">P</span></td>
+<td>Toggle polygon-creation mode</td>
+</tr>
+<tr>
+<td><span class="kbd">Delete</span></td>
+<td>Remove the selected vertex</td>
+</tr>
+<tr>
+<td>Click the colour swatch</td>
+<td>Change the display colour of that polygon</td>
+</tr>
+<tr>
+<td>Untick <span class="ui">Poly n°N</span></td>
+<td>Hide it and exclude it from the saved boundary</td>
+</tr>
+</tbody>
+</table></div><div class="section" id="frag"><h1 class="section-title"><span class="num">5</span>Fragmentation Analysis</h1><h2 class="sub-title" id="running-the-analysis">5.1 Running the analysis</h2>
+<p><strong>Before you start</strong>, check two things: the clip boundary is correct, and the resolution shown in the right panel is right. Both are far harder to fix afterwards than before.</p>
+<ol class="steps">
+<li><span class="step-body">Select the <strong>clip</strong> in the project tree.</span></li>
+<li><span class="step-body">Choose <span class="ui">Process</span> › <span class="ui">Fragmentation</span> or click the toolbar icon.</span></li>
+<li><span class="step-body">The modal <span class="ui">Process Analysis</span> dialog appears and the analysis runs.</span></li>
+<li><span class="step-body">When it completes, click <span class="ui">Next</span> to close the dialog.</span></li>
+</ol>
+<p>The progress bar advances in a few large steps rather than continuously, and the label above it names the step in progress. Long pauses are normal — detection is the slow part. When it is finished the label reports how long the run took.</p>
+<p>Two new nodes appear under the clip: <span class="ui">Distribution graph</span> and <span class="ui">Colormap</span>. Your results are saved automatically at this point — this is the only automatic save in SmartFrag, so a run you never finish is a run you lose.</p>
+<div class="note"><strong>How long does it take?</strong> Mainly a matter of how big the orthomosaic is and how many rocks it contains. Expect under a minute on a small pile, up to a quarter of an hour on a large high-resolution survey.</div>
+<div class="note-red"><strong>Let the run finish.</strong> <span class="ui">Cancel</span> does not stop the detection: the window stays unresponsive until the image is done anyway. Start a run when you can leave it alone, and never force-close the application while it is working.</div>
+<div class="note">Only the upper progress bar is driven in this version. The lower bar staying at zero and the <span class="ui">Waiting...</span> label are normal, not a sign that something is stuck.</div>
+<h2 class="sub-title" id="what-is-measured">5.2 What is measured</h2>
+<p>For every rock it detects, SmartFrag records the outline, the surface area in m², and three different diameters in millimetres. Which diameter the curve and the KPIs use is your choice.</p>
+<table>
+<thead>
+<tr>
+<th>Diameter mode</th>
+<th>Definition</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Area equivalent diameter</span></td>
+<td>The diameter of a circle having the same surface as the rock outline. <em>Default.</em></td>
+<td>General fragmentation reporting; comparison with sieve-based curves.</td>
+</tr>
+<tr>
+<td><span class="ui">Min Feret diameter</span></td>
+<td>The shorter side of the smallest rotated rectangle enclosing the rock — its narrowest caliper width.</td>
+<td>Will it pass through a crusher gap or a grizzly opening?</td>
+</tr>
+<tr>
+<td><span class="ui">Max Feret diameter</span></td>
+<td>The longer side of that rectangle — the rock's longest dimension.</td>
+<td>Oversize and boulder identification; bucket and truck loading constraints.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="sub-sub-title" id="two-filters-applied-automatically">Two filters applied automatically</h3>
+<ul>
+<li>Detections with a zero confidence score are dropped.</li>
+<li><strong>Rocks whose outline touches the clip boundary are discarded</strong>, because they are cut off and their apparent size would be wrong. This is why a slightly tight boundary is safer than a generous one.</li>
+</ul>
+<h3 class="sub-sub-title" id="the-fines-correction">The fines correction</h3>
+<p>No camera can resolve individual fines. SmartFrag therefore counts the muckpile surface it could not attribute to any rock, and reports it as the finest fraction of the curve.</p>
+<div class="note-info"><strong>Why this matters in practice.</strong> Anything the detection misses is counted as fines. If real rocks were left undetected, the curve reports too much fine material and shifts to the left. When the fine end looks implausible, check the colormap for uncoloured patches and correct the segmentation (<a href="#correct">Correcting the Segmentation</a>) rather than doubting the blast.</div>
+<h2 class="sub-title" id="distribution-graph-kpis">5.3 Distribution graph &amp; KPIs</h2>
+<p>Select the <span class="ui">Distribution graph</span> node. The tab shows the cumulative passing curve — percentage passing on the vertical axis against diameter in millimetres on the horizontal axis.</p>
+<figure class="fig"><img alt="Screenshot — the Distribution graph tab with the cumulative curve, and the right panel showing the diameter-mode combo, the Log[X] checkbox and the KP" src="assets/frag-01.png"/><figcaption>Screenshot — the <span class="ui">Distribution graph</span> tab with the cumulative curve, and the right panel showing the diameter-mode combo, the <span class="ui">Log[X]</span> checkbox and the KPI table.</figcaption></figure>
+
+<p>The right panel offers:</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diameter-mode combo</td>
+<td>Switches between <span class="ui">Area equivalent diameter</span>, <span class="ui">Min Feret diameter</span> and <span class="ui">Max Feret diameter</span>. The curve and the KPI table are rebuilt instantly from the existing detections — nothing is re-detected, so you can compare modes freely.</td>
+</tr>
+<tr>
+<td><span class="ui">Log[X]</span></td>
+<td>Switches the diameter axis to a logarithmic scale — the conventional way to read a granulometry curve.</td>
+</tr>
+<tr>
+<td>KPI table</td>
+<td>The passing sizes D10 to D100: for each percentage, the diameter below which that share of the material lies. D50 is the median size; D80 is the usual contractual KPI.</td>
+</tr>
+</tbody>
+</table>
+<div class="note-info"><strong>Millimetres or inches.</strong> Click the <span class="ui">Diameter</span> column header of the KPI table to switch the unit between <strong>mm</strong> and <strong>inch</strong>. The header updates to show which is in use.</div>
+<div class="note">The diameter mode is a display choice. It is not written into the project file, so it returns to <span class="ui">Area equivalent diameter</span> the next time the project is opened.</div>
+<h2 class="sub-title" id="colormap">5.4 Colormap</h2>
+<p>Select the <span class="ui">Colormap</span> node to see the muckpile with every detected rock filled according to its size class. This is the view that makes fragmentation quality readable at a glance — a pocket of oversize in one corner of the pile is immediately obvious.</p>
+<figure class="fig"><img alt="Screenshot — the Colormap tab showing a muckpile with rocks coloured by size class, and the threshold controls in the right panel." src="assets/frag-02.png"/><figcaption>Screenshot — the <span class="ui">Colormap</span> tab showing a muckpile with rocks coloured by size class, and the threshold controls in the right panel.</figcaption></figure>
+
+<h2 class="sub-title" id="thresholds-colours">5.5 Thresholds &amp; colours</h2>
+<p>The right panel of the colormap is where you define the size classes. At the top, a switch selects between two modes.</p>
+<h3 class="sub-sub-title" id="static-mode">Static mode</h3>
+<p>Fixed size classes, each with its own colour — the mode to use for reporting and for comparing blasts against site standards.</p>
+<ol class="steps">
+<li><span class="step-body">Set the number of classes with the <span class="ui">−</span> and <span class="ui">+</span> buttons next to <span class="ui">Number of thresholds</span>. Between one and five intermediate thresholds are allowed.</span></li>
+<li><span class="step-body">Type the boundary of each class in its <span class="ui">Threshold n°k [mm] :</span> box. The first and last rows are read-only bounds — they show the minimum and the maximum of the range.</span></li>
+<li><span class="step-body">Click the coloured bar beside a class to choose its colour.</span></li>
+<li><span class="step-body">Click <span class="ui">Valid</span> to apply. Each class shows the share of the muckpile it represents as <span class="ui">Percentage : xx.xx %</span>.</span></li>
+</ol>
+<div class="note"><strong>Thresholds must increase.</strong> Entering a value lower than the one above raises <span class="ui">Threshold Error</span> — <em>« You choose a threshold higher than previous one. »</em></div>
+<div class="note-info">Threshold values and colours are saved to your settings as soon as they are applied, so your class scheme is reused for the next colormap and the next session. The defaults are <code>100 / 200 / 300 mm</code> over a <code>0–1000 mm</code> range. You can also pre-set them in <span class="ui">Settings</span> (<a href="#settings">Settings</a>).</div>
+<h3 class="sub-sub-title" id="dynamic-mode">Dynamic mode</h3>
+<p>A movable band instead of fixed classes: drag the two handles of the vertical selector to isolate a size range, and the colormap highlights only the rocks inside it while <span class="ui">Selected percentage [%]</span> reports what share of the pile they represent.</p>
+<div class="note-info">Use dynamic mode to answer questions interactively — <em>« how much of this pile is above 400 mm? »</em> — and static mode to produce the figure that goes in the report.</div>
+<h3 class="sub-sub-title" id="other-controls">Other controls</h3>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">No color</span></td>
+<td>Removes the colour overlay and shows the bare orthomosaic. Useful to check a detection against the original image.</td>
+</tr>
+<tr>
+<td><span class="ui">Ruler</span></td>
+<td>Turns on the measuring tool (<a href="#ruler">Ruler</a>).</td>
+</tr>
+<tr>
+<td><span class="ui">Show Histogram</span></td>
+<td>Opens the histogram window (<a href="#histogram">Histogram</a>).</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="histogram">5.6 Histogram</h2>
+<p><span class="ui">Show Histogram</span> opens a separate window with one bar per size class, in the class colour, labelled with its percentage of the muckpile and its size range (<em>d &lt; 100 mm</em>, <em>100 &lt; d &lt; 200 mm</em>, and so on). The vertical axis is <em>Distribution [%]</em>.</p>
+<p>The window follows the thresholds you set in the colormap panel and updates when you change them. It can be exported as a PNG image from the window itself, and the same histogram is embedded in page 3 of the PDF report.</p>
+<h2 class="sub-title" id="inspecting-one-rock">5.7 Inspecting one rock</h2>
+<p>In the <span class="ui">Colormap</span> view, click any rock. A small floating card appears showing:</p>
+<ul>
+<li><strong>Rock n°</strong> — its index in the detection list</li>
+<li><span class="ui">Diameter</span> — in millimetres</li>
+<li><strong>Surface</strong> — the measured area of the outline</li>
+</ul>
+<p>The selected rock's outline turns green. Clicking it again, or clicking bare ground, hides the card. The card can be dragged out of the way.</p>
+<p>Two buttons on the card act on that rock:</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Delete polygon</span> (bin icon)</td>
+<td>Repaints the rock in the colour of the first size class — treat it as « this is not a rock, it is ground ».</td>
+</tr>
+<tr>
+<td><span class="ui">Ignore polygon</span> (cancel icon)</td>
+<td>Repaints it white and removes its outline — treat it as « exclude this from the picture ».</td>
+</tr>
+</tbody>
+</table>
+<div class="note-red"><strong>These two buttons change the picture only.</strong> The distribution curve, the histogram and the D10–D100 KPIs are <em>not</em> recomputed, and the change is not saved to the project. To remove a false detection from the statistics, use <span class="ui">Correct Segmentation</span> (<a href="#correct">Correcting the Segmentation</a>).</div>
+<h2 class="sub-title" id="ruler">5.8 Ruler</h2>
+<p>The ruler measures a distance directly on the image. Tick <span class="ui">Ruler</span> in the colormap panel, or press <span class="kbd">R</span> over an image view. Click the start point, then the end point; the distance is displayed in metres, computed from the ground resolution. Untick to leave ruler mode.</p>
+<div class="note">On a raw image node the same tool is labelled <span class="ui">Find Resolution</span> and works the other way round — you give it the true length and it derives the scale (<a href="#setting-the-scale">Setting the scale</a>).</div></div><div class="section" id="correct"><h1 class="section-title"><span class="num">6</span>Correcting the Segmentation</h1><h2 class="sub-title" id="when-to-correct">6.1 When to correct</h2>
+<p>Automatic detection is very good but not perfect. Correcting is worthwhile when you see:</p>
+<ul>
+<li><strong>Missed boulders</strong> — a large rock left uncoloured. It is absent from the statistics and its surface is counted as fines, biasing the curve twice over.</li>
+<li><strong>Merged rocks</strong> — several blocks captured as one huge outline, inflating the coarse end.</li>
+<li><strong>False detections</strong> — shadows, tyre tracks, water or equipment detected as rock.</li>
+<li><strong>Wrong outlines</strong> — an outline that clearly overruns or undercuts the visible block.</li>
+</ul>
+<div class="note-info">Correcting a handful of large rocks changes the curve far more than correcting many small ones, because the distribution is weighted by surface. Concentrate on the boulders.</div>
+<h2 class="sub-title" id="opening-the-editor">6.2 Opening the editor</h2>
+<ol class="steps">
+<li><span class="step-body">Select the <span class="ui">Colormap</span> node — <span class="ui">Correct Segmentation</span> is only enabled there.</span></li>
+<li><span class="step-body">Choose <span class="ui">Process</span> › <span class="ui">Correct Segmentation</span> or click the toolbar icon.</span></li>
+<li><span class="step-body">The <span class="ui">Polygon Editor</span> opens with every detected rock drawn as an editable outline, and the polygon tools in the main toolbar become active.</span></li>
+</ol>
+<figure class="fig"><img alt="Screenshot — the Polygon Editor with rock outlines over the muckpile, the polygon toolbar buttons enabled, and the save panel on the right." src="assets/correct-01.png"/><figcaption>Screenshot — the <span class="ui">Polygon Editor</span> with rock outlines over the muckpile, the polygon toolbar buttons enabled, and the save panel on the right.</figcaption></figure>
+
+<h2 class="sub-title" id="toolbar-reference">6.3 Toolbar reference</h2>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Add Polygon</span></td>
+<td>Start drawing a new rock. Click each vertex, then right-click or press <span class="ui">Validate Polygon</span> to close it. At least three points are required.</td>
+</tr>
+<tr>
+<td><span class="ui">Validate Polygon</span></td>
+<td>Closes the polygon currently being drawn, or applies the current erase-selection.</td>
+</tr>
+<tr>
+<td><span class="ui">Erase</span></td>
+<td>Turns the cursor into an eraser. Click a rock to delete that detection. Click the button again to leave eraser mode.</td>
+</tr>
+<tr>
+<td><span class="ui">Erase Selection</span></td>
+<td>Draw a polygon over an area; every rock intersecting it is deleted in one go. Use it to clear a whole region of false detections.</td>
+</tr>
+<tr>
+<td><span class="ui">Edit Polygon</span>, <span class="ui">Delete Polygon</span>, <span class="ui">Ignore Polygon</span></td>
+<td>These three toolbar icons stay inactive in the editor. The equivalent per-rock commands are on the right-click menu of each outline (<a href="#editing-a-rock-outline">Editing a rock outline</a>).</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="editing-a-rock-outline">6.4 Editing a rock outline</h2>
+<p><strong>Right-click any rock outline</strong> to open its context menu:</p>
+<table>
+<thead>
+<tr>
+<th>Menu item</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Informations</span></td>
+<td>Reports the rock's measurements.</td>
+</tr>
+<tr>
+<td><span class="ui">Modify</span></td>
+<td>Puts the outline into edit mode: its vertices appear as draggable handles.</td>
+</tr>
+<tr>
+<td><span class="ui">Delete</span></td>
+<td>Removes the detection. Its area reverts to the first size class.</td>
+</tr>
+<tr>
+<td><span class="ui">Valid modif</span></td>
+<td>Confirms the edit. The diameter, area and Feret values are recomputed immediately and the colormap is repainted.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="sub-sub-title" id="while-an-outline-is-in-edit-mode">While an outline is in edit mode</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Drag a handle</td>
+<td>Move that vertex</td>
+</tr>
+<tr>
+<td>Double-click an edge</td>
+<td>Insert a new vertex</td>
+</tr>
+<tr>
+<td>Double-click a handle</td>
+<td>Delete that vertex</td>
+</tr>
+<tr>
+<td><span class="kbd">Delete</span></td>
+<td>Delete the selected vertex</td>
+</tr>
+<tr>
+<td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span></td>
+<td><strong>Undo the last deletion</strong> — restores the rock, its outline and its contribution to the statistics. Up to 20 deletions are kept.</td>
+</tr>
+<tr>
+<td>Mouse wheel / drag</td>
+<td>Zoom / pan</td>
+</tr>
+</tbody>
+</table>
+<div class="note">A polygon must keep at least three points. Attempting to go below that raises <span class="ui">Polygon error</span> — <em>« A polygon must keep at least 3 points. »</em></div>
+<div class="note-info"><strong>Always finish with </strong>Valid modif<strong>.</strong> An outline left in edit mode has not had its measurements recomputed.</div>
+<h2 class="sub-title" id="saving-corrections">6.5 Saving corrections</h2>
+<p>The right panel of the editor offers three exits:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Save changes</span></td>
+<td>Applies the corrections: the distribution curve, the histogram, the KPI table and the colormap are all rebuilt, and the project file is rewritten. Confirmed by <span class="ui">Success</span> — <em>Corrections saved successfully.</em></td>
+</tr>
+<tr>
+<td><span class="ui">Save as a copy of project</span></td>
+<td>Meant to keep the original run alongside the corrected one. <strong>In version 0.7.9 it behaves exactly like </strong>Save changes<strong> and does not create a second copy.</strong> If you want to keep the uncorrected results, duplicate the project folder in Windows Explorer <em>before</em> you start correcting.</td>
+</tr>
+<tr>
+<td><span class="ui">Discard changes</span></td>
+<td>Closes the editor and restores the colormap to its state before editing.</td>
+</tr>
+</tbody>
+</table>
+<div class="note-red">If saving fails, <span class="ui">Save Error</span> — <em>Failed to save corrections</em> is shown. Almost always the project folder is read-only, sitting on a network drive that has dropped, or the project file is open in another program.</div></div><div class="section" id="volume"><h1 class="section-title"><span class="num">7</span>Volume Estimation</h1><p>With a DEM loaded, SmartFrag computes the volume of material inside a clip boundary relative to a reference elevation. This supports stockpile inventory, reconciliation and excavation planning.</p>
+<h2 class="sub-title" id="prerequisites">7.1 Prerequisites</h2>
+<ul>
+<li>A georeferenced orthomosaic with a correct ground resolution.</li>
+<li>A DEM loaded against that ortho (<a href="#opening-a-dem">Opening a DEM</a>).</li>
+<li>At least one clipped node defining the footprint to measure.</li>
+</ul>
+<h2 class="sub-title" id="computing-from-the-panel">7.2 Computing from the panel</h2>
+<p>Select a <strong>clipped</strong> node. With a DEM present, the right panel gains a <span class="ui">Volume</span> block.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Method:</span></td>
+<td><span class="ui">Min level</span> uses the lowest elevation found inside the clip as the reference plane — the usual choice for a muckpile sitting on a floor. <span class="ui">Custom level</span> lets you type the reference elevation yourself, for example a design floor RL.</td>
+</tr>
+<tr>
+<td><span class="ui">Elevation:</span></td>
+<td>The reference elevation in metres. Filled automatically in <span class="ui">Min level</span> mode; editable in <span class="ui">Custom level</span> mode.</td>
+</tr>
+<tr>
+<td><span class="ui">Cut Volume:</span></td>
+<td>Volume above the reference surface — the material to be excavated.</td>
+</tr>
+<tr>
+<td><span class="ui">Fill Volume:</span></td>
+<td>Volume below the reference surface — the material that would be needed to fill up to it.</td>
+</tr>
+<tr>
+<td><span class="ui">Net Volume:</span></td>
+<td>The net result, fill minus cut.</td>
+</tr>
+<tr>
+<td><span class="ui">Compute</span></td>
+<td>Runs the computation and creates a <strong>volume</strong> node in the tree.</td>
+</tr>
+<tr>
+<td>Reload icon</td>
+<td>Re-reads the DEM and the clip boundary. Use it after correcting a boundary.</td>
+</tr>
+</tbody>
+</table>
+<p>All volumes are reported in cubic metres to three decimals.</p>
+<div class="note"><strong>The result is only as good as the reference plane.</strong> <span class="ui">Min level</span> takes the lowest DEM cell inside the boundary, so a single spurious low point — a survey artefact, a trench, a water-filled hollow — drags the whole reference down and inflates the cut volume. If the number looks high, switch to <span class="ui">Custom level</span> and enter the known floor elevation.</div>
+<h2 class="sub-title" id="volume-details-dialog">7.3 Volume Details dialog</h2>
+<p>To compare several muckpiles at once, choose <span class="ui">Process</span> › <span class="ui">Volume</span>. The <span class="ui">Volume Details</span> dialog lists one section per orthomosaic, titled <span class="ui">Volume: {name}</span>, each with a table:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Clipped file</span></td>
+<td>The name of the clip</td>
+</tr>
+<tr>
+<td><span class="ui">Cut volume (m³)</span></td>
+<td>Material above the reference</td>
+</tr>
+<tr>
+<td><span class="ui">Fill Volume (m³)</span></td>
+<td>Material below the reference</td>
+</tr>
+<tr>
+<td><span class="ui">Net Volume (m³)</span></td>
+<td>Net result</td>
+</tr>
+<tr>
+<td><span class="ui">Elevation Min (m)</span></td>
+<td>The reference elevation used, editable in <span class="ui">Custom elevation</span> mode</td>
+</tr>
+</tbody>
+</table>
+<p>A single <span class="ui">Computation method :</span> combo at the top applies <span class="ui">Elevation Min</span> or <span class="ui">Custom elevation</span> to all sections. <span class="ui">Compute Volume</span> recalculates everything; <span class="ui">Close</span> dismisses the dialog.</p>
+<p>Any ortho without a DEM shows <span class="ui">No DEM loaded for this muckpile.</span> in red instead of a table.</p>
+<h3 class="sub-sub-title" id="exporting-to-excel">Exporting to Excel</h3>
+<p><span class="ui">Export</span> becomes available once volumes have been computed. It opens a <span class="ui">Save As</span> dialog filtered to <span class="ui">Excel File (*.xlsx)</span> and writes a <span class="ui">Volume Export</span> sheet with one row per clip: <span class="ui">Parent Image</span>, <span class="ui">Clipped</span>, <span class="ui">Cut Volume (m³)</span>, <span class="ui">Fill Volume (m³)</span>, <span class="ui">Net Volume (m³)</span>, <span class="ui">Elevation Min (m)</span>. Success and failure are both confirmed by a message.</p>
+<h2 class="sub-title" id="the-volume-view">7.4 The volume view</h2>
+<p>Selecting a <strong>volume</strong> node opens a view where each measured zone is tinted in its own colour over the orthomosaic. Hover any zone to get a tooltip with its name and its <span class="ui">Cut</span>, <span class="ui">Fill</span> and <span class="ui">Net</span> values in m³ — a quick way to compare several piles on one image.</p></div><div class="section" id="explore"><h1 class="section-title"><span class="num">8</span>Explore Integration</h1><p>Explore is the EPC web platform where blasts are planned and recorded. Connecting SmartFrag to it means fragmentation results are attached to the blast they belong to, stored centrally, and available to the whole team and to the client.</p>
+<h2 class="sub-title" id="connecting">8.1 Connecting</h2>
+<p>see <a href="#signing-in-to-explore">Signing in to Explore</a>. The Explore indicator in the status bar must be green before the exchange commands work. The environment — <span class="ui">Production</span>, <span class="ui">Staging</span> or <span class="ui">Local</span> — is chosen in <span class="ui">Settings</span>.</p>
+<h2 class="sub-title" id="the-explore-page">8.2 The Explore Page</h2>
+<p>Choose <span class="ui">Explore</span> › <span class="ui">Export</span> to open the <span class="ui">Explore Page</span>.</p>
+<ol class="steps">
+<li><span class="step-body">Pick your <span class="ui">Site</span> from the first combo. It is type-ahead searchable, which helps on accounts with many sites.</span></li>
+<li><span class="step-body">Pick the <span class="ui">Project</span>. The blast list below is populated.</span></li>
+<li><span class="step-body">Narrow the list with the <span class="ui">Search</span> box — it matches on blast name and zone — and order it with the <span class="ui">Filter</span> combo, <span class="ui">Chronological</span> or <span class="ui">Alphabetical</span>.</span></li>
+</ol>
+<p>Each blast row shows its name, its zone and its planned date, followed by two buttons.</p>
+<figure class="fig"><img alt="Screenshot — the Explore Page with the Site and Project combos, the search field and a list of blast rows with their Get and Send buttons." src="assets/explore-01.png"/><figcaption>Screenshot — the <span class="ui">Explore Page</span> with the Site and Project combos, the search field and a list of blast rows with their Get and Send buttons.</figcaption></figure>
+
+<h2 class="sub-title" id="sending-retrieving">8.3 Sending &amp; retrieving</h2>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Menu item</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Get</span></td>
+<td><span class="ui">Get Fragmentation results</span></td>
+<td>Retrieves fragmentation results already stored on Explore for that blast.</td>
+</tr>
+<tr>
+<td><span class="ui">Send</span></td>
+<td><span class="ui">Send Image</span></td>
+<td>Uploads the colormap image of the muckpile.</td>
+</tr>
+<tr>
+<td><span class="ui">Send Graph</span></td>
+<td>Uploads the distribution data.</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Send Muckpile Polygon</span></td>
+<td>Uploads the clip boundary.</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Send all</span></td>
+<td>Uploads image, graph and polygon in one operation. <em>The usual choice.</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Each operation ends with a confirmation: <span class="ui">Success</span> — <em>Data was sent successfully.</em>, or <span class="ui">Error</span> — <em>Data sending failed.</em></p>
+<div class="note">If the project contains more than one clipped muckpile, SmartFrag asks which one to send with a <span class="ui">Choose clipped item to send:</span> prompt. Select carefully — sending the wrong clip attaches the wrong curve to the blast record.</div>
+<div class="note-info">Send results once the segmentation has been reviewed and corrected. What lands in Explore becomes the reference figure for that blast.</div></div><div class="section" id="export"><h1 class="section-title"><span class="num">9</span>Exports &amp; Reporting</h1><p>All export commands live under <span class="ui">Project</span> › <span class="ui">Export</span>.</p>
+<h2 class="sub-title" id="the-pdf-report">9.1 The PDF report</h2>
+<p><span class="ui">Report (PDF)</span> produces the deliverable document — a three-page, client-ready fragmentation report.</p>
+<ol class="steps">
+<li><span class="step-body">Select the clip (or one of its result nodes) you want to report on.</span></li>
+<li><span class="step-body">Choose <span class="ui">Project</span> › <span class="ui">Export</span> › <span class="ui">Report (PDF)</span>, or the PDF icon in the toolbar.</span></li>
+<li><span class="step-body">In <span class="ui">Choose name and path for the PDF report</span>, accept <code>Fragmentation_Report.pdf</code> or give it a blast-specific name.</span></li>
+<li><span class="step-body">Fill in the <span class="ui">Report Form</span> (<a href="#the-report-form">The report form</a>) and click <strong>OK</strong>.</span></li>
+<li><span class="step-body">The PDF is written and opened automatically in your default viewer.</span></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 — Cover</td>
+<td><em>Fragmentation report</em>, project name, blast pattern, a details block with contractor, blast localisation, client and blast date &amp; time, the customer logo, the EPC logo, and a signature block with the name and title you entered.</td>
+</tr>
+<tr>
+<td>2 — Results</td>
+<td><em>General informations</em> (total area, blast volume, min / max / mean diameter, standard deviation, rock count), the colour legend of the size classes, the <em>Particle size distribution</em> table, the colormap image, the <em>Size passing details</em> table and the size-distribution graph.</td>
+</tr>
+<tr>
+<td>3 — Annexes</td>
+<td>The size-distribution histogram and, if you supplied one, the blast sequence image.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="the-report-form">9.2 The report form</h2>
+<p>The form has two parts: identification fields you fill in, and measured values pre-filled from the analysis.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Project name</span></td>
+<td>Printed large on the cover.</td>
+</tr>
+<tr>
+<td><span class="ui">Date</span></td>
+<td>Report date. Defaults to today.</td>
+</tr>
+<tr>
+<td><span class="ui">Blast Pattern</span></td>
+<td>The pattern reference, printed on the cover and in the header of pages 2–3.</td>
+</tr>
+<tr>
+<td><span class="ui">Contractor</span>, <span class="ui">Client</span>, <span class="ui">Blast Localisation</span></td>
+<td>The details block on the cover.</td>
+</tr>
+<tr>
+<td><span class="ui">Blast date &amp; time</span></td>
+<td>When the blast was fired.</td>
+</tr>
+<tr>
+<td><span class="ui">Name</span>, <span class="ui">Title</span></td>
+<td>Who signs the report. Remembered for next time.</td>
+</tr>
+<tr>
+<td><span class="ui">Customer logo</span></td>
+<td>Click the frame or drag an image onto it (PNG, JPG, BMP, SVG).</td>
+</tr>
+<tr>
+<td><span class="ui">Sequence image</span></td>
+<td>Optional initiation-sequence diagram, printed on page 3.</td>
+</tr>
+</tbody>
+</table>
+<p>The measured values — <span class="ui">Total area (m²)</span>, <span class="ui">Volume (m³)</span>, <span class="ui">Min diameter (mm)</span>, <span class="ui">Max diameter (mm)</span>, <span class="ui">Mean diameter (mm)</span>, <span class="ui">Standard deviation</span>, <span class="ui">Rocks count</span> — are pre-filled from the analysis and remain editable, so you can substitute a surveyed volume for the computed one.</p>
+<div class="note-red"><strong>Check </strong>Min diameter (mm)<strong> before signing.</strong> In this version the field is pre-filled with a placeholder value rather than a measurement. Replace it with the smallest resolvable size for your survey, or with the value your site convention requires.</div>
+<div class="note"><span class="ui">Volume (m³)</span> is pre-filled from a computed volume only if one exists for that clip; otherwise it starts at zero. Enter it by hand if you need it in the report.</div>
+<h2 class="sub-title" id="image-data-exports">9.3 Image &amp; data exports</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Output</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Muckpile image (PNG)</span></td>
+<td>The colour-coded muckpile, saved as a <strong>GeoTIFF</strong> (default name <code>muckpileImage.tif</code>) that keeps the georeferencing of the source orthomosaic.</td>
+<td>Overlaying the fragmentation map in your GIS or mine-planning package.</td>
+</tr>
+<tr>
+<td><span class="ui">Graph image (PNG)</span></td>
+<td>The distribution graph and histogram as PNG files in a folder you choose.</td>
+<td>Dropping the figures into a slide deck or an email.</td>
+</tr>
+<tr>
+<td><span class="ui">Data (JSON)</span></td>
+<td>The full numeric results (default name <code>graphDatas.json</code>): cumulative curve, histogram bins and KPI percentiles.</td>
+<td>Feeding your own dashboards, reconciliation sheets or statistical tools.</td>
+</tr>
+</tbody>
+</table>
+<div class="note">The <span class="ui">Muckpile image (PNG)</span> label is historical — the file written is a GeoTIFF. Keep the <code>.tif</code> extension the dialog proposes.</div></div><div class="section" id="reference"><h1 class="section-title"><span class="num">10</span>Reference</h1><h2 class="sub-title" id="menu-reference">10.1 Menu reference</h2>
+<table>
+<thead>
+<tr>
+<th>Menu</th>
+<th>Item</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Project</span></td>
+<td><span class="ui">New Project</span></td>
+<td>Create a project</td>
+</tr>
+<tr>
+<td><span class="ui">Load Project</span></td>
+<td>Open an existing <code>.mpk</code> project</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Open Orthomosaic</span></td>
+<td>Load a TIF / PNG / JPEG image</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Open DEM</span></td>
+<td>Load an elevation TIF</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Open DXF/STR</span></td>
+<td>Load design strings</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Export</span> › <span class="ui">Report (PDF)</span></td>
+<td>Produce the three-page report</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Export</span> › <span class="ui">Muckpile image (PNG)</span></td>
+<td>Export the colormap as GeoTIFF</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Export</span> › <span class="ui">Graph image (PNG)</span> / <span class="ui">Data (JSON)</span></td>
+<td>Export figures / numeric results</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Quit</span></td>
+<td>Close SmartFrag</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Process</span></td>
+<td><span class="ui">Clip muckpile IA</span></td>
+<td>AI contour detection</td>
+</tr>
+<tr>
+<td><span class="ui">Clip muckpile</span></td>
+<td>Manual or DXF-based clipping</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Fragmentation</span></td>
+<td>Run the size analysis</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Volume</span></td>
+<td>Open the Volume Details dialog</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Correct Segmentation</span></td>
+<td>Open the polygon editor</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Explore</span></td>
+<td><span class="ui">Log in</span></td>
+<td>Sign in to the platform</td>
+</tr>
+<tr>
+<td><span class="ui">Export</span></td>
+<td>Open the Explore Page</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Log out</span></td>
+<td>Clear the stored session</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="ui">Settings</span></td>
+<td>—</td>
+<td>Open the settings dialog</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="toolbar-reference-2">10.2 Toolbar reference</h2>
+<p>Left to right, in groups:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Icons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Import</td>
+<td><span class="ui">Open Orthomosaic</span>, <span class="ui">Open DEM</span>, <span class="ui">Open DXF/STR</span></td>
+</tr>
+<tr>
+<td>Export</td>
+<td><span class="ui">Report (PDF)</span></td>
+</tr>
+<tr>
+<td>Clipping</td>
+<td><span class="ui">Clip muckpile</span>, <span class="ui">Clip muckpile IA</span></td>
+</tr>
+<tr>
+<td>Processing</td>
+<td><span class="ui">Fragmentation</span>, <span class="ui">Volume</span></td>
+</tr>
+<tr>
+<td>Correction</td>
+<td><span class="ui">Correct Segmentation</span></td>
+</tr>
+<tr>
+<td>Polygon tools</td>
+<td><span class="ui">Add Polygon</span>, <span class="ui">Edit Polygon</span>, <span class="ui">Delete Polygon</span>, <span class="ui">Ignore Polygon</span>, <span class="ui">Validate Polygon</span>, <span class="ui">Erase</span>, <span class="ui">Erase Selection</span> — active only inside the polygon editor</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td>Gear icon</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="keyboard-mouse">10.3 Keyboard &amp; mouse</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Context</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="kbd">R</span></td>
+<td>Any image view</td>
+<td>Toggle the ruler / resolution tool</td>
+</tr>
+<tr>
+<td><span class="kbd">Ctrl</span>+<span class="kbd">P</span></td>
+<td>Contour Editor</td>
+<td>Toggle polygon-creation mode</td>
+</tr>
+<tr>
+<td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span></td>
+<td>Polygon Editor</td>
+<td>Undo the last deletion (up to 20)</td>
+</tr>
+<tr>
+<td><span class="kbd">Delete</span></td>
+<td>Polygon editors</td>
+<td>Delete the selected vertex</td>
+</tr>
+<tr>
+<td>Mouse wheel</td>
+<td>All views</td>
+<td>Zoom</td>
+</tr>
+<tr>
+<td>Left drag</td>
+<td>All views</td>
+<td>Pan</td>
+</tr>
+<tr>
+<td>Left click</td>
+<td>Drawing mode</td>
+<td>Add a vertex</td>
+</tr>
+<tr>
+<td>Left click</td>
+<td>Colormap</td>
+<td>Show the rock information card</td>
+</tr>
+<tr>
+<td>Right click</td>
+<td>Drawing mode</td>
+<td>Close the polygon</td>
+</tr>
+<tr>
+<td>Right click</td>
+<td>Polygon Editor</td>
+<td>Open the rock context menu</td>
+</tr>
+<tr>
+<td>Right click</td>
+<td>Project tree</td>
+<td>Open the delete menu</td>
+</tr>
+<tr>
+<td>Double click</td>
+<td>Polygon editors</td>
+<td>On a vertex: delete it. On an edge: insert one.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="file-formats">10.4 File formats</h2>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Accepted / produced</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orthomosaic (in)</td>
+<td><code>.tif</code>, <code>.png</code>, <code>.jpg</code>, <code>.jpeg</code></td>
+<td>Georeferenced <code>.tif</code> strongly recommended. <code>.tiff</code> is not accepted.</td>
+</tr>
+<tr>
+<td>DEM (in)</td>
+<td><code>.tif</code></td>
+<td>Must be georeferenced and declare a nodata value.</td>
+</tr>
+<tr>
+<td>Design strings (in)</td>
+<td><code>.dxf</code>, <code>.str</code></td>
+<td>DXF needs an active viewport; STR is Surpac-style.</td>
+</tr>
+<tr>
+<td>Project (in / out)</td>
+<td><code>Project_v43.mpk</code></td>
+<td>Written automatically after each fragmentation run.</td>
+</tr>
+<tr>
+<td>Report (out)</td>
+<td><code>.pdf</code></td>
+<td>Three pages, default name <code>Fragmentation_Report.pdf</code>.</td>
+</tr>
+<tr>
+<td>Colormap (out)</td>
+<td><code>.tif</code></td>
+<td>GeoTIFF, keeps the source georeferencing.</td>
+</tr>
+<tr>
+<td>Figures (out)</td>
+<td><code>.png</code></td>
+<td>Distribution graph and histogram.</td>
+</tr>
+<tr>
+<td>Numeric results (out)</td>
+<td><code>.json</code></td>
+<td>Curve, histogram bins and KPI percentiles.</td>
+</tr>
+<tr>
+<td>Volumes (out)</td>
+<td><code>.xlsx</code></td>
+<td>One <span class="ui">Volume Export</span> sheet.</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="settings-reference">10.5 Settings reference</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Default save path :</span></td>
+<td>Application <code>src/ProjectSave</code> folder</td>
+<td>Proposed folder for new projects</td>
+</tr>
+<tr>
+<td><span class="ui">Explore :</span></td>
+<td><span class="ui">Production</span></td>
+<td>Which platform environment to use</td>
+</tr>
+<tr>
+<td><span class="ui">Select Language :</span></td>
+<td><strong>En</strong></td>
+<td>Interface language; restart required</td>
+</tr>
+<tr>
+<td><span class="ui">Threshold :</span></td>
+<td><code>100;200;300</code></td>
+<td>Default intermediate size classes, mm</td>
+</tr>
+<tr>
+<td><span class="ui">Threshold master :</span></td>
+<td><code>0;100;200;300;1000</code></td>
+<td>Full class range including bounds, mm</td>
+</tr>
+</tbody>
+</table>
+<h2 class="sub-title" id="where-data-is-stored">10.6 Where data is stored</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fragmentation results</td>
+<td>In the project folder, in the <code>.mpk</code> file. This is what you back up and what you reopen.</td>
+</tr>
+<tr>
+<td>Source imagery</td>
+<td>Left where it is — the project only remembers where to find it. <strong>Do not move or rename your orthomosaics after processing</strong>, or SmartFrag will ask you to locate them again.</td>
+</tr>
+<tr>
+<td>Application settings</td>
+<td>With your Windows account, not in the project. Not transferred when you copy a project folder to a colleague.</td>
+</tr>
+<tr>
+<td>Explore session</td>
+<td>Stored with the settings; cleared by <span class="ui">Log out</span>.</td>
+</tr>
+<tr>
+<td>Log file</td>
+<td><code>debug.log</code>, beside the application. Attach it to any support request.</td>
+</tr>
+</tbody>
+</table></div><div class="section" id="faq"><h1 class="section-title"><span class="num">11</span>Troubleshooting &amp; FAQ</h1><h2 class="sub-title" id="start-up-licence">11.1 Start-up &amp; licence</h2>
+<div class="faq-item" id="smartfrag-does-not-start-at-all"><div class="faq-q">SmartFrag does not start at all.</div><div class="faq-a">Check that you extracted the archive and are not running <code>SmartFrag.exe</code> from inside the zip, and that the <code>_internal</code> folder sits beside the executable. Then check whether antivirus quarantined the file.</div></div>
+
+<div class="faq-item" id="the-sign-in-dialog-appears-every-time-i-start"><div class="faq-q">The sign-in dialog appears every time I start.</div><div class="faq-a">The local licence is missing or expired. Sign in once while connected to the network to renew it; afterwards SmartFrag starts straight into the application.</div></div>
+
+<div class="faq-item" id="access-denied-after-a-correct-sign-in"><div class="faq-q">Access Denied after a correct sign-in.</div><div class="faq-a">Your Explore account exists but is not entitled to SmartFrag. Your administrator must add the entitlement.</div></div>
+
+<div class="faq-item" id="can-i-work-without-a-network"><div class="faq-q">Can I work without a network?</div><div class="faq-a">Yes. Import, clipping, fragmentation, correction, volume and all exports are fully offline. Only the Explore exchange needs a connection.</div></div>
+
+<h2 class="sub-title" id="loading-files">11.2 Loading files</h2>
+<div class="faq-item" id="my-file-does-not-appear-in-the-open-dialog"><div class="faq-q">My file does not appear in the open dialog.</div><div class="faq-a">Check the extension against <a href="#file-formats">File formats</a>. The commonest cause is a <code>.tiff</code> orthomosaic — rename it to <code>.tif</code>.</div></div>
+
+<div class="faq-item" id="i-selected-a-file-and-nothing-happened"><div class="faq-q">I selected a file and nothing happened.</div><div class="faq-a">A file whose extension is not accepted is ignored silently. Verify the extension and select again.</div></div>
+
+<div class="faq-item" id="open-dem-and-open-dxfstr-are-greyed-out"><div class="faq-q">Open DEM and Open DXF/STR are greyed out.</div><div class="faq-a">Select the <strong>orthomosaic</strong> node in the tree. Both commands are only enabled there.</div></div>
+
+<div class="faq-item" id="the-resolution-shows-0-after-loading"><div class="faq-q">The resolution shows 0 after loading.</div><div class="faq-a">The image carries no georeferencing. Set the scale manually with <span class="ui">Find Resolution</span> (<a href="#setting-the-scale">Setting the scale</a>) before running any analysis.</div></div>
+
+<div class="faq-item" id="my-dem-will-not-load"><div class="faq-q">My DEM will not load.</div><div class="faq-a">Three usual causes: the parent orthomosaic is not a georeferenced TIF; the DEM declares no nodata value; the DEM is not georeferenced. Re-export it from your photogrammetry software with an explicit nodata value.</div></div>
+
+<div class="faq-item" id="wrong-project-version-when-opening-a-project"><div class="faq-q">Wrong project version when opening a project.</div><div class="faq-a">Version 0.7.9 opens only <code>*_v43.mpk</code> files. Open older projects with the version that produced them, or re-run the analysis from the source imagery.</div></div>
+
+<h2 class="sub-title" id="clipping">11.3 Clipping</h2>
+<div class="faq-item" id="the-clip-commands-are-greyed-out"><div class="faq-q">The clip commands are greyed out.</div><div class="faq-a">Either the selected node is not an orthomosaic, or a clipping tab is already open. Close the open editor first — only one clipping session at a time is allowed.</div></div>
+
+<div class="faq-item" id="right-clicking-does-not-close-my-polygon"><div class="faq-q">Right-clicking does not close my polygon.</div><div class="faq-a">Fewer than three points have been placed. Add more vertices and try again.</div></div>
+
+<div class="faq-item" id="error-not-enough-coordinates-taken"><div class="faq-q">Error — Not enough coordinates taken .</div><div class="faq-a">No usable polygon was selected when you finished. Make sure at least one <span class="ui">Poly n°N</span> checkbox is ticked before <span class="ui">Finish Editing</span>.</div></div>
+
+<div class="faq-item" id="the-ai-dialog-never-closes"><div class="faq-q">The AI dialog never closes.</div><div class="faq-a">The inference failed. Close the dialog manually and clip by hand. This typically happens on very large orthomosaics on machines without a GPU.</div></div>
+
+<div class="faq-item" id="the-ai-contour-is-wrong"><div class="faq-q">The AI contour is wrong.</div><div class="faq-a">Expected on complex scenes. Edit the polygon in the Contour Editor before finishing — drag, insert and remove vertices freely. Remember it returns at most three areas, so an outlying part of the pile may simply be missing.</div></div>
+
+<h2 class="sub-title" id="fragmentation">11.4 Fragmentation</h2>
+<div class="faq-item" id="fragmentation-is-greyed-out"><div class="faq-q">Fragmentation is greyed out.</div><div class="faq-a">Either the selected node is not a clip, or that clip already has results. Create a new clip, or delete its <span class="ui">Distribution graph</span> and <span class="ui">Colormap</span> children.</div></div>
+
+<div class="faq-item" id="error-no-valid-predictions-detected"><div class="faq-q">Error — No valid predictions detected.</div><div class="faq-a">Either nothing was detected, or every reported diameter exceeds 3 m. In practice this almost always means a wrong resolution — check the <span class="ui">Resolution (m/pixel)</span> boxes first. Otherwise the clip may cover an area with no visible broken rock, or the image may be too coarse to resolve individual blocks.</div></div>
+
+<div class="faq-item" id="the-application-seems-frozen-during-the-run"><div class="faq-q">The application seems frozen during the run.</div><div class="faq-a">The detection engine is working. The upper progress bar advances at the stage boundaries only, so long pauses at 25 % are normal on a large image. Do not force-close the application.</div></div>
+
+<div class="faq-item" id="cancel-does-nothing"><div class="faq-q">Cancel does nothing.</div><div class="faq-a">Known behaviour: the external detection engine finishes the current image regardless. Wait for it to complete.</div></div>
+
+<div class="faq-item" id="all-my-rocks-look-far-too-big-or-too-small"><div class="faq-q">All my rocks look far too big or too small.</div><div class="faq-a">The ground resolution is wrong. Fix it on the ortho node and run the analysis on a fresh clip — existing results are not recomputed.</div></div>
+
+<div class="faq-item" id="too-much-fines-in-the-curve"><div class="faq-q">Too much fines in the curve.</div><div class="faq-a">Un-detected surface is counted as fines. Look at the colormap for uncoloured areas: if real rocks were missed, add them in <span class="ui">Correct Segmentation</span> and save. If the clip includes ground that is not muckpile, redo the clip more tightly.</div></div>
+
+<h2 class="sub-title" id="volume-2">11.5 Volume</h2>
+<div class="faq-item" id="volume-is-greyed-out"><div class="faq-q">Volume is greyed out.</div><div class="faq-a">No DEM has been loaded for that orthomosaic. Load one first (<a href="#opening-a-dem">Opening a DEM</a>).</div></div>
+
+<div class="faq-item" id="no-dem-loaded-for-this-muckpile-in-the-volume-details-dialog"><div class="faq-q">No DEM loaded for this muckpile. in the Volume Details dialog.</div><div class="faq-a">That orthomosaic has no DEM. The dialog lists every ortho in the project, including those without elevation data.</div></div>
+
+<div class="faq-item" id="the-volume-looks-far-too-large"><div class="faq-q">The volume looks far too large.</div><div class="faq-a">The <span class="ui">Min level</span> reference is being dragged down by a single low point in the DEM. Switch to <span class="ui">Custom level</span> and enter the known floor elevation.</div></div>
+
+<div class="faq-item" id="my-volumes-disappeared-after-reloading-the-project"><div class="faq-q">My volumes disappeared after reloading the project.</div><div class="faq-a">Volumes, DEMs and DXF overlays are session-only. Reload the DEM and recompute, or keep the Excel export.</div></div>
+
+<h2 class="sub-title" id="explore-exports">11.6 Explore &amp; exports</h2>
+<div class="faq-item" id="explore-export-is-greyed-out"><div class="faq-q">Explore › Export is greyed out.</div><div class="faq-a">You are not signed in. Use <span class="ui">Explore</span> › <span class="ui">Log in</span> and check the status-bar dot turns green.</div></div>
+
+<div class="faq-item" id="error-data-sending-failed"><div class="faq-q">Error — Data sending failed.</div><div class="faq-a">Connection lost or session expired. Log out, log back in and retry. If it persists, check the <span class="ui">Explore :</span> environment in <span class="ui">Settings</span> is set to <span class="ui">Production</span>.</div></div>
+
+<div class="faq-item" id="the-pdf-did-not-open-after-export"><div class="faq-q">The PDF did not open after export.</div><div class="faq-a">The file was written even if the viewer did not launch. Open it from the folder you chose.</div></div>
+
+<div class="faq-item" id="saving-corrections-fails"><div class="faq-q">Saving corrections fails.</div><div class="faq-a">The project folder is read-only, on a network drive that has dropped, or the project file is open in another program. Close it and retry, or copy the project to a local disk.</div></div>
+
+<div class="faq-item" id="deleted-a-node-by-mistake-is-my-data-lost"><div class="faq-q">Deleted a node by mistake — is my data lost?</div><div class="faq-a">No. Deleting removes the node from the session only; nothing is deleted on disk. Reload the project to get it back.</div></div>
+</div><div class="section" id="glossary"><h1 class="section-title"><span class="num">12</span>Glossary</h1><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blast pattern</td>
+<td>The geometric layout of blastholes (burden, spacing, depth) designed for a given shot.</td>
+</tr>
+<tr>
+<td>Clip / clipped</td>
+<td>In SmartFrag, the polygon delimiting the muckpile, and the resulting tree node. Only what is inside is analysed.</td>
+</tr>
+<tr>
+<td>Colormap</td>
+<td>The result view where every detected rock is filled with the colour of its size class.</td>
+</tr>
+<tr>
+<td>Cumulative passing curve</td>
+<td>The granulometry curve: for each size, the percentage of material finer than that size.</td>
+</tr>
+<tr>
+<td>Cut volume</td>
+<td>Material lying above the reference plane — what would have to be excavated.</td>
+</tr>
+<tr>
+<td>D50, D80…</td>
+<td>Passing sizes. D80 = the size below which 80 % of the material lies. D50 is the median.</td>
+</tr>
+<tr>
+<td>DEM</td>
+<td>Digital Elevation Model — a raster of ground elevation, produced here by photogrammetry.</td>
+</tr>
+<tr>
+<td>DXF</td>
+<td>CAD exchange format used to carry design strings from mine-planning software.</td>
+</tr>
+<tr>
+<td>Feret diameter</td>
+<td>The distance between two parallel tangents to a particle. The <em>minimum</em> Feret is its narrowest caliper width; the <em>maximum</em> is its longest dimension.</td>
+</tr>
+<tr>
+<td>Fill volume</td>
+<td>Material lying below the reference plane — what would be needed to fill up to it.</td>
+</tr>
+<tr>
+<td>Fines</td>
+<td>The finest fraction of the blasted material, too small to be resolved individually in the imagery. SmartFrag estimates it from the surface it could not attribute to any rock.</td>
+</tr>
+<tr>
+<td>Fragmentation</td>
+<td>The size distribution of rock produced by a blast. The primary output of SmartFrag.</td>
+</tr>
+<tr>
+<td>GeoTIFF</td>
+<td>A TIFF image carrying its coordinate system and geographic position, allowing SmartFrag to derive the scale automatically.</td>
+</tr>
+<tr>
+<td>Ground resolution</td>
+<td>The size of one image pixel on the ground, in metres. The scale factor behind every reported diameter.</td>
+</tr>
+<tr>
+<td>Muckpile</td>
+<td>The heap of broken rock left by a blast, before loading.</td>
+</tr>
+<tr>
+<td>Orthomosaic</td>
+<td>A geometrically corrected, seamless top-down image assembled from overlapping aerial photographs.</td>
+</tr>
+<tr>
+<td>Oversize</td>
+<td>Blocks too large for the downstream equipment, requiring secondary breakage. The costly tail of the distribution.</td>
+</tr>
+<tr>
+<td>Passing size</td>
+<td>See D50, D80.</td>
+</tr>
+<tr>
+<td>Photogrammetry</td>
+<td>Deriving measurements and 3D geometry from overlapping photographs — how the orthomosaic and DEM are produced.</td>
+</tr>
+<tr>
+<td>Segmentation</td>
+<td>The automatic delineation of individual rocks in the image. Reviewed and edited in <span class="ui">Correct Segmentation</span>.</td>
+</tr>
+<tr>
+<td>STR</td>
+<td>Surpac string file — a text format carrying survey or design polylines.</td>
+</tr>
+<tr>
+<td>Threshold</td>
+<td>A size boundary separating two colour classes in the colormap.</td>
+</tr>
+</tbody>
+</table></div><div class="section" id="appendix"><h1 class="section-title"><span class="num">13</span>Appendix — Technical Notes</h1><div class="note-info"><strong>Who this appendix is for.</strong> Nothing here is needed to use SmartFrag. It records the behaviour behind the interface for support, training and future revisions of this manual — useful when a result has to be explained or a problem diagnosed, and safe to skip otherwise.</div>
+<h2 class="sub-title" id="a1-inside-a-fragmentation-run">13.1 A.1 Inside a fragmentation run</h2>
+<p>The <span class="ui">Process Analysis</span> dialog reports five steps. Knowing which one is slow helps when a run appears stuck.</p>
+<table>
+<thead>
+<tr>
+<th>Progress</th>
+<th>Label</th>
+<th>What is happening</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 %</td>
+<td><span class="ui">Initializing...</span></td>
+<td>The clipped image is prepared and handed to the detection engine.</td>
+</tr>
+<tr>
+<td>25 %</td>
+<td><em>Running AI model</em></td>
+<td>The engine divides the image into tiles and detects the rocks in each. <strong>This is the long step</strong> — a long pause here is normal.</td>
+</tr>
+<tr>
+<td>50 %</td>
+<td><em>Processing predictions</em></td>
+<td>Detections are reassembled across tiles, filtered, and converted from pixels to real-world sizes using the ground resolution.</td>
+</tr>
+<tr>
+<td>75 %</td>
+<td><em>Build views</em></td>
+<td>The curve, the histogram and the colour map are built, and the project file is written.</td>
+</tr>
+<tr>
+<td>90–100 %</td>
+<td><em>Process completed</em> → <em>Elapsed time</em></td>
+<td>Finished. <span class="ui">Next</span> becomes clickable.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="sub-sub-title" id="filters-applied-to-the-detections">Filters applied to the detections</h3>
+<ul>
+<li>Detections with a null confidence score are dropped.</li>
+<li>Rocks whose outline touches the clip boundary are discarded — they are cut off by the boundary, so their apparent size would be wrong. This is the reason a slightly tight clip is safer than a generous one.</li>
+</ul>
+<h3 class="sub-sub-title" id="how-the-curve-is-built">How the curve is built</h3>
+<p>Diameters are accumulated into 10 mm bins to form the cumulative passing curve, and into 50 mm bins for the histogram. The muckpile surface not attributed to any rock is added to the smallest bin as the fines fraction. D10 to D100 are then read off the resulting curve.</p>
+<h2 class="sub-title" id="a2-the-ai-models">13.2 A.2 The AI models</h2>
+<p>SmartFrag uses two independent models, which is why one can work while the other does not.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Used by</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contour model</td>
+<td><span class="ui">Clip muckpile IA</span></td>
+<td>A segmentation network run on a downscaled, contrast-enhanced copy of the orthomosaic. Its mask is converted to polygons, of which only the <strong>three largest</strong> are kept and simplified. It benefits from a CUDA GPU when one is present.</td>
+</tr>
+<tr>
+<td>Detection engine</td>
+<td><span class="ui">Fragmentation</span></td>
+<td>A separate program bundled with the application, which tiles the image and returns one outline, bounding box, area and confidence score per rock. It runs on the CPU and is unaffected by the contour model.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="sub-sub-title" id="how-the-diameters-are-derived">How the diameters are derived</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Computation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Area equivalent diameter</span></td>
+<td>The rock's pixel count × the ground resolution gives its surface; the reported diameter is that of a circle of the same surface.</td>
+</tr>
+<tr>
+<td><span class="ui">Min Feret diameter</span></td>
+<td>The shorter side of the smallest rotated rectangle enclosing the outline.</td>
+</tr>
+<tr>
+<td><span class="ui">Max Feret diameter</span></td>
+<td>The longer side of that same rectangle.</td>
+</tr>
+</tbody>
+</table>
+<p>All three are recomputed from the stored outlines when you change the mode, so switching is instantaneous and never re-runs the detection.</p>
+<h2 class="sub-title" id="a3-files-locations">13.3 A.3 Files &amp; locations</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Exact location / name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Project file</td>
+<td><code>&lt;save path&gt;\&lt;project name&gt;\Project_v43.mpk</code>. One record is appended per fragmentation run. Only files ending in <code>_v43.mpk</code> can be opened by version 0.7.9.</td>
+</tr>
+<tr>
+<td>Application settings</td>
+<td>Windows registry, <code>HKEY_CURRENT_USER\Software\Smartfrag</code> — save path, language, Explore environment and token, thresholds and colours, reporter name and title.</td>
+</tr>
+<tr>
+<td>Log file</td>
+<td><code>debug.log</code>, in the application folder.</td>
+</tr>
+<tr>
+<td>Default export names</td>
+<td><code>Fragmentation_Report.pdf</code>, <code>muckpileImage.tif</code>, <code>graphDatas.json</code>.</td>
+</tr>
+<tr>
+<td>Application layout</td>
+<td><code>SmartFrag.exe</code> plus an <code>_internal</code> folder holding the models, the detection engine and the interface resources. The two must stay together.</td>
+</tr>
+</tbody>
+</table>
+<div class="note"><strong>What a project does <em>not</em> contain:</strong> the imagery (only its path), the DEM, DXF/STR overlays, computed volumes, manually entered resolutions and colormap thresholds. Reopening a project restores the orthomosaic reference, the clip boundaries and the fragmentation results only.</div>
+<h2 class="sub-title" id="a4-known-limitations-of-version-079">13.4 A.4 Known limitations of version 0.7.9</h2>
+<table>
+<thead>
+<tr>
+<th>Behaviour</th>
+<th>Consequence for the user</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ui">Save as a copy of project</span> writes to the same project file as <span class="ui">Save changes</span></td>
+<td>No second copy is produced. Duplicate the project folder manually before correcting if the original run must be kept.</td>
+</tr>
+<tr>
+<td><span class="ui">Min diameter (mm)</span> in the report form is a placeholder, not a measurement</td>
+<td>Must be reviewed and replaced before the report is signed.</td>
+</tr>
+<tr>
+<td><span class="ui">DEM Based Model</span> is not operational</td>
+<td>Only the ortho-based contour model runs. The entry is greyed out without a DEM and returns nothing when selected.</td>
+</tr>
+<tr>
+<td><span class="ui">Cancel</span> does not interrupt the detection engine</td>
+<td>The window stays unresponsive until the current image is finished.</td>
+</tr>
+<tr>
+<td>The lower progress bar and <span class="ui">Waiting...</span> are not driven</td>
+<td>Cosmetic only — watch the upper bar.</td>
+</tr>
+<tr>
+<td><span class="ui">Delete polygon</span> and <span class="ui">Ignore polygon</span> on the rock card change the picture only</td>
+<td>The curve and the KPIs are not recomputed and the change is not saved. Use <span class="ui">Correct Segmentation</span> to alter the statistics.</td>
+</tr>
+<tr>
+<td>An unsupported file selected in an open dialog is ignored without a message</td>
+<td>If nothing happens after choosing a file, check its extension against <a href="#file-formats">File formats</a>.</td>
+</tr>
+<tr>
+<td>A few dialogs are not translated</td>
+<td>The image-resize dialog for PNG/JPG and the project-open dialog title appear in French regardless of the interface language.</td>
+</tr>
+<tr>
+<td>Clearing a <span class="ui">Resolution (m/pixel)</span> box causes an error</td>
+<td>Select the value and type over it rather than emptying the field.</td>
+</tr>
+</tbody>
+</table></div></div><!-- /content -->
+<footer>
+<strong>SmartFrag — Muckpile Fragmentation Tool</strong> · Version 0.7.9 · User Documentation<br/>
+  EPC Groupe — Global Technical Solutions
+</footer>
+</div><!-- /main -->
+</div><!-- /layout -->
+<script>
+var isScrolling = false;
+
+function estimateScrollDuration(targetEl) {
+  var dist = Math.abs(targetEl.getBoundingClientRect().top);
+  return Math.min(2500, Math.max(600, dist * 0.6));
+}
+
+function scrollToSection(event, target) {
+  event.preventDefault();
+  event.stopPropagation();
+  var targetEl = document.getElementById(target);
+  if (targetEl) {
+    isScrolling = true;
+    var duration = estimateScrollDuration(targetEl);
+    var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+    clearTimeout(window._scrollTimer);
+    window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+  }
+}
+
+function handleChapterClick(event, el) {
+  event.preventDefault();
+  event.stopPropagation();
+  var section = el.closest('.acc-section');
+  var target = el.getAttribute('data-target');
+  var allSections = document.querySelectorAll('.acc-section');
+  for (var i = 0; i < allSections.length; i++) {
+    if (allSections[i] !== section) allSections[i].classList.remove('open');
+  }
+  section.classList.toggle('open');
+  if (target) {
+    var targetEl = document.getElementById(target);
+    if (targetEl) {
+      isScrolling = true;
+      var duration = estimateScrollDuration(targetEl);
+      var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      clearTimeout(window._scrollTimer);
+      window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+    }
+  }
+}
+
+// Nav items click
+var navItems = document.querySelectorAll('#sidebar-nav .nav-item');
+for (var k = 0; k < navItems.length; k++) {
+  navItems[k].addEventListener('click', function(ev) {
+    var href = this.getAttribute('href');
+    if (href) {
+      var targetEl = document.querySelector(href);
+      if (targetEl) {
+        ev.preventDefault();
+        isScrolling = true;
+        var duration = estimateScrollDuration(targetEl);
+        var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        clearTimeout(window._scrollTimer);
+        window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+      }
+    }
+  });
+}
+
+// Scroll spy
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    window.requestAnimationFrame(function() { updateActiveNav(); ticking = false; });
+    ticking = true;
+  }
+});
+
+function updateActiveNav() {
+  if (isScrolling) return;
+  var allEls = document.querySelectorAll('.section[id], h2[id]');
+  var current = '';
+  for (var i = 0; i < allEls.length; i++) {
+    if (allEls[i].getBoundingClientRect().top < 120) current = allEls[i].id;
+  }
+  var items = document.querySelectorAll('.nav-item, .nav-chapter');
+  for (var j = 0; j < items.length; j++) {
+    items[j].classList.remove('active');
+    var href = items[j].getAttribute('href');
+    var dt = items[j].getAttribute('data-target');
+    if ((href && href === '#' + current) || (dt && dt === current)) {
+      items[j].classList.add('active');
+    }
+  }
+  var btn = document.getElementById('back-to-top');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+}
+
+// Back to top
+document.getElementById('back-to-top').addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Search
+document.getElementById('sidebar-search-input').addEventListener('input', function(e) {
+  var q = e.target.value.toLowerCase();
+  var sections = document.querySelectorAll('.acc-section');
+  for (var i = 0; i < sections.length; i++) {
+    var text = sections[i].textContent.toLowerCase();
+    if (q === '' || text.indexOf(q) !== -1) {
+      sections[i].style.display = '';
+      if (q) sections[i].classList.add('open');
+    } else {
+      sections[i].style.display = 'none';
+    }
+  }
+});
+
+// Open first section by default
+var firstSection = document.querySelector('.acc-section');
+if (firstSection) firstSection.classList.add('open');
+</script>
+</body>
+</html>

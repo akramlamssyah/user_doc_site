@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ExperTab — User Documentation</title>
+<style>
+  :root {
+    --teal: #00C79A;
+    --teal-light: #DFF8F3;
+    --teal-mid: #30D2AE;
+    --teal-dark: #008668;
+    --dark: #005542;
+    --grey-bg: #F4F6F7;
+    --grey-line: #CCCCCC;
+    --amber: #E67E22;
+    --red: #C0392B;
+    --green: #1D8A5E;
+    --white: #ffffff;
+    --text: #2c3e50;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: #f9fafb;
+    line-height: 1.7;
+  }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #ffffff;
+    color: var(--text);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--grey-line);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+  .app-logo svg { display: block; width: 145px; height: auto; margin-bottom: 4px; }
+  .app-logo .app-sub {
+    font-size: 13px;
+    color: #5a6a7a;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .sidebar-search {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--grey-line);
+    flex-shrink: 0;
+  }
+  .sidebar-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--grey-line);
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    background: #f8f9fa;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .sidebar-search input:focus { border-color: var(--teal); }
+
+  .sidebar-nav-content { flex: 1; overflow-y: auto; padding: 8px 0; }
+
+  .sidebar nav { padding: 0; }
+  /* Accordion */
+  .nav-chapter {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; text-decoration: none; color: #2c3e50;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    border: none; background: none; width: 100%; text-align: left;
+    user-select: none;
+  }
+  .nav-chapter:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-chapter.active { color: var(--teal); }
+  .ch-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 22px; border-radius: 4px;
+    background: var(--teal-light); color: var(--teal);
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .ch-title { flex: 1; }
+  .chevron {
+    flex-shrink: 0; transition: transform 0.3s;
+    color: #5a6a7a; opacity: 0.6;
+    font-size: 12px; display: inline-block;
+  }
+  .acc-section.open > .nav-chapter .chevron { transform: rotate(90deg); }
+  .nav-items { display: none; padding-left: 0; overflow: hidden; }
+  .acc-section.open > .nav-items { display: block; }
+  .nav-item {
+    display: block; padding: 5px 16px 5px 46px;
+    text-decoration: none; color: #5a6a7a;
+    font-size: 12.5px; line-height: 1.5;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { color: var(--teal); background: var(--teal-light); }
+  .nav-item.active {
+    color: var(--teal); border-left-color: var(--teal);
+    font-weight: 600; background: var(--teal-light);
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-x: hidden; margin-left: 280px; }
+
+  /* ── BACK TO TOP ── */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 200;
+    transition: background 0.2s;
+  }
+  #back-to-top:hover { background: var(--teal-dark); }
+  #back-to-top.visible { display: flex; }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--dark) 100%);
+    color: white;
+    padding: 80px 60px 70px;
+  }
+  .cover h1 { font-size: 56px; font-weight: 800; letter-spacing: 2px; line-height: 1.1; }
+  .cover .subtitle { font-size: 22px; opacity: .85; margin-top: 10px; }
+  .cover .tagline { font-size: 14px; opacity: .6; margin-top: 30px; letter-spacing: .5px; }
+  .cover .meta { display: flex; gap: 30px; margin-top: 40px; }
+  .cover .meta-item { background: rgba(255,255,255,.1); border-radius: 8px; padding: 12px 20px; font-size: 13px; }
+  .cover .meta-item span { display: block; font-size: 10px; opacity: .65; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 3px; }
+
+  /* ── TOC ── */
+  .toc-section { background: var(--white); border-bottom: 1px solid var(--grey-line); padding: 50px 60px; }
+  .toc-section h2 { color: var(--teal); font-size: 22px; margin-bottom: 24px; padding-bottom: 10px; border-bottom: 3px solid var(--teal); display: inline-block; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 6px; }
+  .toc-grid a { display: block; color: var(--teal); text-decoration: none; font-size: 14px; padding: 5px 0; border-bottom: 1px dotted #d0dfe0; }
+  .toc-grid a:hover { color: var(--dark); }
+  .toc-grid a .toc-num { font-weight: 700; margin-right: 6px; }
+
+  /* ── CONTENT SECTIONS ── */
+  .content { padding: 0 60px 80px; }
+  .section { padding-top: 60px; }
+  .section + .section { border-top: 1px solid #e8ecee; }
+
+  h1.section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+    padding-bottom: 12px;
+    border-bottom: 4px solid var(--teal);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h1.section-title .num {
+    background: var(--teal);
+    color: white;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; flex-shrink: 0;
+  }
+
+  h2.sub-title {
+    font-size: 19px;
+    color: var(--dark);
+    margin: 36px 0 14px;
+    padding-left: 14px;
+    border-left: 4px solid var(--teal);
+  }
+  h3.sub-sub-title {
+    font-size: 15px;
+    color: var(--teal);
+    margin: 24px 0 8px;
+    font-weight: 700;
+  }
+
+  p { margin: 8px 0 10px; }
+
+  ul, ol { padding-left: 28px; margin: 10px 0 14px; }
+  ul li, ol li { margin-bottom: 5px; }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--teal); color: white; }
+  thead th { padding: 11px 14px; text-align: left; font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--grey-bg); }
+  tbody tr:hover { background: var(--teal-light); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid #e5eaeb; vertical-align: top; }
+  tbody td:first-child { font-weight: 600; color: var(--dark); white-space: nowrap; }
+
+  /* ── NOTE / CALLOUT ── */
+  .note {
+    background: #fff8ee;
+    border-left: 4px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #5a4010;
+  }
+  .note strong { color: var(--amber); }
+  .note-info {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--dark);
+  }
+  .note-info strong { color: var(--teal-dark); }
+  .note-red {
+    background: #fdecea;
+    border-left: 4px solid var(--red);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #6b1010;
+  }
+
+  /* ── STATUS BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .badge-planned   { background: #e8f0fe; color: #1a56db; }
+  .badge-drilled   { background: #dcfce7; color: #166534; }
+  .badge-loading   { background: #fef3c7; color: #92400e; }
+  .badge-filled    { background: #d1fae5; color: #065f46; }
+  .badge-blasted   { background: #f3e8ff; color: #6b21a8; }
+  .badge-missing   { background: #fce7f3; color: #9d174d; }
+  .badge-collapsed { background: #fee2e2; color: #991b1b; }
+  .badge-adjust    { background: #fff7ed; color: #c2410c; }
+  .badge-redrill   { background: #ecfccb; color: #365314; }
+
+  /* ── ROLE CARDS ── */
+  .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+  .role-card {
+    background: white;
+    border: 2px solid var(--teal-light);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .role-card .role-name { font-weight: 800; color: var(--teal); font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
+  .role-card .role-menu { font-size: 12px; color: #666; margin-top: 4px; }
+  .role-card .role-desc { font-size: 13px; color: var(--text); margin-top: 8px; line-height: 1.5; }
+
+  /* ── FAQ ── */
+  .faq-item { margin: 18px 0; }
+  .faq-q {
+    background: var(--grey-bg);
+    border-left: 4px solid var(--teal);
+    padding: 10px 14px;
+    font-weight: 600;
+    border-radius: 0 6px 6px 0;
+    color: var(--dark);
+    cursor: pointer;
+  }
+  .faq-a { padding: 10px 14px 4px; font-size: 14px; }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 14px 0; }
+  .steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .steps li::before {
+    content: counter(step);
+    background: var(--teal);
+    color: white;
+    min-width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    color: #6a8a8d;
+    text-align: center;
+    padding: 28px;
+    font-size: 13px;
+    margin-top: 60px;
+  }
+  footer strong { color: #a0bec1; }
+
+  /* ── PRINT ── */
+  @media print {
+    .sidebar { display: none; }
+    .cover { break-after: page; }
+    .section { break-inside: avoid; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 16px rgba(0,0,0,0.15); }
+    .main { margin-left: 0; }
+    .cover, .toc-section, .content { padding-left: 24px; padding-right: 24px; }
+    .cover h1 { font-size: 36px; }
+  }
+
+.app-logo {
+  padding: 12px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* GTS Logo */
+.gts-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.gts-text {
+  line-height: 1.2;
+}
+.gts-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #D63384 0%, #7B2FF7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* GTS Logo */
+.gts-logo {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gts-logo svg {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+<div class="gts-logo">
+<svg fill="none" height="38" viewbox="0 0 145 38" width="145" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4005_30414)">
+<path d="M96.7249 23.612C100.619 23.612 103.773 26.7747 103.773 30.6727C103.773 34.5708 100.619 37.7334 96.7249 37.7334C92.8307 37.7334 89.6768 34.5708 89.6768 30.6727C89.6768 26.7747 92.8337 23.612 96.7249 23.612ZM95.3422 27.8626C95.1005 27.8626 94.9078 28.0618 94.9078 28.3039C94.9078 28.546 95.1066 28.739 95.3483 28.736L98.2207 28.7145L94.0176 32.9865C93.8493 33.1581 93.8493 33.4339 94.0237 33.6055C94.195 33.774 94.4703 33.774 94.6386 33.6024L98.8417 29.3305L98.8631 32.2081C98.8631 32.4502 99.062 32.6432 99.3037 32.6402C99.5453 32.6402 99.738 32.441 99.735 32.2019L99.7075 28.2702C99.7075 28.0281 99.5086 27.835 99.27 27.835L95.3452 27.8626H95.3422Z" fill="#00C79A"></path>
+<path d="M30.1191 31.1971L30.1161 31.2029C30.1161 32.3031 30.2629 33.0634 30.5566 33.4832C30.8503 33.9061 31.3275 34.1142 31.9913 34.1142C32.4624 34.1142 32.9029 33.9487 33.3128 33.6147C33.735 33.2837 34.0715 32.8148 34.3284 32.2142C34.5823 31.6135 34.7108 30.9363 34.7108 30.1824V26.0606H37.1611V36.1827H34.7108V35.5484C34.7108 35.2664 34.7353 35.0305 34.7873 34.8405C34.8393 34.6352 34.9158 34.4114 35.0167 34.1694C35.0809 34.0039 35.1115 33.9027 35.1115 33.8629C35.1115 33.7464 35.0595 33.6821 34.9586 33.6698H34.9005C34.8118 33.6698 34.7353 33.7464 34.671 33.8997C34.3529 34.5402 33.9063 35.1071 33.3312 35.6066C32.7714 36.0908 32.0922 36.336 31.303 36.336C30.1803 36.336 29.2932 35.9713 28.6447 35.2419C27.9931 34.5126 27.6688 33.4461 27.6688 32.0398V26.0576H30.1191V31.1971ZM5.79355 22.3985C6.9039 22.3985 7.82765 22.5979 8.56791 22.9932C9.30818 23.3884 9.85575 23.9125 10.2137 24.5652C10.5716 25.218 10.7553 25.9261 10.7675 26.6922H8.29874C8.29874 26.1437 8.09379 25.65 7.68693 25.2149C7.28007 24.7675 6.63449 24.5436 5.75351 24.5436C4.87255 24.5437 4.24248 24.7094 3.86009 25.0434C3.47774 25.3744 3.28505 25.733 3.28505 26.1161C3.28511 27.0352 4.15991 27.5929 5.90646 27.7829C7.06582 27.9239 8.02952 28.1356 8.79734 28.4173C9.57435 28.6869 10.1832 29.1068 10.6146 29.6829C11.0489 30.259 11.2661 31.0374 11.2661 32.0211C11.2661 32.775 11.0489 33.471 10.6146 34.1114C10.1924 34.7516 9.56835 35.2603 8.73937 35.6465C7.91037 36.0173 6.91595 36.2011 5.75351 36.2011C4.55441 36.2011 3.53895 35.9713 2.70997 35.5116C1.88096 35.0519 1.26294 34.4513 0.853025 33.7097C0.446199 32.9681 0.241211 32.1621 0.241211 31.2948H2.76791C2.79238 32.0119 3.02188 32.6493 3.4562 33.2132C3.89059 33.7771 4.65536 34.056 5.75351 34.056C6.4418 34.056 7.00488 33.961 7.43927 33.7679C7.88583 33.5629 8.19779 33.3205 8.37522 33.0389C8.56794 32.7447 8.6629 32.4563 8.6629 32.1744C8.6629 31.6748 8.45164 31.2737 8.03258 30.9672C7.61042 30.6485 6.85171 30.4187 5.75351 30.2777C4.4902 30.1122 3.48998 29.8606 2.74971 29.5297C2.02165 29.1834 1.50164 28.7513 1.18044 28.2273C0.862294 27.691 0.700072 27.026 0.700072 26.2353C0.700072 25.5335 0.90503 24.8869 1.31189 24.2985C1.71871 23.7102 2.30911 23.2505 3.07382 22.9195C3.85079 22.5733 4.7594 22.4018 5.79024 22.4018L5.79355 22.3985ZM67.8436 25.9108C68.9663 25.9108 69.8537 26.2752 70.505 27.0045C71.1566 27.7339 71.4809 28.8003 71.4809 30.2069V36.1889H69.0305V31.0497C69.0305 29.9495 68.8837 29.1895 68.59 28.7697C68.2964 28.3498 67.8191 28.1384 67.1553 28.1384C66.6842 28.1384 66.2376 28.3039 65.8154 28.6379C65.4086 28.9689 65.0751 29.438 64.8212 30.0387C64.5673 30.639 64.4389 31.3163 64.4389 32.0702V36.1922H61.9886V26.0698H64.4389V26.7045C64.4389 26.9984 64.4144 27.2466 64.3624 27.4519C64.3104 27.6573 64.2339 27.8659 64.133 28.0835C64.0687 28.2368 64.0381 28.3409 64.0381 28.39C64.0381 28.5031 64.0901 28.5677 64.1911 28.58H64.2492C64.3379 28.58 64.4144 28.5031 64.4786 28.3501C64.7601 27.725 65.1945 27.1611 65.7787 26.6647C66.3661 26.1651 67.0544 25.9166 67.8467 25.9166L67.8436 25.9108ZM17.2406 25.7606C18.2622 25.7606 19.1555 25.9905 19.9202 26.4501C20.685 26.9098 21.2724 27.5347 21.6792 28.3284C22.086 29.1221 22.291 30.0047 22.291 30.9761C22.291 31.9476 22.086 32.8271 21.6792 33.6208C21.2724 34.4114 20.685 35.0397 19.9202 35.4994C19.1555 35.959 18.2622 36.1889 17.2406 36.1889C16.2188 36.1889 15.3253 35.959 14.5606 35.4994C13.7959 35.0397 13.2084 34.4145 12.8016 33.6208C12.3948 32.8302 12.1898 31.9476 12.1898 30.9761C12.1898 30.0047 12.3948 29.1221 12.8016 28.3284C13.2085 27.538 13.7959 26.9098 14.5606 26.4501C15.3284 25.9905 16.2188 25.7606 17.2406 25.7606ZM42.5145 26.064H45.2738V28.2122H42.5176V32.8335C42.5176 33.2408 42.5298 33.523 42.5543 33.6763C42.594 33.8292 42.6766 33.9306 42.8021 33.9827C42.9428 34.0226 43.1967 34.0406 43.5668 34.0406H45.2707V36.1889H43.0498C42.3493 36.1889 41.7803 36.1 41.3459 35.9192C40.9115 35.7261 40.5873 35.4074 40.3701 34.96C40.1651 34.5126 40.0642 33.8874 40.0642 33.0814V28.2122H38.2257V26.064H40.0642V23.3026H42.5145V26.064ZM55.7022 25.7606C56.7239 25.7606 57.6171 25.9905 58.3819 26.4501C59.1467 26.9098 59.734 27.5347 60.1409 28.3284C60.5477 29.1221 60.7527 30.0047 60.7527 30.9761C60.7527 31.9476 60.5477 32.8271 60.1409 33.6208C59.734 34.4114 59.1467 35.0397 58.3819 35.4994C57.6171 35.959 56.7239 36.1889 55.7022 36.1889C54.6804 36.1889 53.7872 35.959 53.0224 35.4994C52.2576 35.0397 51.6672 34.4145 51.2604 33.6208C50.8535 32.8302 50.6486 31.9476 50.6486 30.9761C50.6486 30.0047 50.8535 29.1221 51.2604 28.3284C51.6703 27.5347 52.2576 26.9098 53.0224 26.4501C53.7902 25.9905 54.6804 25.7606 55.7022 25.7606ZM77.3362 25.7576C78.6226 25.7579 79.6369 26.0643 80.3766 26.6769C81.1169 27.2776 81.5177 28.0559 81.5819 29.0151H79.1714C79.1316 28.6321 78.9664 28.3134 78.6727 28.056C78.3913 27.8016 77.9263 27.6729 77.2747 27.6729C76.0633 27.6729 75.4576 28.0192 75.4576 28.7087C75.4576 28.9018 75.5035 29.0608 75.5922 29.1864C75.6932 29.3152 75.9043 29.4285 76.2224 29.5327C76.5406 29.6339 77.0147 29.7169 77.6388 29.7813C78.9786 29.9222 80.0187 30.2345 80.759 30.7218C81.5115 31.1937 81.8878 31.9111 81.8878 32.8703C81.8878 33.9306 81.4871 34.7489 80.6825 35.325C79.8902 35.9008 78.7553 36.1889 77.2747 36.1889C75.8465 36.1889 74.7357 35.8763 73.9465 35.2484C73.1695 34.6079 72.7534 33.7342 72.7045 32.6218H75.115C75.1273 33.0814 75.3016 33.471 75.632 33.7927C75.9777 34.1111 76.5497 34.2705 77.3543 34.2705C78.0946 34.2705 78.6238 34.1632 78.9419 33.9459C79.2723 33.7284 79.4406 33.4339 79.4406 33.0634C79.4406 32.8213 79.3335 32.634 79.1163 32.5084C78.9113 32.3797 78.6235 32.285 78.2536 32.2206C77.8835 32.144 77.3023 32.061 76.513 31.9721C75.1364 31.8066 74.2034 31.4358 73.7201 30.8597C73.249 30.2713 73.0134 29.6002 73.0134 28.8463C73.0134 28.2824 73.1786 27.7737 73.5121 27.311C73.8425 26.839 74.335 26.4624 74.9865 26.1805C75.6366 25.8991 76.4179 25.7582 77.3362 25.7576ZM25.9772 36.1858H23.5269V22.3832H25.9772V36.1858ZM49.4127 36.1858H46.9627V26.064H49.4127V36.1858ZM17.2373 27.9852C16.4328 27.9882 15.7934 28.2735 15.3224 28.8497C14.8636 29.4105 14.6341 30.1211 14.6341 30.9761C14.6341 31.8311 14.8635 32.5452 15.3224 33.1213C15.7965 33.6821 16.4328 33.964 17.2373 33.964C18.0418 33.964 18.6751 33.6852 19.1339 33.1213C19.605 32.5482 19.8408 31.8311 19.8408 30.9761C19.8407 30.1211 19.605 29.4135 19.1339 28.8497C18.672 28.2735 18.0418 27.9852 17.2373 27.9852ZM55.7022 27.9852C54.8976 27.9852 54.2583 28.2735 53.7872 28.8497C53.3283 29.4105 53.0989 30.1211 53.0989 30.9761C53.0989 31.8311 53.3283 32.5452 53.7872 33.1213C54.2613 33.6821 54.9007 33.964 55.7022 33.964C56.5036 33.964 57.1369 33.6852 57.5957 33.1213C58.0668 32.5482 58.3024 31.8311 58.3024 30.9761C58.3024 30.1211 58.0668 29.4135 57.5957 28.8497C57.1369 28.2735 56.5067 27.9852 55.7022 27.9852ZM49.4127 24.8381H46.9627V22.3832H49.4127V24.8381ZM32.5695 4.31784C32.5695 4.66413 32.4777 5.01364 32.3003 5.37219C32.288 5.41203 32.2635 5.47034 32.2238 5.54696C32.1993 5.62047 32.1871 5.68492 32.1871 5.73699C32.1871 5.80128 32.2177 5.8504 32.2819 5.89021L32.3584 5.90848C32.4471 5.90845 32.5144 5.86864 32.5511 5.79206C32.5909 5.71544 32.6153 5.66935 32.6276 5.65709C32.958 5.08106 33.3862 4.62754 33.9093 4.2966C34.4477 3.95031 35.084 3.77858 35.8243 3.77858C36.6808 3.77858 37.4395 4.00848 38.1033 4.46809C38.7794 4.92777 39.3025 5.5529 39.6726 6.34661V6.35289C40.0397 7.14654 40.2263 8.02912 40.2263 9.00051C40.2263 9.97193 40.0428 10.8515 39.6726 11.6452C39.3025 12.4389 38.7794 13.064 38.1033 13.5237C37.4395 13.9833 36.6778 14.2132 35.8243 14.2132C35.0962 14.2132 34.4569 14.0447 33.9093 13.7137C33.374 13.3674 32.9457 12.9017 32.6276 12.3134C32.6276 12.3012 32.6031 12.2551 32.5511 12.1784C32.5113 12.1019 32.441 12.0806 32.34 12.1204C32.2513 12.1572 32.2054 12.2153 32.2054 12.2919C32.2054 12.3807 32.236 12.479 32.3003 12.5801C32.4807 12.9386 32.5695 13.2849 32.5695 13.6159V14.057H30.1191V0.254384H32.5695V4.31784ZM77.287 3.78155C78.116 3.78158 78.8869 3.95935 79.6027 4.31784C80.3277 4.66107 80.915 5.21899 81.3616 5.98509C81.8205 6.73893 82.0499 7.69812 82.0499 8.85958L82.0561 8.86586C82.0561 9.07115 82.0377 9.31931 81.9979 9.61342H74.65C74.7388 10.3795 75.0202 10.9802 75.4913 11.4153C75.9624 11.8505 76.5834 12.068 77.3482 12.068C78.3791 12.068 79.0643 11.5563 79.3947 10.5328H81.8817C81.6523 11.6452 81.1536 12.54 80.3889 13.2172C79.6363 13.8791 78.6146 14.2132 77.3267 14.2132C76.2652 14.2132 75.3536 13.9896 74.5889 13.5422C73.8241 13.0948 73.2429 12.4789 72.8483 11.7005C72.4536 10.9068 72.2548 10.0057 72.2548 8.99754C72.2548 7.94948 72.4598 7.03312 72.8666 6.25474C73.2735 5.46415 73.8547 4.85747 74.6072 4.43457C75.372 3.99941 76.2652 3.78155 77.287 3.78155ZM46.2435 3.77858C47.5956 3.77858 48.6663 4.10961 49.4586 4.77455V4.77154C50.2509 5.43654 50.6455 6.66232 50.6455 8.45196V14.051H48.1952V13.3429C48.1952 12.9599 48.29 12.5891 48.4827 12.2305C48.5347 12.1019 48.5592 12.007 48.5592 11.9426C48.5592 11.866 48.5286 11.8139 48.4644 11.7894L48.3879 11.7709C48.3114 11.7709 48.2533 11.8107 48.2166 11.8873C48.1768 11.9485 48.1585 11.9884 48.1585 12.0007C47.5589 13.4717 46.3965 14.2072 44.6742 14.2072C44.0471 14.2072 43.4597 14.0785 42.9122 13.8242C42.3768 13.5698 41.9486 13.2172 41.6304 12.7698C41.3123 12.3224 41.1532 11.8229 41.1532 11.2744C41.1532 10.2264 41.4836 9.45424 42.1474 8.95473C42.8235 8.44295 43.7167 8.1548 44.8272 8.09044L45.803 8.05364C46.6718 8.02912 47.2897 7.97099 47.6599 7.88215C48.03 7.79328 48.2074 7.57542 48.1952 7.22913C48.183 6.79409 48.0361 6.44477 47.7547 6.17512C47.4732 5.90851 46.944 5.77349 46.167 5.77349C45.3747 5.77352 44.8119 5.91473 44.4815 6.19666C44.1511 6.46634 43.9461 6.83712 43.8697 7.30905H41.4591C41.6243 6.10779 42.1535 5.21899 43.0468 4.64286C43.94 4.06673 45.0076 3.77858 46.2435 3.77858ZM135.893 3.77858C137.245 3.77858 138.319 4.10955 139.108 4.77455L139.102 4.77154C139.891 5.43654 140.289 6.66232 140.289 8.45196V14.051H137.838V13.3429C137.838 12.9599 137.933 12.5891 138.126 12.2305C138.178 12.1019 138.202 12.007 138.202 11.9426C138.202 11.866 138.172 11.8139 138.107 11.7894L138.031 11.7709C137.954 11.7709 137.896 11.8107 137.86 11.8873C137.823 11.9485 137.802 11.9884 137.802 12.0007C137.202 13.4717 136.043 14.2072 134.32 14.2072C133.693 14.2072 133.106 14.0785 132.558 13.8242C132.023 13.5698 131.595 13.2172 131.277 12.7698C130.958 12.3224 130.799 11.8229 130.799 11.2744C130.799 10.2264 131.13 9.45424 131.794 8.95473C132.473 8.44295 133.363 8.1548 134.473 8.09044L135.449 8.05364C136.318 8.02912 136.936 7.97099 137.306 7.88215C137.676 7.79328 137.854 7.57542 137.841 7.22913C137.829 6.79406 137.682 6.44477 137.401 6.17512C137.119 5.90851 136.59 5.77349 135.813 5.77349C135.024 5.77352 134.461 5.91473 134.131 6.19666C133.8 6.46634 133.595 6.83718 133.519 7.30905H131.108C131.273 6.10776 131.803 5.21899 132.696 4.64286C133.589 4.06673 134.654 3.77858 135.893 3.77858ZM7.02014 0.404607C8.2193 0.404607 9.25318 0.62847 10.122 1.07586C10.9907 1.52328 11.6668 2.10541 12.1501 2.81941C12.6334 3.53648 12.9546 4.3149 13.1075 5.15761H10.5228C10.2934 4.41609 9.89873 3.82166 9.33595 3.37425C8.77312 2.92686 8.01434 2.70302 7.05688 2.70299C6.16364 2.70299 5.39865 2.90832 4.75931 3.3159C4.13532 3.71122 3.65514 4.26286 3.32476 4.96458C3.00664 5.65406 2.84739 6.43554 2.84739 7.30277C2.84739 8.15771 3.00037 8.93922 3.30625 9.64097C3.62436 10.3304 4.09258 10.879 4.70434 11.2896C5.32836 11.6972 6.08398 11.9025 6.9619 11.9025C7.87962 11.9025 8.62613 11.6451 9.20123 11.1364C9.78854 10.6246 10.1895 9.95958 10.4066 9.14445H7.13336V6.99632H13.1045V14.051H10.4249V13.1684C10.4249 12.7333 10.538 12.2365 10.7705 11.6727C10.7827 11.6482 10.789 11.6023 10.789 11.538C10.789 11.4369 10.749 11.3785 10.6725 11.3662C10.6481 11.354 10.6144 11.348 10.5778 11.348C10.5013 11.348 10.4371 11.4001 10.3851 11.5012C10.1159 12.1662 9.64486 12.7853 8.9688 13.3615C8.30499 13.9253 7.46353 14.2042 6.4418 14.2042C5.17849 14.2042 4.07423 13.8977 3.13209 13.2849C2.20217 12.672 1.48638 11.8414 0.987747 10.7934C0.489118 9.74537 0.241211 8.58374 0.241211 7.30277C0.241211 6.01264 0.50111 4.84187 1.02418 3.79384C1.54728 2.74581 2.32138 1.9216 3.33999 1.32096C4.36172 0.708086 5.58535 0.401634 7.01387 0.401604L7.02014 0.404607ZM88.1467 3.77858C89.0522 3.77858 89.8506 3.9657 90.5389 4.33341C91.2272 4.70418 91.7625 5.19745 92.1449 5.81032C92.5395 6.4109 92.7689 7.06371 92.8332 7.76542H90.4226C90.3461 7.25374 90.1106 6.83077 89.716 6.49984C89.3214 6.16887 88.7982 6.00035 88.1467 6.00035C87.3177 6.00035 86.6664 6.27631 86.1953 6.82483C85.7242 7.37335 85.4883 8.09648 85.4883 8.99123C85.4883 9.88607 85.7242 10.6094 86.1953 11.158C86.6664 11.7065 87.3177 11.9824 88.1467 11.9824C88.7982 11.9824 89.3214 11.817 89.716 11.483C90.1106 11.152 90.3461 10.7288 90.4226 10.217H92.8332C92.7689 10.9188 92.5395 11.5778 92.1449 12.1907C91.7625 12.7913 91.2272 13.2786 90.5389 13.6464C89.8628 14.0171 89.0644 14.2009 88.1467 14.2009C87.1402 14.2009 86.2439 13.9774 85.4669 13.53C84.7022 13.0825 84.1026 12.4634 83.6682 11.6697C83.246 10.876 83.035 9.98425 83.035 8.98525C83.035 7.98622 83.2399 7.09451 83.6468 6.3008C84.0689 5.50709 84.6685 4.88796 85.4455 4.44054C86.2225 3.99319 87.1249 3.7696 88.1436 3.7696L88.1467 3.77858ZM125.204 3.77858C126.11 3.77858 126.908 3.96567 127.596 4.33341C128.285 4.70115 128.82 5.19745 129.202 5.81032C129.597 6.4109 129.83 7.06371 129.891 7.76542H127.48C127.404 7.25371 127.168 6.83077 126.771 6.49984C126.376 6.1689 125.853 6.00035 125.201 6.00035C124.372 6.00035 123.721 6.27631 123.25 6.82483C122.778 7.37335 122.54 8.09648 122.54 8.99123C122.54 9.88607 122.775 10.6094 123.25 11.158C123.721 11.7065 124.372 11.9824 125.201 11.9824C125.853 11.9824 126.376 11.817 126.771 11.483C127.165 11.152 127.404 10.7288 127.48 10.217H129.891C129.827 10.9188 129.597 11.5778 129.202 12.1907C128.82 12.7913 128.285 13.2786 127.596 13.6464C126.92 14.0172 126.122 14.2009 125.204 14.2009C124.198 14.2009 123.305 13.9773 122.525 13.53C121.76 13.0825 121.16 12.4634 120.726 11.6697C120.307 10.876 120.096 9.98428 120.096 8.98525C120.096 7.98625 120.301 7.09451 120.707 6.3008C121.127 5.50712 121.729 4.88796 122.506 4.44054C123.283 3.99312 124.183 3.7696 125.204 3.7696V3.77858ZM23.8358 3.69299C24.8575 3.69299 25.7508 3.92282 26.5155 4.3825C27.2803 4.84218 27.8677 5.46731 28.2745 6.26102C28.6814 7.0547 28.8863 7.93722 28.8863 8.90864C28.8863 9.88009 28.6814 10.7596 28.2745 11.5533C27.8677 12.347 27.2803 12.9721 26.5155 13.4318C25.7508 13.8914 24.8575 14.1213 23.8358 14.1213C22.8141 14.1213 21.9209 13.8915 21.1561 13.4318C20.3913 12.9721 19.801 12.347 19.3942 11.5533C18.9873 10.7626 18.7823 9.88009 18.7823 8.90864C18.7823 7.93722 18.9843 7.0547 19.3942 6.26102C19.8041 5.46731 20.3913 4.84218 21.1561 4.3825C21.9239 3.92282 22.8141 3.69299 23.8358 3.69299ZM73.1572 2.63867H69.1009V14.1153H66.4976V2.63867H62.4413V0.337279H73.1572V2.63867ZM111.091 3.77858C112.213 3.77885 113.1 4.14365 113.751 4.8727C114.403 5.60206 114.727 6.66857 114.727 8.07518V14.057H112.277V8.91792C112.277 7.81776 112.13 7.0577 111.836 6.6348C111.542 6.21193 111.065 6.00336 110.401 6.00332C109.93 6.00332 109.484 6.16911 109.062 6.50312C108.655 6.83405 108.322 7.3028 108.068 7.90339C107.814 8.504 107.685 9.18132 107.685 9.93513V14.057H105.235V3.9318H107.685V4.56625C107.685 4.86035 107.657 5.10855 107.609 5.31381C107.557 5.51913 107.48 5.7277 107.379 5.94528C107.315 6.09851 107.284 6.2027 107.284 6.25173C107.284 6.36509 107.333 6.42951 107.437 6.44176H107.495C107.584 6.4417 107.661 6.36509 107.725 6.21193C108.006 5.58676 108.441 5.02289 109.025 4.52644C109.612 4.02732 110.3 3.77895 111.091 3.77858ZM17.5494 14.054H15.0992V0.251381H17.5494V14.054ZM55.0934 14.054H52.6431V0.251381H55.0934V14.054ZM96.5102 4.56625L96.5071 4.56325C96.5071 4.85735 96.4826 5.10554 96.4306 5.31084C96.3786 5.51616 96.3022 5.7247 96.2012 5.94228C96.1373 6.0955 96.1064 6.1997 96.1064 6.24873C96.1064 6.36206 96.1553 6.4265 96.2593 6.43876H96.3175C96.4062 6.4387 96.4826 6.36206 96.5469 6.20892C96.8283 5.58376 97.2627 5.01989 97.847 4.52344C98.4343 4.02392 99.1226 3.77557 99.9149 3.77557C101.038 3.77557 101.925 4.14034 102.576 4.8697C103.228 5.59902 103.552 6.66541 103.552 8.07187V14.054H101.102V8.91461C101.102 7.81455 100.955 7.0547 100.661 6.63179C100.368 6.20889 99.8904 6.00035 99.2266 6.00035C98.7555 6.00035 98.3089 6.16584 97.8868 6.49984C97.4799 6.83077 97.1465 7.29977 96.8926 7.90041C96.6387 8.50103 96.5102 9.17828 96.5102 9.93216V14.054H94.0599V0.251381H96.5102V4.56625ZM118.86 14.054H116.409V3.9318H118.86V14.054ZM144.743 14.054H142.292V0.251381H144.743V14.054ZM48.1982 8.84131C47.9413 9.12315 47.6048 9.31922 47.1826 9.43564C46.7727 9.53984 46.1303 9.63499 45.2493 9.72386C44.6987 9.78822 44.2857 9.93513 44.0043 10.165C43.7381 10.3825 43.6035 10.7075 43.6035 11.1427C43.6035 11.5135 43.7442 11.814 44.0257 12.0438C44.3194 12.2736 44.6956 12.3867 45.1545 12.3867C45.3197 12.3867 45.4481 12.3807 45.5369 12.3685C46.2894 12.2673 46.9134 11.9393 47.4121 11.3908H47.4151C47.9229 10.8423 48.186 9.99041 48.1982 8.84131ZM137.85 8.84131C137.594 9.12322 137.254 9.31922 136.835 9.43564C136.425 9.53984 135.783 9.63499 134.902 9.72386C134.351 9.78822 133.938 9.93516 133.656 10.165C133.39 10.3825 133.256 10.7075 133.256 11.1427C133.256 11.5135 133.394 11.814 133.675 12.0438C133.969 12.2735 134.345 12.3867 134.804 12.3867C134.969 12.3867 135.097 12.3807 135.186 12.3685C135.939 12.2674 136.563 11.9393 137.061 11.3908H137.064C137.575 10.8423 137.838 9.99044 137.85 8.84131ZM35.2523 6.00663C34.7292 6.00663 34.2611 6.13829 33.8543 6.40796C33.4443 6.67458 33.1262 7.03941 32.8968 7.49908C32.6796 7.95873 32.5725 8.45828 32.5725 8.99454C32.5728 9.5308 32.6796 10.0303 32.8968 10.49C33.1262 10.9496 33.4474 11.3112 33.8543 11.5808C34.2642 11.8474 34.7292 11.9824 35.2523 11.9824C36.069 11.9824 36.6931 11.7035 37.1275 11.1397V11.1427C37.5619 10.5696 37.779 9.85251 37.779 8.99754C37.779 8.14254 37.5619 7.43448 37.1275 6.87061C36.6931 6.29454 36.069 6.00663 35.2523 6.00663ZM23.8358 5.91773C23.0313 5.91776 22.392 6.20567 21.9209 6.78174C21.462 7.34255 21.2326 8.05364 21.2326 8.90864C21.2326 9.76364 21.462 10.4777 21.9209 11.0538C22.395 11.6146 23.0343 11.8965 23.8358 11.8965C24.6372 11.8965 25.2706 11.6177 25.7294 11.0538C26.2005 10.4807 26.436 9.76361 26.436 8.90864C26.436 8.05364 26.2005 7.34561 25.7294 6.78174C25.2706 6.20564 24.6403 5.91773 23.8358 5.91773ZM77.3604 5.77051C75.9073 5.77054 75.0324 6.48767 74.7388 7.91865H79.5996C79.5476 7.27826 79.3304 6.76044 78.948 6.36515C78.5657 5.96983 78.0364 5.77051 77.3604 5.77051ZM118.86 0.251381V2.706H116.409V0.251381H118.86Z" fill="url(#paint0_linear_4005_30414)"></path>
+</g>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_4005_30414" x1="144.743" x2="0.241211" y1="18.2937" y2="18.2937">
+<stop stop-color="#00C79A"></stop>
+<stop offset="0.502824" stop-color="#E92184"></stop>
+<stop offset="1" stop-color="#6C1D45"></stop>
+</lineargradient>
+<clippath id="clip0_4005_30414">
+<rect fill="white" height="38" width="145"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<div class="app-logo">
+<svg fill="none" height="48" viewbox="0 0 252 48" width="252" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 40.0267H12.9805V48H0V40.0267Z" fill="#00C79A"></path>
+<path d="M0 24H12.9805V32.0267H0V24Z" fill="#00C79A"></path>
+<path d="M0 7.97333H12.9805V16H0V7.97333Z" fill="#00C79A"></path>
+<path d="M12.9717 32H47.4219V40.0267H12.9717V32Z" fill="#00C79A"></path>
+<path d="M12.9717 16.0267H47.4219V24.0267H12.9717V16.0267Z" fill="#00C79A"></path>
+<path d="M12.9717 0H47.4219V8H12.9717V0Z" fill="#00C79A"></path>
+<path d="M61.0188 23.5467L52.327 8H60.0237L65.5012 18.3289H66.0913L71.5688 8H79.2215L70.5296 23.5467L79.7234 40H72.2028L66.0472 28.6578H65.5012L59.3456 40H51.8251L61.0188 23.5467Z" fill="#00C79A"></path>
+<path d="M84.5757 8H95.8565C102.153 8 106.406 12.0711 106.406 18.2844C106.406 24.4978 101.924 28.7111 95.8565 28.7111H91.3301V40H84.5845V8H84.5757ZM95.5747 22.3556C98.0229 22.3556 99.608 20.6222 99.608 18.2844C99.608 15.9467 98.0229 14.3556 95.5747 14.3556H91.3213V22.3556H95.5747Z" fill="#00C79A"></path>
+<path d="M109.515 8H129.444V14.4H116.27V20.5689H127.638V26.9244H116.27V33.6444H129.902V40H109.524V8H109.515Z" fill="#00C79A"></path>
+<path d="M134.886 8H145.797C152.455 8 157.122 12.0267 157.122 18.0089C157.122 22.3022 155.123 25.6444 151.46 27.3778L158.39 39.9911H150.693L144.855 28.4267H141.64V39.9911H134.895V7.99111L134.886 8ZM145.894 22.2667C148.342 22.2667 150.103 20.8 150.103 18.1511C150.103 16.0978 148.694 14.3556 145.665 14.3556H141.632V22.2667H145.894Z" fill="#00C79A"></path>
+<path d="M168.685 14.4H160.213V8H183.858V14.4H175.386V40H168.685V14.4Z" fill="#00C79A"></path>
+<path d="M204.702 33.6H192.25L190.207 40H182.96L193.694 8H203.205L213.852 40H206.745L204.702 33.6ZM202.712 27.3867L198.679 14.8622H198.177L194.188 27.3867H202.712Z" fill="#00C79A"></path>
+<path d="M217.551 34.1156L217.533 34.1511V8.00889H229.043C235.612 8.00889 239.1 11.9378 239.1 17.0133C239.1 19.4844 237.647 21.7244 235.701 22.8622V23.1378C237.964 24.24 240.095 26.6133 240.095 30.1778C240.095 36.4 235.339 40.0089 229.994 40.0089L217.551 39.9733V34.1156ZM228.955 20.7556C230.998 20.7556 232.354 19.2889 232.354 17.4222C232.354 15.5556 230.901 14.1778 228.955 14.1778H224.067V20.7644H228.955V20.7556ZM229.087 33.8756C231.394 33.8756 233.208 32.3644 233.208 29.9911C233.208 27.6178 231.35 26.1511 229.043 26.1511H224.059V33.8756H229.087Z" fill="#00C79A"></path>
+<path d="M240.657 7.2V1.21778H238.544V0H244.206V1.21778H242.093V7.2H240.657Z" fill="#00C79A"></path>
+<path d="M245.113 7.2V0H247.271L248.566 4.90667L249.842 0H252V7.2H250.661V1.53778L249.244 7.2H247.861L246.452 1.53778V7.2H245.113Z" fill="#00C79A"></path>
+</svg>
+<div class="app-sub">User Documentation</div>
+</div>
+<div class="sidebar-search">
+<input id="sidebar-search-input" placeholder="🔍 Search documentation…" type="text"/>
+</div>
+<div class="sidebar-nav-content">
+<nav id="sidebar-nav"><div class="acc-section" data-section="overview"><div class="nav-chapter" data-target="overview" onclick="handleChapterClick(event,this)"><span class="ch-num">1</span><span class="ch-title">Application Overview</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#what-is-expertab">1.1 What is ExperTab?</a><a class="nav-item" href="#who-is-it-for">1.2 Who is it for?</a><a class="nav-item" href="#business-context">1.3 Business Context</a></div></div><div class="acc-section" data-section="install"><div class="nav-chapter" data-target="install" onclick="handleChapterClick(event,this)"><span class="ch-num">2</span><span class="ch-title">Installation &amp; First Steps</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#requirements">2.1 Requirements</a><a class="nav-item" href="#installing-the-app">2.2 Installing the App</a><a class="nav-item" href="#logging-in">2.3 Logging In</a><a class="nav-item" href="#loading-a-blast-plan">2.4 Loading a Blast Plan</a></div></div><div class="acc-section" data-section="drill"><div class="nav-chapter" data-target="drill" onclick="handleChapterClick(event,this)"><span class="ch-num">3</span><span class="ch-title">Drill</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#starting-a-drill-session">3.1 Starting a Drill Session</a><a class="nav-item" href="#selecting-a-hole">3.2 Selecting a Hole</a><a class="nav-item" href="#hole-status">3.3 Hole Status</a><a class="nav-item" href="#drill-summary">3.4 Drill Summary</a><a class="nav-item" href="#adding-a-new-hole">3.5 Adding a New Hole</a></div></div><div class="acc-section" data-section="advdrill"><div class="nav-chapter" data-target="advdrill" onclick="handleChapterClick(event,this)"><span class="ch-num">4</span><span class="ch-title">Advanced Drilling</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-2">4.1 Overview</a><a class="nav-item" href="#extended-data-fields">4.2 Extended Data Fields</a><a class="nav-item" href="#searching-for-a-hole">4.3 Searching for a Hole</a></div></div><div class="acc-section" data-section="geology"><div class="nav-chapter" data-target="geology" onclick="handleChapterClick(event,this)"><span class="ch-num">5</span><span class="ch-title">Geology</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#logging-lithology">5.1 Logging Lithology</a><a class="nav-item" href="#mineralisation-data">5.2 Mineralisation Data</a><a class="nav-item" href="#excluding-segments">5.3 Excluding Segments</a></div></div><div class="acc-section" data-section="simpleload"><div class="nav-chapter" data-target="simpleload" onclick="handleChapterClick(event,this)"><span class="ch-num">6</span><span class="ch-title">Simple Loading</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#starting-a-delivery">6.1 Starting a Delivery</a><a class="nav-item" href="#loading-a-hole">6.2 Loading a Hole</a><a class="nav-item" href="#assigning-detonators">6.3 Assigning Detonators</a><a class="nav-item" href="#delivery-summary">6.4 Delivery Summary</a></div></div><div class="acc-section" data-section="advload"><div class="nav-chapter" data-target="advload" onclick="handleChapterClick(event,this)"><span class="ch-num">7</span><span class="ch-title">Advanced Loading</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#qaqc-workflow">7.1 QA/QC Workflow</a><a class="nav-item" href="#memu-integration">7.2 MEMU Integration</a><a class="nav-item" href="#delivery-summary-confirmation">7.3 Delivery Summary &amp; Confirmation</a></div></div><div class="acc-section" data-section="polarex"><div class="nav-chapter" data-target="polarex" onclick="handleChapterClick(event,this)"><span class="ch-num">8</span><span class="ch-title">Polarex</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#bluetooth-connection">8.1 Bluetooth Connection</a><a class="nav-item" href="#taking-measurements">8.2 Taking Measurements</a><a class="nav-item" href="#exporting-dm4">8.3 Exporting DM4</a></div></div><div class="acc-section" data-section="roles"><div class="nav-chapter" data-target="roles" onclick="handleChapterClick(event,this)"><span class="ch-num">9</span><span class="ch-title">Roles &amp; Permissions</span><span class="chevron">▸</span></div><div class="nav-items"></div></div><div class="acc-section" data-section="faq"><div class="nav-chapter" data-target="faq" onclick="handleChapterClick(event,this)"><span class="ch-num">10</span><span class="ch-title">FAQ &amp; Common Issues</span><span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#login-authentication">10.1 Login &amp; Authentication</a><a class="nav-item" href="#home-screen">10.2 Home Screen</a><a class="nav-item" href="#drilling-screen">10.3 Drilling Screen</a><a class="nav-item" href="#loading-screen">10.4 Loading Screen</a><a class="nav-item" href="#polarex-screen">10.5 Polarex Screen</a><a class="nav-item" href="#export">10.6 Export</a><a class="nav-item" href="#settings">10.7 Settings</a></div></div><div class="acc-section" data-section="statuses"><div class="nav-chapter" data-target="statuses" onclick="handleChapterClick(event,this)"><span class="ch-num">11</span><span class="ch-title">Hole Status Reference</span><span class="chevron">▸</span></div><div class="nav-items"></div></div><div class="acc-section" data-section="settings-2"><div class="nav-chapter" data-target="settings-2" onclick="handleChapterClick(event,this)"><span class="ch-num">12</span><span class="ch-title">Settings Quick Reference</span><span class="chevron">▸</span></div><div class="nav-items"></div></div><div class="acc-section" data-section="glossary"><div class="nav-chapter" data-target="glossary" onclick="handleChapterClick(event,this)"><span class="ch-num">13</span><span class="ch-title">Glossary</span><span class="chevron">▸</span></div><div class="nav-items"></div></div></nav>
+</div>
+</nav>
+<div class="main">
+<div class="cover">
+<h1>ExperTab</h1>
+<div class="subtitle">User Documentation</div>
+<div class="tagline">Drilling &amp; Blasting Operations — Android Mobile Application</div>
+<div class="meta">
+<div class="meta-item"><span>Platform</span>Android</div>
+<div class="meta-item"><span>Language</span>English</div>
+</div>
+</div>
+<div class="toc-section">
+<h2>Table of Contents</h2>
+<div class="toc-grid"><a href="#overview"><span class="toc-num">1.</span>Application Overview</a><a href="#install"><span class="toc-num">2.</span>Installation &amp; First Steps</a><a href="#drill"><span class="toc-num">3.</span>Drill</a><a href="#advdrill"><span class="toc-num">4.</span>Advanced Drilling</a><a href="#geology"><span class="toc-num">5.</span>Geology</a><a href="#simpleload"><span class="toc-num">6.</span>Simple Loading</a><a href="#advload"><span class="toc-num">7.</span>Advanced Loading</a><a href="#polarex"><span class="toc-num">8.</span>Polarex</a><a href="#roles"><span class="toc-num">9.</span>Roles &amp; Permissions</a><a href="#faq"><span class="toc-num">10.</span>FAQ &amp; Common Issues</a><a href="#statuses"><span class="toc-num">11.</span>Hole Status Reference</a><a href="#settings-2"><span class="toc-num">12.</span>Settings Quick Reference</a><a href="#glossary"><span class="toc-num">13.</span>Glossary</a></div>
+</div>
+<div class="content"><div class="section" id="overview"><h1 class="section-title"><span class="num">1</span>Application Overview</h1><h2 class="sub-title" id="what-is-expertab">1.1 What is ExperTab?</h2>
+<p>ExperTab is an Android mobile application developed by EPC Groupe that digitalises field operations for drilling and blasting. It replaces paper-based workflows, giving site teams a real-time, connected tool for recording and validating every stage of a blast cycle.</p>
+<h2 class="sub-title" id="who-is-it-for">1.2 Who is it for?</h2>
+<p>ExperTab is designed for field operators, drillers, loaders, and geologists working on blast sites. Each user is assigned one or more roles that unlock specific screens and capabilities.</p>
+<h2 class="sub-title" id="business-context">1.3 Business Context</h2>
+<p>ExperTab integrates with the <strong>Explore</strong> back-office platform (EPC Groupe). Blast plans are created in Explore, downloaded on site via ExperTab, and field data is exported back to Explore at the end of each session.</p></div><div class="section" id="install"><h1 class="section-title"><span class="num">2</span>Installation &amp; First Steps</h1><h2 class="sub-title" id="requirements">2.1 Requirements</h2>
+<ul>
+<li>Android 8.0 (Oreo) or later</li>
+<li>Minimum 2 GB RAM recommended</li>
+<li>Active internet connection for login and export</li>
+<li>Bluetooth enabled (for Polarex deviation measurements)</li>
+</ul>
+<h2 class="sub-title" id="installing-the-app">2.2 Installing the App</h2>
+<ol class="steps">
+<li><span class="step-body">Receive the APK file from your EPC Groupe administrator.</span></li>
+<li><span class="step-body">On your Android device, enable <strong>Install from unknown sources</strong> in Settings → Security.</span></li>
+<li><span class="step-body">Open the APK and follow the on-screen installation prompts.</span></li>
+<li><span class="step-body">Grant all requested permissions (location, Bluetooth, storage).</span></li>
+</ol>
+<h2 class="sub-title" id="logging-in">2.3 Logging In</h2>
+<ol class="steps">
+<li><span class="step-body">Open ExperTab. The login screen appears.</span></li>
+<li><span class="step-body">Enter your email and password (provided by your administrator via Keycloak).</span></li>
+<li><span class="step-body">Tap <strong>Log in</strong>. On first login you may be prompted to change your password.</span></li>
+<li><span class="step-body">The Home screen appears with your assigned blast plans.</span></li>
+</ol>
+<h2 class="sub-title" id="loading-a-blast-plan">2.4 Loading a Blast Plan</h2>
+<ol class="steps">
+<li><span class="step-body">From the Home screen, tap the <strong>Explore</strong> button.</span></li>
+<li><span class="step-body">Browse available sites, zones, and blast plan names.</span></li>
+<li><span class="step-body">Tap a blast plan to select and download it.</span></li>
+<li><span class="step-body">The app returns to the Home screen — the blast plan is now available for all workflows.</span></li>
+</ol>
+<div class="note-info"><strong>Tip:</strong> Pull-to-refresh on the Home screen to sync the latest plans from the server.</div></div><div class="section" id="drill"><h1 class="section-title"><span class="num">3</span>Drill</h1><p>The Drill screen is used to record the actual drilling of each hole in the blast plan.</p>
+<h2 class="sub-title" id="starting-a-drill-session">3.1 Starting a Drill Session</h2>
+<ol class="steps">
+<li><span class="step-body">Navigate to the <strong>Drill</strong> screen via the navigation drawer.</span></li>
+<li><span class="step-body">A <em>Drill Session</em> dialog appears on first entry.</span></li>
+<li><span class="step-body">Fill in the equipment type, operator name, and team.</span></li>
+<li><span class="step-body">Tap <strong>Validate</strong> to create the session. The 2D blast map is then displayed.</span></li>
+</ol>
+<h2 class="sub-title" id="selecting-a-hole">3.2 Selecting a Hole</h2>
+<ol class="steps">
+<li><span class="step-body">Tap a hole on the map or use the search bar to select it by name.</span></li>
+<li><span class="step-body">Review the planned depth and geometry in the data panel.</span></li>
+<li><span class="step-body">Enter the actual drilled depth, water level, and any other required measurements.</span></li>
+<li><span class="step-body">Data saves automatically as you work.</span></li>
+</ol>
+<h2 class="sub-title" id="hole-status">3.3 Hole Status</h2>
+<p>Set the hole status to reflect its real-world state. Tap the status selector in the hole panel and choose from:</p>
+<ul>
+<li><strong>DRILLED</strong> — hole drilled to required depth</li>
+<li><strong>TO_REDRILL</strong> — flagged for re-drilling</li>
+<li><strong>REDRILLED</strong> — successfully re-drilled</li>
+<li><strong>COLLAPSED</strong> — hole has collapsed</li>
+<li><strong>MISSING</strong> — hole could not be located</li>
+</ul>
+<h2 class="sub-title" id="drill-summary">3.4 Drill Summary</h2>
+<ol class="steps">
+<li><span class="step-body">Tap the <strong>ⓘ</strong> icon in the toolbar when the session is complete.</span></li>
+<li><span class="step-body">The Drill Summary dialog shows totals: drilled, collapsed, missing holes.</span></li>
+<li><span class="step-body">Review and close the dialog. Data is already saved.</span></li>
+</ol>
+<h2 class="sub-title" id="adding-a-new-hole">3.5 Adding a New Hole</h2>
+<ol class="steps">
+<li><span class="step-body">Tap the <strong>Add Hole</strong> button on the map screen.</span></li>
+<li><span class="step-body">Enter the hole name, collar coordinates, planned depth, and geometry.</span></li>
+<li><span class="step-body">Enable <em>Consigned</em> if applicable.</span></li>
+<li><span class="step-body">Tap <strong>Save</strong>. The hole appears immediately on the map.</span></li>
+</ol></div><div class="section" id="advdrill"><h1 class="section-title"><span class="num">4</span>Advanced Drilling</h1><p>The Advanced Drilling screen extends the standard Drill workflow with additional data fields for more detailed borehole records.</p>
+<h2 class="sub-title" id="overview-2">4.1 Overview</h2>
+<p>Advanced Drilling follows the same navigation and session setup as standard Drill. The key difference is the data panel, which exposes additional fields for recording extended parameters beyond depth and status.</p>
+<h2 class="sub-title" id="extended-data-fields">4.2 Extended Data Fields</h2>
+<p>Depending on site configuration, the advanced panel may include:</p>
+<ul>
+<li>Drill bit diameter and wear</li>
+<li>Penetration rate and time per hole</li>
+<li>Air pressure readings</li>
+<li>Any custom fields defined by your site administrator</li>
+</ul>
+<div class="note"><strong>Note:</strong> Available fields vary by site. Contact your administrator if expected fields are not visible.</div>
+<h2 class="sub-title" id="searching-for-a-hole">4.3 Searching for a Hole</h2>
+<ol class="steps">
+<li><span class="step-body">Tap the search bar in the toolbar.</span></li>
+<li><span class="step-body">Type the hole name or ID exactly as it appears on the map.</span></li>
+<li><span class="step-body">The map scrolls to and highlights the matching hole automatically.</span></li>
+</ol></div><div class="section" id="geology"><h1 class="section-title"><span class="num">5</span>Geology</h1><p>The Geology screen is used to log lithology (rock type and quality) per hole depth segment.</p>
+<h2 class="sub-title" id="logging-lithology">5.1 Logging Lithology</h2>
+<ol class="steps">
+<li><span class="step-body">Navigate to the <strong>Geology</strong> screen via the navigation drawer.</span></li>
+<li><span class="step-body">Tap a hole on the 2D blast map.</span></li>
+<li><span class="step-body">In the lithology panel, select the rock material type for each depth segment.</span></li>
+<li><span class="step-body">Data is saved per hole as you progress through the blast plan.</span></li>
+</ol>
+<h2 class="sub-title" id="mineralisation-data">5.2 Mineralisation Data</h2>
+<ol class="steps">
+<li><span class="step-body">Tap a depth segment to open the <strong>Mineralisation</strong> dialog.</span></li>
+<li><span class="step-body">Record additional rock quality data: mineralisation grade, hardness, or other site-specific parameters.</span></li>
+<li><span class="step-body">Confirm to save and return to the lithology panel.</span></li>
+</ol>
+<h2 class="sub-title" id="excluding-segments">5.3 Excluding Segments</h2>
+<p>Mark a depth segment as <strong>Excluded</strong> if it falls outside the zone of interest. Excluded segments are visually differentiated on the panel and are not included in summary reports.</p></div><div class="section" id="simpleload"><h1 class="section-title"><span class="num">6</span>Simple Loading</h1><p>Simple Loading records basic explosive loading data per hole.</p>
+<h2 class="sub-title" id="starting-a-delivery">6.1 Starting a Delivery</h2>
+<ol class="steps">
+<li><span class="step-body">Navigate to the <strong>Simple Loading</strong> screen.</span></li>
+<li><span class="step-body">A <em>Delivery Info</em> dialog appears — enter the truck ID and operator name.</span></li>
+<li><span class="step-body">Tap <strong>Confirm</strong> to begin the delivery session.</span></li>
+</ol>
+<h2 class="sub-title" id="loading-a-hole">6.2 Loading a Hole</h2>
+<ol class="steps">
+<li><span class="step-body">Select a hole from the map or the list view.</span></li>
+<li><span class="step-body">Enter the quantity of bulk explosive, cartridges, or detonating cord loaded.</span></li>
+<li><span class="step-body">Hole status updates automatically: <strong>LOADING</strong> as quantities are entered, <strong>FILLED</strong> when complete.</span></li>
+</ol>
+<h2 class="sub-title" id="assigning-detonators">6.3 Assigning Detonators</h2>
+<ol class="steps">
+<li><span class="step-body">Select the detonator type and model from the drop-down.</span></li>
+<li><span class="step-body">Enter the serial or lot number.</span></li>
+<li><span class="step-body">Optionally record a <em>Test Cup</em> sample reference.</span></li>
+</ol>
+<h2 class="sub-title" id="delivery-summary">6.4 Delivery Summary</h2>
+<p>Tap the <strong>ⓘ</strong> icon in the toolbar to open the delivery summary panel, showing totals across all loaded holes in the current session.</p></div><div class="section" id="advload"><h1 class="section-title"><span class="num">7</span>Advanced Loading</h1><p>Advanced Loading provides full QA/QC validation of explosive deliveries including MEMU machine integration and per-product quantity tracking.</p>
+<h2 class="sub-title" id="qaqc-workflow">7.1 QA/QC Workflow</h2>
+<ol class="steps">
+<li><span class="step-body">Navigate to the <strong>Advanced Loading</strong> screen and confirm delivery details.</span></li>
+<li><span class="step-body">Select a hole from the map. The panel shows planned vs. actual quantities per product.</span></li>
+<li><span class="step-body">Enter the actual loaded quantity for each product using the +/− buttons or direct input.</span></li>
+<li><span class="step-body">Assign detonators and record lot numbers per hole.</span></li>
+</ol>
+<h2 class="sub-title" id="memu-integration">7.2 MEMU Integration</h2>
+<p>If a MEMU (Mobile Explosives Manufacturing Unit) is connected, loading data can be pushed to and pulled from the machine automatically.</p>
+<ol class="steps">
+<li><span class="step-body">Enable <strong>Truck Mode</strong> in Settings and enter the MEMU IP address and port.</span></li>
+<li><span class="step-body">Tap <strong>Connect</strong> in Settings to establish the TCP connection.</span></li>
+<li><span class="step-body">In the Advanced Loading screen, data sync with the MEMU occurs automatically on hole selection.</span></li>
+</ol>
+<div class="note"><strong>Note:</strong> The tablet and MEMU machine must be on the same local network (e.g., the truck Wi-Fi hotspot).</div>
+<h2 class="sub-title" id="delivery-summary-confirmation">7.3 Delivery Summary &amp; Confirmation</h2>
+<ol class="steps">
+<li><span class="step-body">When all holes are loaded, navigate to the <strong>Advanced Delivery Summary</strong> screen.</span></li>
+<li><span class="step-body">Review per-hole and total quantities, detonator assignments, and lot numbers.</span></li>
+<li><span class="step-body">Tap <strong>Confirm Delivery</strong> to mark the blast plan as ready for export.</span></li>
+</ol></div><div class="section" id="polarex"><h1 class="section-title"><span class="num">8</span>Polarex</h1><p>The Polarex screen records borehole deviation measurements using a Bluetooth Polarex probe.</p>
+<h2 class="sub-title" id="bluetooth-connection">8.1 Bluetooth Connection</h2>
+<ol class="steps">
+<li><span class="step-body">Ensure Bluetooth is enabled on your Android device.</span></li>
+<li><span class="step-body">Navigate to the <strong>Polarex</strong> screen.</span></li>
+<li><span class="step-body">Tap the Bluetooth icon to scan for nearby Polarex probes.</span></li>
+<li><span class="step-body">Select your probe from the discovered device list.</span></li>
+</ol>
+<div class="note-info"><strong>Tip:</strong> Enable <em>Polarex Auto Connect &amp; Export</em> in Settings to automate this step on future sessions.</div>
+<h2 class="sub-title" id="taking-measurements">8.2 Taking Measurements</h2>
+<ol class="steps">
+<li><span class="step-body">Select a hole on the map.</span></li>
+<li><span class="step-body">Lower the probe into the hole to the first measurement depth.</span></li>
+<li><span class="step-body">Tap <strong>Measure</strong> to record the azimuth and inclination reading.</span></li>
+<li><span class="step-body">Repeat for each depth interval following the on-screen <em>Measure Steps</em> dialog.</span></li>
+<li><span class="step-body">The deviation path is drawn on the hole diagram in real time.</span></li>
+<li><span class="step-body">Tap <strong>Reset</strong> to redo measurements for a hole if needed.</span></li>
+</ol>
+<h2 class="sub-title" id="exporting-dm4">8.3 Exporting DM4</h2>
+<ol class="steps">
+<li><span class="step-body">Once measurements are recorded, tap <strong>Export DM4</strong>.</span></li>
+<li><span class="step-body">The DM4 deviation report file is generated and saved locally.</span></li>
+<li><span class="step-body">Use the main Export screen to upload it to the Explore platform.</span></li>
+</ol></div><div class="section" id="roles"><h1 class="section-title"><span class="num">9</span>Roles &amp; Permissions</h1><p>Access to each section of the app is controlled by roles assigned by a site administrator. Each role unlocks one or more navigation menu items. A single user can hold multiple roles simultaneously.</p>
+<div class="role-grid"><div class="role-card"><div class="role-name">DRILLER</div><div class="role-menu">Menu: Drill</div><div class="role-desc">Standard drilling workflow — record hole geometry and progress.</div></div><div class="role-card"><div class="role-name">ADV_DRILLER</div><div class="role-menu">Menu: Adv. Drill</div><div class="role-desc">Advanced drilling workflow with extended data fields.</div></div><div class="role-card"><div class="role-name">GEOLOGY</div><div class="role-menu">Menu: Geology</div><div class="role-desc">Log lithology (rock type) data per hole depth segment.</div></div><div class="role-card"><div class="role-name">SIMPLE_LOADING</div><div class="role-menu">Menu: Simple Loading</div><div class="role-desc">Record basic explosive loading per hole.</div></div><div class="role-card"><div class="role-name">QAQC</div><div class="role-menu">Menu: Advanced Loading</div><div class="role-desc">Full QA/QC loading validation, MEMU integration, delivery summaries.</div></div><div class="role-card"><div class="role-name">SEQUENCE_ONLY</div><div class="role-menu">Menu: Sequence</div><div class="role-desc">View the blast firing sequence (read-only).</div></div><div class="role-card"><div class="role-name">POLAREX</div><div class="role-menu">Menu: Polarex</div><div class="role-desc">Measure borehole deviation using the Bluetooth Polarex probe.</div></div></div>
+<div class="note"><strong>Note:</strong> If a menu item you expect to see is missing, contact your administrator to verify your role assignments in the Explore back-office.</div></div><div class="section" id="faq"><h1 class="section-title"><span class="num">10</span>FAQ &amp; Common Issues</h1><h2 class="sub-title" id="login-authentication">10.1 Login &amp; Authentication</h2>
+<div class="faq-item" id="i-enter-my-credentials-but-get-a-red-error-banner"><div class="faq-q">I enter my credentials but get a red error banner.</div><div class="faq-a"><ul>
+<li>Double-check your email address (no extra spaces) and password.</li>
+<li>Use <em>Forgot password?</em> to reset via the Keycloak web portal.</li>
+<li>Ensure you have an active internet connection.</li>
+<li>Contact your administrator if your account may have been deactivated.</li>
+</ul></div></div>
+
+<div class="faq-item" id="the-app-redirected-me-to-login-while-i-was-working"><div class="faq-q">The app redirected me to Login while I was working.</div><div class="faq-a">Your authentication session has expired. Log in again — all locally saved field data is preserved on the device.</div></div>
+
+<h2 class="sub-title" id="home-screen">10.2 Home Screen</h2>
+<div class="faq-item" id="the-home-screen-shows-no-blast-even-though-blasts-exist-in-explore"><div class="faq-q">The Home screen shows "No blast" even though blasts exist in Explore.</div><div class="faq-a"><ul>
+<li>Pull down on the Home screen to refresh.</li>
+<li>Tap <strong>Explore</strong> to manually browse and load a blast.</li>
+<li>Check that your account is assigned to the relevant site in the Explore back-office.</li>
+</ul></div></div>
+
+<h2 class="sub-title" id="drilling-screen">10.3 Drilling Screen</h2>
+<div class="faq-item" id="a-hole-i-tap-on-the-map-does-not-respond"><div class="faq-q">A hole I tap on the map does not respond.</div><div class="faq-a"><ul>
+<li>Zoom in to improve tap accuracy on dense plans.</li>
+<li>Verify the hole is not in a locked status (FILLED, COLLAPSED, MISSING can block some actions).</li>
+</ul></div></div>
+
+<div class="faq-item" id="the-drill-session-dialog-appears-every-time-i-open-the-screen"><div class="faq-q">The Drill Session dialog appears every time I open the screen.</div><div class="faq-a">Ensure you tap <strong>Validate</strong> (not dismiss) the first time it appears to create and save the session.</div></div>
+
+<div class="faq-item" id="i-cannot-find-a-hole-using-the-search-bar"><div class="faq-q">I cannot find a hole using the search bar.</div><div class="faq-a">The search matches the exact hole name. Check for extra spaces or letter-case differences.</div></div>
+
+<h2 class="sub-title" id="loading-screen">10.4 Loading Screen</h2>
+<div class="faq-item" id="a-hole-is-greyed-out-and-i-cannot-enter-loading-data"><div class="faq-q">A hole is greyed out and I cannot enter loading data.</div><div class="faq-a">Holes with status <strong>MISSING</strong> or <strong>COLLAPSED</strong> are blocked from all loading changes. Use the Advanced Loading screen (QAQC role) to adjust a FILLED hole.</div></div>
+
+<div class="faq-item" id="the-memu-connection-fails-in-advanced-loading"><div class="faq-q">The MEMU connection fails in Advanced Loading.</div><div class="faq-a"><ul>
+<li>Ensure <strong>Truck Mode</strong> is enabled in Settings.</li>
+<li>Verify the MEMU IP address and port are correct.</li>
+<li>The tablet and MEMU must be on the same local network.</li>
+<li>Tap <strong>Connect</strong> again in Settings after correcting the address.</li>
+</ul></div></div>
+
+<h2 class="sub-title" id="polarex-screen">10.5 Polarex Screen</h2>
+<div class="faq-item" id="the-polarex-probe-does-not-appear-in-the-bluetooth-device-list"><div class="faq-q">The Polarex probe does not appear in the Bluetooth device list.</div><div class="faq-a"><ul>
+<li>Confirm the probe is powered on and in pairing mode.</li>
+<li>Grant Bluetooth permissions to ExperTab in Android system settings.</li>
+<li>Tap the scan icon again to refresh the device list.</li>
+</ul></div></div>
+
+<div class="faq-item" id="deviation-measurements-appear-incorrect"><div class="faq-q">Deviation measurements appear incorrect.</div><div class="faq-a">Ensure the probe is fully inserted to the correct depth before tapping <strong>Measure</strong>. Follow the on-screen Measure Steps dialog step by step. Tap <strong>Reset</strong> to redo measurements for that hole.</div></div>
+
+<h2 class="sub-title" id="export">10.6 Export</h2>
+<div class="faq-item" id="the-export-fails-with-an-error"><div class="faq-q">The export fails with an error.</div><div class="faq-a"><ul>
+<li>Check your internet connection and verify you are still logged in.</li>
+<li>Try exporting a single blast to isolate the issue.</li>
+<li>Use <strong>Export Database Dump</strong> in Settings and send the ZIP to support.</li>
+</ul></div></div>
+
+<h2 class="sub-title" id="settings">10.7 Settings</h2>
+<div class="faq-item" id="i-changed-the-language-but-the-app-is-still-in-the-old-language"><div class="faq-q">I changed the language but the app is still in the old language.</div><div class="faq-a">Language change is applied immediately. If it did not apply, reselect the language in Settings. A full app restart may be required on some devices.</div></div>
+
+<div class="faq-item" id="the-external-gps-option-does-not-appear-in-settings"><div class="faq-q">The External GPS option does not appear in Settings.</div><div class="faq-a">External GPS is visible only when your site has the <code>SHOW_GPS_EXTERNE</code> flag enabled. Contact your EPC administrator.</div></div>
+</div><div class="section" id="statuses"><h1 class="section-title"><span class="num">11</span>Hole Status Reference</h1><p>Each hole carries a status reflecting its current state in the workflow. Status is shown by colour on the 2D plan map.</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PLANNED</td>
+<td>In the plan but not yet drilled</td>
+</tr>
+<tr>
+<td>DRILLED</td>
+<td>Drilled to the required depth</td>
+</tr>
+<tr>
+<td>REDRILLED</td>
+<td>Re-drilled after a previous issue</td>
+</tr>
+<tr>
+<td>TO_REDRILL</td>
+<td>Flagged by the operator as needing re-drilling</td>
+</tr>
+<tr>
+<td>ADJUST</td>
+<td>Geometry has been adjusted from the original plan</td>
+</tr>
+<tr>
+<td>LOADING</td>
+<td>Explosive loading is in progress</td>
+</tr>
+<tr>
+<td>FILLED</td>
+<td>Fully loaded with explosive</td>
+</tr>
+<tr>
+<td>BLASTED</td>
+<td>Has been fired</td>
+</tr>
+<tr>
+<td>MISSING</td>
+<td>Could not be located on site</td>
+</tr>
+<tr>
+<td>COLLAPSED</td>
+<td>Has collapsed and cannot be used</td>
+</tr>
+</tbody>
+</table></div><div class="section" id="settings-2"><h1 class="section-title"><span class="num">12</span>Settings Quick Reference</h1><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language (FR / EN)</td>
+<td>Changes the app display language. Takes effect immediately.</td>
+</tr>
+<tr>
+<td>Reverse keyboard</td>
+<td>Flips the numeric keypad layout — useful for left-handed users.</td>
+</tr>
+<tr>
+<td>Polarex Auto Connect &amp; Export</td>
+<td>Auto-connects to a known Polarex probe and exports DM4 automatically.</td>
+</tr>
+<tr>
+<td>Show my location</td>
+<td>Displays your GPS position as a real-time marker on blast maps.</td>
+</tr>
+<tr>
+<td>Export database dump</td>
+<td>Creates a ZIP archive of all local databases for support diagnostics.</td>
+</tr>
+<tr>
+<td>Truck mode (MEMU)</td>
+<td>Enables MEMU machine integration for advanced loading.</td>
+</tr>
+<tr>
+<td>MEMU IP address</td>
+<td>IP address of the MEMU machine on the local network.</td>
+</tr>
+<tr>
+<td>MEMU Port</td>
+<td>TCP port number for MEMU communication.</td>
+</tr>
+<tr>
+<td>Connect / Disconnect MEMU</td>
+<td>Establishes or drops the TCP connection to the MEMU machine.</td>
+</tr>
+</tbody>
+</table></div><div class="section" id="glossary"><h1 class="section-title"><span class="num">13</span>Glossary</h1><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blast plan</td>
+<td>The set of holes, geometry data, products, and firing sequence for a single blast event</td>
+</tr>
+<tr>
+<td>Hole</td>
+<td>A borehole drilled in the rock in preparation for loading and blasting</td>
+</tr>
+<tr>
+<td>DM4</td>
+<td>Proprietary file format used to exchange borehole deviation measurement data</td>
+</tr>
+<tr>
+<td>MEMU</td>
+<td>Mobile Explosives Manufacturing Unit — a truck-mounted machine that produces and delivers bulk explosive on site</td>
+</tr>
+<tr>
+<td>Polarex</td>
+<td>A Bluetooth borehole deviation probe used to measure the actual path of a drilled hole</td>
+</tr>
+<tr>
+<td>Lithology</td>
+<td>The physical characteristics of rock (type, hardness, mineralisation) logged per hole depth interval</td>
+</tr>
+<tr>
+<td>Bulk explosive</td>
+<td>Pumpable or pourable explosive mixture delivered by a MEMU or tanker</td>
+</tr>
+<tr>
+<td>Cartridge</td>
+<td>Pre-packaged stick explosive placed manually into a hole</td>
+</tr>
+<tr>
+<td>Detonator</td>
+<td>Electronic or non-electric initiator used to fire a loaded borehole</td>
+</tr>
+<tr>
+<td>Det cord</td>
+<td>Detonating cord — a thin, flexible initiating element used alongside detonators</td>
+</tr>
+<tr>
+<td>Explore</td>
+<td>The EPC Groupe web platform used to create blast plans and receive field data from ExperTab</td>
+</tr>
+<tr>
+<td>Keycloak</td>
+<td>The identity and access management system used for user authentication</td>
+</tr>
+<tr>
+<td>QA/QC</td>
+<td>Quality Assurance / Quality Control — the validation process for explosive deliveries</td>
+</tr>
+<tr>
+<td>Session</td>
+<td>A work session tied to a specific blast plan and role (e.g., drilling session, delivery session)</td>
+</tr>
+<tr>
+<td>Zone</td>
+<td>A geographic sub-division of a site, used to group blast plans</td>
+</tr>
+</tbody>
+</table></div></div><!-- /content -->
+<button id="back-to-top" title="Back to top">⇧</button>
+<footer>
+<strong>ExperTab — User Documentation</strong><br/>
+  EPC Groupe — DTI  |  Platform: Android  |  All rights reserved
+</footer>
+</div><!-- /main -->
+</div><!-- /layout -->
+<script>
+var isScrolling = false;
+
+function estimateScrollDuration(targetEl) {
+  var dist = Math.abs(targetEl.getBoundingClientRect().top);
+  return Math.min(2500, Math.max(600, dist * 0.6));
+}
+
+function scrollToSection(event, target) {
+  event.preventDefault();
+  event.stopPropagation();
+  var targetEl = document.getElementById(target);
+  if (targetEl) {
+    isScrolling = true;
+    var duration = estimateScrollDuration(targetEl);
+    var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+    clearTimeout(window._scrollTimer);
+    window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+  }
+}
+
+function handleChapterClick(event, el) {
+  event.preventDefault();
+  event.stopPropagation();
+  var section = el.closest('.acc-section');
+  var target = el.getAttribute('data-target');
+  var allSections = document.querySelectorAll('.acc-section');
+  for (var i = 0; i < allSections.length; i++) {
+    if (allSections[i] !== section) allSections[i].classList.remove('open');
+  }
+  section.classList.toggle('open');
+  if (target) {
+    var targetEl = document.getElementById(target);
+    if (targetEl) {
+      isScrolling = true;
+      var duration = estimateScrollDuration(targetEl);
+      var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      clearTimeout(window._scrollTimer);
+      window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+    }
+  }
+}
+
+// Nav items click
+var navItems = document.querySelectorAll('#sidebar-nav .nav-item');
+for (var k = 0; k < navItems.length; k++) {
+  navItems[k].addEventListener('click', function(ev) {
+    var href = this.getAttribute('href');
+    if (href) {
+      var targetEl = document.querySelector(href);
+      if (targetEl) {
+        ev.preventDefault();
+        isScrolling = true;
+        var duration = estimateScrollDuration(targetEl);
+        var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        clearTimeout(window._scrollTimer);
+        window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+      }
+    }
+  });
+}
+
+// Scroll spy
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    window.requestAnimationFrame(function() { updateActiveNav(); ticking = false; });
+    ticking = true;
+  }
+});
+
+function updateActiveNav() {
+  if (isScrolling) return;
+  var allEls = document.querySelectorAll('.section[id], h2[id]');
+  var current = '';
+  for (var i = 0; i < allEls.length; i++) {
+    if (allEls[i].getBoundingClientRect().top < 120) current = allEls[i].id;
+  }
+  var items = document.querySelectorAll('.nav-item, .nav-chapter');
+  for (var j = 0; j < items.length; j++) {
+    items[j].classList.remove('active');
+    var href = items[j].getAttribute('href');
+    var dt = items[j].getAttribute('data-target');
+    if ((href && href === '#' + current) || (dt && dt === current)) {
+      items[j].classList.add('active');
+    }
+  }
+  var btn = document.getElementById('back-to-top');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+}
+
+// Back to top
+document.getElementById('back-to-top').addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Search
+document.getElementById('sidebar-search-input').addEventListener('input', function(e) {
+  var q = e.target.value.toLowerCase();
+  var sections = document.querySelectorAll('.acc-section');
+  for (var i = 0; i < sections.length; i++) {
+    var text = sections[i].textContent.toLowerCase();
+    if (q === '' || text.indexOf(q) !== -1) {
+      sections[i].style.display = '';
+      if (q) sections[i].classList.add('open');
+    } else {
+      sections[i].style.display = 'none';
+    }
+  }
+});
+
+// Open first section by default
+var firstSection = document.querySelector('.acc-section');
+if (firstSection) firstSection.classList.add('open');
+</script>
+</body>
+</html>

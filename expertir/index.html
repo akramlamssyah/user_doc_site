@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Expertir 4.0 — User Documentation</title>
+<style>
+/* ── Palette Mint — identique ExperTab/Explore ── */
+:root {
+  --brand:      #00C79A;
+  --brand-light: #30D2AE;
+  --brand-dark:  #008668;
+  --brand-bg:    #DFF8F3;
+  --dark:        #005542;
+  --grey-bg:     #F4F6F7;
+  --grey-line:   #CCCCCC;
+  --amber:       #E67E22;
+  --red:         #C0392B;
+  --green:       #1D8A5E;
+  --white:       #ffffff;
+  --text:        #2c3e50;
+  --text-light:  #5a6a7a;
+  --border:      #e8e8e8;
+  --bg-alt:      #f8f9fa;
+  --sw:          280px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: #f9fafb;
+}
+
+/* ── SIDEBAR ── */
+#sb {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sw);
+  background: #ffffff;
+  border-right: 1px solid var(--grey-line);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+#sb::-webkit-scrollbar { width: 4px; }
+#sb::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+#sb-logo {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--grey-line);
+  flex-shrink: 0;
+}
+#sb-logo svg {
+  display: block;
+  width: 140px;
+  height: auto;
+}
+#sb-logo .sub {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Recherche sidebar */
+#sb-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--grey-line);
+  flex-shrink: 0;
+}
+#sb-search input {
+  width: 100%; padding: 8px 12px;
+  border: 1px solid var(--grey-line);
+  border-radius: 6px; font-size: 13px;
+  outline: none; background: var(--bg-alt);
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+#sb-search input:focus { border-color: var(--brand); }
+
+#sb-nav-content { flex: 1; overflow-y: auto; padding: 8px 0; }
+
+/* Accordion sidebar — style identique à Explore */
+.nav-chapter {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; text-decoration: none; color: var(--text);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border: none; background: none; width: 100%; text-align: left;
+  user-select: none;
+}
+.nav-chapter:hover { background: var(--bg-alt); color: var(--brand); }
+.nav-chapter.active { color: var(--brand); }
+.ch-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 5px; border-radius: 4px;
+  background: var(--brand-bg); color: var(--brand);
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+  white-space: nowrap;
+}
+.ch-title { flex: 1; }
+.chevron {
+  flex-shrink: 0; transition: transform 0.3s;
+  color: var(--text-light); opacity: 0.6;
+  font-size: 12px; display: inline-block;
+}
+.nav-section.open > .nav-chapter .chevron { transform: rotate(90deg); }
+.nav-items {
+  display: none; padding-left: 0;
+  overflow: hidden;
+}
+.nav-section.open > .nav-items { display: block; }
+.nav-item {
+  display: block; padding: 5px 16px 5px 46px;
+  text-decoration: none; color: var(--text-light);
+  font-size: 12.5px; line-height: 1.5;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-item:hover { color: var(--brand); background: var(--bg-alt); }
+.nav-item.active {
+  color: var(--brand); border-left-color: var(--brand);
+  font-weight: 600; background: var(--brand-bg);
+}
+.nav-subitem {
+  display: block; padding: 4px 16px 4px 58px;
+  text-decoration: none; color: var(--text-light);
+  font-size: 12px; line-height: 1.4;
+  transition: all 0.15s;
+}
+.nav-subitem:hover { color: var(--brand); background: var(--bg-alt); }
+.nav-subitem.active { color: var(--brand); font-weight: 600; }
+
+/* ── MAIN ── */
+#ct { margin-left: var(--sw); min-width: 0; }
+
+/* ── COVER ── */
+#hero {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--dark) 100%);
+  color: white;
+  padding: 80px 60px 70px;
+}
+#hero h1 {
+  font-size: 56px; font-weight: 800;
+  letter-spacing: 2px; line-height: 1.1;
+  color: white;
+}
+#hero .cover-subtitle { font-size: 22px; opacity: .85; margin-top: 10px; }
+#hero .cover-meta { display: flex; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+#hero .cover-meta-item {
+  background: rgba(255,255,255,.1);
+  border-radius: 8px; padding: 12px 20px; font-size: 13px;
+}
+#hero .cover-meta-item span {
+  display: block; font-size: 10px; opacity: .65;
+  text-transform: uppercase; letter-spacing: .8px; margin-bottom: 3px;
+}
+/* Hero tags (conservés) */
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.hero-tag {
+  font-size: 12px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.8);
+  padding: 4px 12px; border-radius: 4px;
+  background: rgba(255,255,255,.1);
+}
+
+/* ── TOC ── */
+.toc-section {
+  background: #fff;
+  border-bottom: 1px solid var(--grey-line);
+  padding: 50px 60px;
+}
+.toc-section h2 {
+  color: var(--brand); font-size: 22px;
+  margin-bottom: 24px; padding-bottom: 10px;
+  border-bottom: 3px solid var(--brand);
+  display: inline-block;
+  border-top: none; margin-top: 0;
+  font-weight: 800; gap: 0;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 6px;
+}
+.toc-grid a {
+  display: block; color: var(--brand);
+  text-decoration: none; font-size: 14px;
+  padding: 5px 0; border-bottom: 1px dotted #d0dfe0;
+}
+.toc-grid a:hover { color: var(--dark); }
+.toc-grid a .toc-num { font-weight: 700; margin-right: 6px; }
+.toc-grid a.toc-sub {
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--brand-dark);
+  opacity: 0.85;
+  border-bottom-style: dotted;
+}
+
+/* ── CONTENT WRAPPER ── */
+.content-wrap { padding: 0 60px 80px; }
+
+/* ── SECTIONS ── */
+section {
+  padding-top: 60px;
+  border-bottom: none;
+  max-width: none;
+}
+section + section { border-top: 1px solid #e8ecee; }
+#hero { padding-top: 80px; }
+#footer-section { padding: 0; border-top: none; }
+
+/* ── TITRES — identiques ExperTab ── */
+h2 {
+  font-size: 28px; font-weight: 800; color: var(--brand);
+  padding-bottom: 12px; border-bottom: 4px solid var(--brand);
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 12px;
+  scroll-margin-top: 24px; line-height: 1.2;
+}
+h2 .num {
+  background: var(--brand); color: white;
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; flex-shrink: 0;
+}
+/* Sous-sections h2 (1.1·, 2.3·…) — style intermédiaire entre h2 et h3 */
+h2.sub-section {
+  font-size: 21px; font-weight: 700;
+  border-bottom: 2px solid var(--brand-bg);
+  color: var(--text);
+  margin-top: 40px; margin-bottom: 18px;
+  padding-bottom: 8px;
+}
+h3 {
+  font-size: 19px; font-weight: 700; color: var(--text);
+  margin: 36px 0 14px;
+  padding-left: 14px; border-left: 4px solid var(--brand);
+  scroll-margin-top: 24px;
+}
+h4 {
+  font-size: 15px; font-weight: 700; color: var(--brand);
+  margin: 24px 0 8px;
+  scroll-margin-top: 24px;
+  text-transform: none; letter-spacing: normal;
+}
+p { margin: 8px 0 10px; font-size: 15px; }
+ul { padding-left: 28px; margin: 10px 0 14px; }
+ul li { margin-bottom: 5px; }
+ol { padding-left: 28px; margin: 10px 0 14px; }
+ol li { margin-bottom: 5px; }
+strong { font-weight: 600; }
+a { color: var(--brand-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  background: var(--brand-bg); padding: 2px 6px;
+  border-radius: 3px; font-size: 13px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  color: var(--dark);
+}
+kbd {
+  font-family: Consolas, monospace; font-size: 13px;
+  background: var(--bg-alt); border: 1px solid #C7C7C7;
+  border-bottom-width: 2px; border-radius: 4px;
+  padding: 2px 7px; color: var(--text);
+}
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead tr { background: var(--brand); color: white; }
+th {
+  text-align: left; padding: 11px 14px;
+  font-weight: 600; font-size: 13px;
+  white-space: nowrap; text-transform: none; letter-spacing: normal;
+}
+td { padding: 10px 14px; border-bottom: 1px solid #e5eaeb; vertical-align: top; }
+tbody tr:nth-child(even) td { background: var(--grey-bg); }
+
+/* ── STEPS — cercles verts ── */
+.steps { counter-reset: st; list-style: none; padding: 0; margin: 14px 0; }
+.step {
+  counter-increment: st;
+  display: flex; gap: 14px;
+  margin-bottom: 10px; align-items: flex-start;
+}
+.sn {
+  background: var(--brand); color: white;
+  min-width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+}
+.sn::before { content: counter(st); }
+.sb { padding-top: 2px; font-size: 15px; }
+.sb strong { display: block; margin-bottom: 2px; font-size: 14px; }
+
+/* ── CALLOUTS — style note ExperTab ── */
+.callout {
+  display: flex; gap: 12px;
+  padding: 12px 16px; border-radius: 0 8px 8px 0;
+  margin: 14px 0; font-size: 14px; line-height: 1.6;
+  border-left: 4px solid;
+}
+.callout .ico { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+.callout.info  { background: var(--brand-bg);  border-color: var(--brand);  color: var(--dark); }
+.callout.warn  { background: #fff8ee;           border-color: var(--amber);  color: #5a4010; }
+.callout.tip   { background: #eefbf3;           border-color: var(--green);  color: #1a4a2a; }
+.callout.error { background: #fdecea;           border-color: var(--red);    color: #6b1010; }
+
+/* ── CARDS ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 14px; margin: 20px 0;
+}
+.card {
+  background: white;
+  border: 2px solid var(--brand-bg);
+  border-top: 3px solid var(--brand);
+  border-radius: 10px; padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.card .ci { font-size: 22px; margin-bottom: 8px; }
+.card h4 { margin: 0 0 6px; font-size: 13px; color: var(--brand); font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+.card p { font-size: 13px; margin: 0; color: var(--text-light); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 20px;
+  margin-left: 4px; vertical-align: middle;
+}
+.bop  { background: var(--brand-bg); color: var(--brand-dark); }
+.bug  { background: #dce8f8; color: #1a4a8a; }
+.btun { background: #f0eafd; color: #5b2d9a; }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* ── BACK TO TOP ── */
+#back-to-top {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--brand); color: white;
+  border: none; cursor: pointer; font-size: 18px;
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 200; transition: background 0.2s;
+}
+#back-to-top:hover { background: var(--brand-dark); }
+#back-to-top.visible { display: flex; }
+
+/* ── FOOTER ── */
+#footer-section {
+  background: var(--dark);
+  color: #6ecfb8;
+  text-align: center;
+  padding: 28px;
+  font-size: 13px;
+  margin-top: 40px;
+}
+#footer-section strong { color: #a0ddd0; }
+
+/* ── PRINT / RESPONSIVE ── */
+@media print {
+  #sb, #back-to-top { display: none; }
+  #ct { margin-left: 0; }
+  #hero { break-after: page; }
+}
+@media (max-width: 900px) {
+  #sb { transform: translateX(-100%); transition: transform 0.3s; }
+  #sb.open { transform: translateX(0); box-shadow: 4px 0 16px rgba(0,0,0,0.15); }
+  #ct { margin-left: 0; }
+  #hero { padding: 40px 24px; }
+  #hero h1 { font-size: 36px; }
+  .content-wrap { padding: 0 24px 40px; }
+  h2 { font-size: 22px; }
+}
+
+/* GTS Logo */
+.gts-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--grey-line);
+  flex-shrink: 0;
+}
+.gts-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.gts-text {
+  line-height: 1.2;
+}
+.gts-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #D63384 0%, #7B2FF7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* GTS Logo */
+.gts-logo {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--grey-line);
+  flex-shrink: 0;
+}
+.gts-logo svg {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+</style>
+<style>.badge{margin-left:8px;vertical-align:middle}
+</style></head>
+<body>
+<!-- ════ SIDEBAR ════ -->
+<nav id="sb">
+<div class="gts-logo">
+<svg fill="none" height="38" viewbox="0 0 145 38" width="145" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4005_30414)">
+<path d="M96.7249 23.612C100.619 23.612 103.773 26.7747 103.773 30.6727C103.773 34.5708 100.619 37.7334 96.7249 37.7334C92.8307 37.7334 89.6768 34.5708 89.6768 30.6727C89.6768 26.7747 92.8337 23.612 96.7249 23.612ZM95.3422 27.8626C95.1005 27.8626 94.9078 28.0618 94.9078 28.3039C94.9078 28.546 95.1066 28.739 95.3483 28.736L98.2207 28.7145L94.0176 32.9865C93.8493 33.1581 93.8493 33.4339 94.0237 33.6055C94.195 33.774 94.4703 33.774 94.6386 33.6024L98.8417 29.3305L98.8631 32.2081C98.8631 32.4502 99.062 32.6432 99.3037 32.6402C99.5453 32.6402 99.738 32.441 99.735 32.2019L99.7075 28.2702C99.7075 28.0281 99.5086 27.835 99.27 27.835L95.3452 27.8626H95.3422Z" fill="#00C79A"></path>
+<path d="M30.1191 31.1971L30.1161 31.2029C30.1161 32.3031 30.2629 33.0634 30.5566 33.4832C30.8503 33.9061 31.3275 34.1142 31.9913 34.1142C32.4624 34.1142 32.9029 33.9487 33.3128 33.6147C33.735 33.2837 34.0715 32.8148 34.3284 32.2142C34.5823 31.6135 34.7108 30.9363 34.7108 30.1824V26.0606H37.1611V36.1827H34.7108V35.5484C34.7108 35.2664 34.7353 35.0305 34.7873 34.8405C34.8393 34.6352 34.9158 34.4114 35.0167 34.1694C35.0809 34.0039 35.1115 33.9027 35.1115 33.8629C35.1115 33.7464 35.0595 33.6821 34.9586 33.6698H34.9005C34.8118 33.6698 34.7353 33.7464 34.671 33.8997C34.3529 34.5402 33.9063 35.1071 33.3312 35.6066C32.7714 36.0908 32.0922 36.336 31.303 36.336C30.1803 36.336 29.2932 35.9713 28.6447 35.2419C27.9931 34.5126 27.6688 33.4461 27.6688 32.0398V26.0576H30.1191V31.1971ZM5.79355 22.3985C6.9039 22.3985 7.82765 22.5979 8.56791 22.9932C9.30818 23.3884 9.85575 23.9125 10.2137 24.5652C10.5716 25.218 10.7553 25.9261 10.7675 26.6922H8.29874C8.29874 26.1437 8.09379 25.65 7.68693 25.2149C7.28007 24.7675 6.63449 24.5436 5.75351 24.5436C4.87255 24.5437 4.24248 24.7094 3.86009 25.0434C3.47774 25.3744 3.28505 25.733 3.28505 26.1161C3.28511 27.0352 4.15991 27.5929 5.90646 27.7829C7.06582 27.9239 8.02952 28.1356 8.79734 28.4173C9.57435 28.6869 10.1832 29.1068 10.6146 29.6829C11.0489 30.259 11.2661 31.0374 11.2661 32.0211C11.2661 32.775 11.0489 33.471 10.6146 34.1114C10.1924 34.7516 9.56835 35.2603 8.73937 35.6465C7.91037 36.0173 6.91595 36.2011 5.75351 36.2011C4.55441 36.2011 3.53895 35.9713 2.70997 35.5116C1.88096 35.0519 1.26294 34.4513 0.853025 33.7097C0.446199 32.9681 0.241211 32.1621 0.241211 31.2948H2.76791C2.79238 32.0119 3.02188 32.6493 3.4562 33.2132C3.89059 33.7771 4.65536 34.056 5.75351 34.056C6.4418 34.056 7.00488 33.961 7.43927 33.7679C7.88583 33.5629 8.19779 33.3205 8.37522 33.0389C8.56794 32.7447 8.6629 32.4563 8.6629 32.1744C8.6629 31.6748 8.45164 31.2737 8.03258 30.9672C7.61042 30.6485 6.85171 30.4187 5.75351 30.2777C4.4902 30.1122 3.48998 29.8606 2.74971 29.5297C2.02165 29.1834 1.50164 28.7513 1.18044 28.2273C0.862294 27.691 0.700072 27.026 0.700072 26.2353C0.700072 25.5335 0.90503 24.8869 1.31189 24.2985C1.71871 23.7102 2.30911 23.2505 3.07382 22.9195C3.85079 22.5733 4.7594 22.4018 5.79024 22.4018L5.79355 22.3985ZM67.8436 25.9108C68.9663 25.9108 69.8537 26.2752 70.505 27.0045C71.1566 27.7339 71.4809 28.8003 71.4809 30.2069V36.1889H69.0305V31.0497C69.0305 29.9495 68.8837 29.1895 68.59 28.7697C68.2964 28.3498 67.8191 28.1384 67.1553 28.1384C66.6842 28.1384 66.2376 28.3039 65.8154 28.6379C65.4086 28.9689 65.0751 29.438 64.8212 30.0387C64.5673 30.639 64.4389 31.3163 64.4389 32.0702V36.1922H61.9886V26.0698H64.4389V26.7045C64.4389 26.9984 64.4144 27.2466 64.3624 27.4519C64.3104 27.6573 64.2339 27.8659 64.133 28.0835C64.0687 28.2368 64.0381 28.3409 64.0381 28.39C64.0381 28.5031 64.0901 28.5677 64.1911 28.58H64.2492C64.3379 28.58 64.4144 28.5031 64.4786 28.3501C64.7601 27.725 65.1945 27.1611 65.7787 26.6647C66.3661 26.1651 67.0544 25.9166 67.8467 25.9166L67.8436 25.9108ZM17.2406 25.7606C18.2622 25.7606 19.1555 25.9905 19.9202 26.4501C20.685 26.9098 21.2724 27.5347 21.6792 28.3284C22.086 29.1221 22.291 30.0047 22.291 30.9761C22.291 31.9476 22.086 32.8271 21.6792 33.6208C21.2724 34.4114 20.685 35.0397 19.9202 35.4994C19.1555 35.959 18.2622 36.1889 17.2406 36.1889C16.2188 36.1889 15.3253 35.959 14.5606 35.4994C13.7959 35.0397 13.2084 34.4145 12.8016 33.6208C12.3948 32.8302 12.1898 31.9476 12.1898 30.9761C12.1898 30.0047 12.3948 29.1221 12.8016 28.3284C13.2085 27.538 13.7959 26.9098 14.5606 26.4501C15.3284 25.9905 16.2188 25.7606 17.2406 25.7606ZM42.5145 26.064H45.2738V28.2122H42.5176V32.8335C42.5176 33.2408 42.5298 33.523 42.5543 33.6763C42.594 33.8292 42.6766 33.9306 42.8021 33.9827C42.9428 34.0226 43.1967 34.0406 43.5668 34.0406H45.2707V36.1889H43.0498C42.3493 36.1889 41.7803 36.1 41.3459 35.9192C40.9115 35.7261 40.5873 35.4074 40.3701 34.96C40.1651 34.5126 40.0642 33.8874 40.0642 33.0814V28.2122H38.2257V26.064H40.0642V23.3026H42.5145V26.064ZM55.7022 25.7606C56.7239 25.7606 57.6171 25.9905 58.3819 26.4501C59.1467 26.9098 59.734 27.5347 60.1409 28.3284C60.5477 29.1221 60.7527 30.0047 60.7527 30.9761C60.7527 31.9476 60.5477 32.8271 60.1409 33.6208C59.734 34.4114 59.1467 35.0397 58.3819 35.4994C57.6171 35.959 56.7239 36.1889 55.7022 36.1889C54.6804 36.1889 53.7872 35.959 53.0224 35.4994C52.2576 35.0397 51.6672 34.4145 51.2604 33.6208C50.8535 32.8302 50.6486 31.9476 50.6486 30.9761C50.6486 30.0047 50.8535 29.1221 51.2604 28.3284C51.6703 27.5347 52.2576 26.9098 53.0224 26.4501C53.7902 25.9905 54.6804 25.7606 55.7022 25.7606ZM77.3362 25.7576C78.6226 25.7579 79.6369 26.0643 80.3766 26.6769C81.1169 27.2776 81.5177 28.0559 81.5819 29.0151H79.1714C79.1316 28.6321 78.9664 28.3134 78.6727 28.056C78.3913 27.8016 77.9263 27.6729 77.2747 27.6729C76.0633 27.6729 75.4576 28.0192 75.4576 28.7087C75.4576 28.9018 75.5035 29.0608 75.5922 29.1864C75.6932 29.3152 75.9043 29.4285 76.2224 29.5327C76.5406 29.6339 77.0147 29.7169 77.6388 29.7813C78.9786 29.9222 80.0187 30.2345 80.759 30.7218C81.5115 31.1937 81.8878 31.9111 81.8878 32.8703C81.8878 33.9306 81.4871 34.7489 80.6825 35.325C79.8902 35.9008 78.7553 36.1889 77.2747 36.1889C75.8465 36.1889 74.7357 35.8763 73.9465 35.2484C73.1695 34.6079 72.7534 33.7342 72.7045 32.6218H75.115C75.1273 33.0814 75.3016 33.471 75.632 33.7927C75.9777 34.1111 76.5497 34.2705 77.3543 34.2705C78.0946 34.2705 78.6238 34.1632 78.9419 33.9459C79.2723 33.7284 79.4406 33.4339 79.4406 33.0634C79.4406 32.8213 79.3335 32.634 79.1163 32.5084C78.9113 32.3797 78.6235 32.285 78.2536 32.2206C77.8835 32.144 77.3023 32.061 76.513 31.9721C75.1364 31.8066 74.2034 31.4358 73.7201 30.8597C73.249 30.2713 73.0134 29.6002 73.0134 28.8463C73.0134 28.2824 73.1786 27.7737 73.5121 27.311C73.8425 26.839 74.335 26.4624 74.9865 26.1805C75.6366 25.8991 76.4179 25.7582 77.3362 25.7576ZM25.9772 36.1858H23.5269V22.3832H25.9772V36.1858ZM49.4127 36.1858H46.9627V26.064H49.4127V36.1858ZM17.2373 27.9852C16.4328 27.9882 15.7934 28.2735 15.3224 28.8497C14.8636 29.4105 14.6341 30.1211 14.6341 30.9761C14.6341 31.8311 14.8635 32.5452 15.3224 33.1213C15.7965 33.6821 16.4328 33.964 17.2373 33.964C18.0418 33.964 18.6751 33.6852 19.1339 33.1213C19.605 32.5482 19.8408 31.8311 19.8408 30.9761C19.8407 30.1211 19.605 29.4135 19.1339 28.8497C18.672 28.2735 18.0418 27.9852 17.2373 27.9852ZM55.7022 27.9852C54.8976 27.9852 54.2583 28.2735 53.7872 28.8497C53.3283 29.4105 53.0989 30.1211 53.0989 30.9761C53.0989 31.8311 53.3283 32.5452 53.7872 33.1213C54.2613 33.6821 54.9007 33.964 55.7022 33.964C56.5036 33.964 57.1369 33.6852 57.5957 33.1213C58.0668 32.5482 58.3024 31.8311 58.3024 30.9761C58.3024 30.1211 58.0668 29.4135 57.5957 28.8497C57.1369 28.2735 56.5067 27.9852 55.7022 27.9852ZM49.4127 24.8381H46.9627V22.3832H49.4127V24.8381ZM32.5695 4.31784C32.5695 4.66413 32.4777 5.01364 32.3003 5.37219C32.288 5.41203 32.2635 5.47034 32.2238 5.54696C32.1993 5.62047 32.1871 5.68492 32.1871 5.73699C32.1871 5.80128 32.2177 5.8504 32.2819 5.89021L32.3584 5.90848C32.4471 5.90845 32.5144 5.86864 32.5511 5.79206C32.5909 5.71544 32.6153 5.66935 32.6276 5.65709C32.958 5.08106 33.3862 4.62754 33.9093 4.2966C34.4477 3.95031 35.084 3.77858 35.8243 3.77858C36.6808 3.77858 37.4395 4.00848 38.1033 4.46809C38.7794 4.92777 39.3025 5.5529 39.6726 6.34661V6.35289C40.0397 7.14654 40.2263 8.02912 40.2263 9.00051C40.2263 9.97193 40.0428 10.8515 39.6726 11.6452C39.3025 12.4389 38.7794 13.064 38.1033 13.5237C37.4395 13.9833 36.6778 14.2132 35.8243 14.2132C35.0962 14.2132 34.4569 14.0447 33.9093 13.7137C33.374 13.3674 32.9457 12.9017 32.6276 12.3134C32.6276 12.3012 32.6031 12.2551 32.5511 12.1784C32.5113 12.1019 32.441 12.0806 32.34 12.1204C32.2513 12.1572 32.2054 12.2153 32.2054 12.2919C32.2054 12.3807 32.236 12.479 32.3003 12.5801C32.4807 12.9386 32.5695 13.2849 32.5695 13.6159V14.057H30.1191V0.254384H32.5695V4.31784ZM77.287 3.78155C78.116 3.78158 78.8869 3.95935 79.6027 4.31784C80.3277 4.66107 80.915 5.21899 81.3616 5.98509C81.8205 6.73893 82.0499 7.69812 82.0499 8.85958L82.0561 8.86586C82.0561 9.07115 82.0377 9.31931 81.9979 9.61342H74.65C74.7388 10.3795 75.0202 10.9802 75.4913 11.4153C75.9624 11.8505 76.5834 12.068 77.3482 12.068C78.3791 12.068 79.0643 11.5563 79.3947 10.5328H81.8817C81.6523 11.6452 81.1536 12.54 80.3889 13.2172C79.6363 13.8791 78.6146 14.2132 77.3267 14.2132C76.2652 14.2132 75.3536 13.9896 74.5889 13.5422C73.8241 13.0948 73.2429 12.4789 72.8483 11.7005C72.4536 10.9068 72.2548 10.0057 72.2548 8.99754C72.2548 7.94948 72.4598 7.03312 72.8666 6.25474C73.2735 5.46415 73.8547 4.85747 74.6072 4.43457C75.372 3.99941 76.2652 3.78155 77.287 3.78155ZM46.2435 3.77858C47.5956 3.77858 48.6663 4.10961 49.4586 4.77455V4.77154C50.2509 5.43654 50.6455 6.66232 50.6455 8.45196V14.051H48.1952V13.3429C48.1952 12.9599 48.29 12.5891 48.4827 12.2305C48.5347 12.1019 48.5592 12.007 48.5592 11.9426C48.5592 11.866 48.5286 11.8139 48.4644 11.7894L48.3879 11.7709C48.3114 11.7709 48.2533 11.8107 48.2166 11.8873C48.1768 11.9485 48.1585 11.9884 48.1585 12.0007C47.5589 13.4717 46.3965 14.2072 44.6742 14.2072C44.0471 14.2072 43.4597 14.0785 42.9122 13.8242C42.3768 13.5698 41.9486 13.2172 41.6304 12.7698C41.3123 12.3224 41.1532 11.8229 41.1532 11.2744C41.1532 10.2264 41.4836 9.45424 42.1474 8.95473C42.8235 8.44295 43.7167 8.1548 44.8272 8.09044L45.803 8.05364C46.6718 8.02912 47.2897 7.97099 47.6599 7.88215C48.03 7.79328 48.2074 7.57542 48.1952 7.22913C48.183 6.79409 48.0361 6.44477 47.7547 6.17512C47.4732 5.90851 46.944 5.77349 46.167 5.77349C45.3747 5.77352 44.8119 5.91473 44.4815 6.19666C44.1511 6.46634 43.9461 6.83712 43.8697 7.30905H41.4591C41.6243 6.10779 42.1535 5.21899 43.0468 4.64286C43.94 4.06673 45.0076 3.77858 46.2435 3.77858ZM135.893 3.77858C137.245 3.77858 138.319 4.10955 139.108 4.77455L139.102 4.77154C139.891 5.43654 140.289 6.66232 140.289 8.45196V14.051H137.838V13.3429C137.838 12.9599 137.933 12.5891 138.126 12.2305C138.178 12.1019 138.202 12.007 138.202 11.9426C138.202 11.866 138.172 11.8139 138.107 11.7894L138.031 11.7709C137.954 11.7709 137.896 11.8107 137.86 11.8873C137.823 11.9485 137.802 11.9884 137.802 12.0007C137.202 13.4717 136.043 14.2072 134.32 14.2072C133.693 14.2072 133.106 14.0785 132.558 13.8242C132.023 13.5698 131.595 13.2172 131.277 12.7698C130.958 12.3224 130.799 11.8229 130.799 11.2744C130.799 10.2264 131.13 9.45424 131.794 8.95473C132.473 8.44295 133.363 8.1548 134.473 8.09044L135.449 8.05364C136.318 8.02912 136.936 7.97099 137.306 7.88215C137.676 7.79328 137.854 7.57542 137.841 7.22913C137.829 6.79406 137.682 6.44477 137.401 6.17512C137.119 5.90851 136.59 5.77349 135.813 5.77349C135.024 5.77352 134.461 5.91473 134.131 6.19666C133.8 6.46634 133.595 6.83718 133.519 7.30905H131.108C131.273 6.10776 131.803 5.21899 132.696 4.64286C133.589 4.06673 134.654 3.77858 135.893 3.77858ZM7.02014 0.404607C8.2193 0.404607 9.25318 0.62847 10.122 1.07586C10.9907 1.52328 11.6668 2.10541 12.1501 2.81941C12.6334 3.53648 12.9546 4.3149 13.1075 5.15761H10.5228C10.2934 4.41609 9.89873 3.82166 9.33595 3.37425C8.77312 2.92686 8.01434 2.70302 7.05688 2.70299C6.16364 2.70299 5.39865 2.90832 4.75931 3.3159C4.13532 3.71122 3.65514 4.26286 3.32476 4.96458C3.00664 5.65406 2.84739 6.43554 2.84739 7.30277C2.84739 8.15771 3.00037 8.93922 3.30625 9.64097C3.62436 10.3304 4.09258 10.879 4.70434 11.2896C5.32836 11.6972 6.08398 11.9025 6.9619 11.9025C7.87962 11.9025 8.62613 11.6451 9.20123 11.1364C9.78854 10.6246 10.1895 9.95958 10.4066 9.14445H7.13336V6.99632H13.1045V14.051H10.4249V13.1684C10.4249 12.7333 10.538 12.2365 10.7705 11.6727C10.7827 11.6482 10.789 11.6023 10.789 11.538C10.789 11.4369 10.749 11.3785 10.6725 11.3662C10.6481 11.354 10.6144 11.348 10.5778 11.348C10.5013 11.348 10.4371 11.4001 10.3851 11.5012C10.1159 12.1662 9.64486 12.7853 8.9688 13.3615C8.30499 13.9253 7.46353 14.2042 6.4418 14.2042C5.17849 14.2042 4.07423 13.8977 3.13209 13.2849C2.20217 12.672 1.48638 11.8414 0.987747 10.7934C0.489118 9.74537 0.241211 8.58374 0.241211 7.30277C0.241211 6.01264 0.50111 4.84187 1.02418 3.79384C1.54728 2.74581 2.32138 1.9216 3.33999 1.32096C4.36172 0.708086 5.58535 0.401634 7.01387 0.401604L7.02014 0.404607ZM88.1467 3.77858C89.0522 3.77858 89.8506 3.9657 90.5389 4.33341C91.2272 4.70418 91.7625 5.19745 92.1449 5.81032C92.5395 6.4109 92.7689 7.06371 92.8332 7.76542H90.4226C90.3461 7.25374 90.1106 6.83077 89.716 6.49984C89.3214 6.16887 88.7982 6.00035 88.1467 6.00035C87.3177 6.00035 86.6664 6.27631 86.1953 6.82483C85.7242 7.37335 85.4883 8.09648 85.4883 8.99123C85.4883 9.88607 85.7242 10.6094 86.1953 11.158C86.6664 11.7065 87.3177 11.9824 88.1467 11.9824C88.7982 11.9824 89.3214 11.817 89.716 11.483C90.1106 11.152 90.3461 10.7288 90.4226 10.217H92.8332C92.7689 10.9188 92.5395 11.5778 92.1449 12.1907C91.7625 12.7913 91.2272 13.2786 90.5389 13.6464C89.8628 14.0171 89.0644 14.2009 88.1467 14.2009C87.1402 14.2009 86.2439 13.9774 85.4669 13.53C84.7022 13.0825 84.1026 12.4634 83.6682 11.6697C83.246 10.876 83.035 9.98425 83.035 8.98525C83.035 7.98622 83.2399 7.09451 83.6468 6.3008C84.0689 5.50709 84.6685 4.88796 85.4455 4.44054C86.2225 3.99319 87.1249 3.7696 88.1436 3.7696L88.1467 3.77858ZM125.204 3.77858C126.11 3.77858 126.908 3.96567 127.596 4.33341C128.285 4.70115 128.82 5.19745 129.202 5.81032C129.597 6.4109 129.83 7.06371 129.891 7.76542H127.48C127.404 7.25371 127.168 6.83077 126.771 6.49984C126.376 6.1689 125.853 6.00035 125.201 6.00035C124.372 6.00035 123.721 6.27631 123.25 6.82483C122.778 7.37335 122.54 8.09648 122.54 8.99123C122.54 9.88607 122.775 10.6094 123.25 11.158C123.721 11.7065 124.372 11.9824 125.201 11.9824C125.853 11.9824 126.376 11.817 126.771 11.483C127.165 11.152 127.404 10.7288 127.48 10.217H129.891C129.827 10.9188 129.597 11.5778 129.202 12.1907C128.82 12.7913 128.285 13.2786 127.596 13.6464C126.92 14.0172 126.122 14.2009 125.204 14.2009C124.198 14.2009 123.305 13.9773 122.525 13.53C121.76 13.0825 121.16 12.4634 120.726 11.6697C120.307 10.876 120.096 9.98428 120.096 8.98525C120.096 7.98625 120.301 7.09451 120.707 6.3008C121.127 5.50712 121.729 4.88796 122.506 4.44054C123.283 3.99312 124.183 3.7696 125.204 3.7696V3.77858ZM23.8358 3.69299C24.8575 3.69299 25.7508 3.92282 26.5155 4.3825C27.2803 4.84218 27.8677 5.46731 28.2745 6.26102C28.6814 7.0547 28.8863 7.93722 28.8863 8.90864C28.8863 9.88009 28.6814 10.7596 28.2745 11.5533C27.8677 12.347 27.2803 12.9721 26.5155 13.4318C25.7508 13.8914 24.8575 14.1213 23.8358 14.1213C22.8141 14.1213 21.9209 13.8915 21.1561 13.4318C20.3913 12.9721 19.801 12.347 19.3942 11.5533C18.9873 10.7626 18.7823 9.88009 18.7823 8.90864C18.7823 7.93722 18.9843 7.0547 19.3942 6.26102C19.8041 5.46731 20.3913 4.84218 21.1561 4.3825C21.9239 3.92282 22.8141 3.69299 23.8358 3.69299ZM73.1572 2.63867H69.1009V14.1153H66.4976V2.63867H62.4413V0.337279H73.1572V2.63867ZM111.091 3.77858C112.213 3.77885 113.1 4.14365 113.751 4.8727C114.403 5.60206 114.727 6.66857 114.727 8.07518V14.057H112.277V8.91792C112.277 7.81776 112.13 7.0577 111.836 6.6348C111.542 6.21193 111.065 6.00336 110.401 6.00332C109.93 6.00332 109.484 6.16911 109.062 6.50312C108.655 6.83405 108.322 7.3028 108.068 7.90339C107.814 8.504 107.685 9.18132 107.685 9.93513V14.057H105.235V3.9318H107.685V4.56625C107.685 4.86035 107.657 5.10855 107.609 5.31381C107.557 5.51913 107.48 5.7277 107.379 5.94528C107.315 6.09851 107.284 6.2027 107.284 6.25173C107.284 6.36509 107.333 6.42951 107.437 6.44176H107.495C107.584 6.4417 107.661 6.36509 107.725 6.21193C108.006 5.58676 108.441 5.02289 109.025 4.52644C109.612 4.02732 110.3 3.77895 111.091 3.77858ZM17.5494 14.054H15.0992V0.251381H17.5494V14.054ZM55.0934 14.054H52.6431V0.251381H55.0934V14.054ZM96.5102 4.56625L96.5071 4.56325C96.5071 4.85735 96.4826 5.10554 96.4306 5.31084C96.3786 5.51616 96.3022 5.7247 96.2012 5.94228C96.1373 6.0955 96.1064 6.1997 96.1064 6.24873C96.1064 6.36206 96.1553 6.4265 96.2593 6.43876H96.3175C96.4062 6.4387 96.4826 6.36206 96.5469 6.20892C96.8283 5.58376 97.2627 5.01989 97.847 4.52344C98.4343 4.02392 99.1226 3.77557 99.9149 3.77557C101.038 3.77557 101.925 4.14034 102.576 4.8697C103.228 5.59902 103.552 6.66541 103.552 8.07187V14.054H101.102V8.91461C101.102 7.81455 100.955 7.0547 100.661 6.63179C100.368 6.20889 99.8904 6.00035 99.2266 6.00035C98.7555 6.00035 98.3089 6.16584 97.8868 6.49984C97.4799 6.83077 97.1465 7.29977 96.8926 7.90041C96.6387 8.50103 96.5102 9.17828 96.5102 9.93216V14.054H94.0599V0.251381H96.5102V4.56625ZM118.86 14.054H116.409V3.9318H118.86V14.054ZM144.743 14.054H142.292V0.251381H144.743V14.054ZM48.1982 8.84131C47.9413 9.12315 47.6048 9.31922 47.1826 9.43564C46.7727 9.53984 46.1303 9.63499 45.2493 9.72386C44.6987 9.78822 44.2857 9.93513 44.0043 10.165C43.7381 10.3825 43.6035 10.7075 43.6035 11.1427C43.6035 11.5135 43.7442 11.814 44.0257 12.0438C44.3194 12.2736 44.6956 12.3867 45.1545 12.3867C45.3197 12.3867 45.4481 12.3807 45.5369 12.3685C46.2894 12.2673 46.9134 11.9393 47.4121 11.3908H47.4151C47.9229 10.8423 48.186 9.99041 48.1982 8.84131ZM137.85 8.84131C137.594 9.12322 137.254 9.31922 136.835 9.43564C136.425 9.53984 135.783 9.63499 134.902 9.72386C134.351 9.78822 133.938 9.93516 133.656 10.165C133.39 10.3825 133.256 10.7075 133.256 11.1427C133.256 11.5135 133.394 11.814 133.675 12.0438C133.969 12.2735 134.345 12.3867 134.804 12.3867C134.969 12.3867 135.097 12.3807 135.186 12.3685C135.939 12.2674 136.563 11.9393 137.061 11.3908H137.064C137.575 10.8423 137.838 9.99044 137.85 8.84131ZM35.2523 6.00663C34.7292 6.00663 34.2611 6.13829 33.8543 6.40796C33.4443 6.67458 33.1262 7.03941 32.8968 7.49908C32.6796 7.95873 32.5725 8.45828 32.5725 8.99454C32.5728 9.5308 32.6796 10.0303 32.8968 10.49C33.1262 10.9496 33.4474 11.3112 33.8543 11.5808C34.2642 11.8474 34.7292 11.9824 35.2523 11.9824C36.069 11.9824 36.6931 11.7035 37.1275 11.1397V11.1427C37.5619 10.5696 37.779 9.85251 37.779 8.99754C37.779 8.14254 37.5619 7.43448 37.1275 6.87061C36.6931 6.29454 36.069 6.00663 35.2523 6.00663ZM23.8358 5.91773C23.0313 5.91776 22.392 6.20567 21.9209 6.78174C21.462 7.34255 21.2326 8.05364 21.2326 8.90864C21.2326 9.76364 21.462 10.4777 21.9209 11.0538C22.395 11.6146 23.0343 11.8965 23.8358 11.8965C24.6372 11.8965 25.2706 11.6177 25.7294 11.0538C26.2005 10.4807 26.436 9.76361 26.436 8.90864C26.436 8.05364 26.2005 7.34561 25.7294 6.78174C25.2706 6.20564 24.6403 5.91773 23.8358 5.91773ZM77.3604 5.77051C75.9073 5.77054 75.0324 6.48767 74.7388 7.91865H79.5996C79.5476 7.27826 79.3304 6.76044 78.948 6.36515C78.5657 5.96983 78.0364 5.77051 77.3604 5.77051ZM118.86 0.251381V2.706H116.409V0.251381H118.86Z" fill="url(#paint0_linear_4005_30414)"></path>
+</g>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_4005_30414" x1="144.743" x2="0.241211" y1="18.2937" y2="18.2937">
+<stop stop-color="#00C79A"></stop>
+<stop offset="0.502824" stop-color="#E92184"></stop>
+<stop offset="1" stop-color="#6C1D45"></stop>
+</lineargradient>
+<clippath id="clip0_4005_30414">
+<rect fill="white" height="38" width="145"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<div id="sb-logo">
+<svg fill="none" height="47" viewbox="0 0 228 47" width="228" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 39.1928H12.8306V47H0V39.1928Z" fill="#00C79A"></path>
+<path d="M0 23.5H12.8306V31.3594H0V23.5Z" fill="#00C79A"></path>
+<path d="M0 7.80722H12.8306V15.6667H0V7.80722Z" fill="#00C79A"></path>
+<path d="M12.8219 31.3333H46.8744V39.1928H12.8219V31.3333Z" fill="#00C79A"></path>
+<path d="M12.8219 15.6928H46.8744V23.5261H12.8219V15.6928Z" fill="#00C79A"></path>
+<path d="M12.8219 0H46.8744V7.83333H12.8219V0Z" fill="#00C79A"></path>
+<path d="M60.3317 23.0561L51.7402 7.83333H59.3481L64.7623 17.947H65.3455L70.7598 7.83333H78.3241L69.7327 23.0561L78.8203 39.1667H71.3865L65.2933 28.0607H64.7536L58.6604 39.1667H51.2267L60.3143 23.0561H60.3317Z" fill="#00C79A"></path>
+<path d="M83.0594 7.83333H94.21C100.434 7.83333 104.638 11.8196 104.638 17.9035C104.638 23.9874 100.208 28.113 94.21 28.113H89.7359V39.1667H83.0681V7.83333H83.0594ZM93.9402 21.8898C96.3601 21.8898 97.9269 20.1926 97.9269 17.9035C97.9269 15.6144 96.3601 14.0565 93.9402 14.0565H89.7359V21.8898H93.9402Z" fill="#00C79A"></path>
+<path d="M108.251 7.83333H127.949V14.1H114.918V20.1404H126.156V26.3635H114.918V32.9435H128.393V39.1667H108.251V7.83333Z" fill="#00C79A"></path>
+<path d="M133.337 7.83333H144.131C150.712 7.83333 155.325 11.7761 155.325 17.6337C155.325 21.8376 153.358 25.1102 149.728 26.8074L156.579 39.158H148.971L143.191 27.8344H140.014V39.158H133.346V7.82463L133.337 7.83333ZM144.218 21.8028C146.638 21.8028 148.379 20.3667 148.379 17.773C148.379 15.7624 146.995 14.0565 143.992 14.0565H140.005V21.8028H144.218Z" fill="#00C79A"></path>
+<path d="M166.746 14.1H158.372V7.83333H181.744V14.1H173.37V39.1667H166.746V14.1Z" fill="#00C79A"></path>
+<path d="M186.932 33.0828V7.83333L193.652 7.78982L193.599 13.9172V33.0741L193.625 39.2276H186.923V33.0741L186.932 33.0828Z" fill="#00C79A"></path>
+<path d="M199.188 7.83333H209.981C216.562 7.83333 221.176 11.7761 221.176 17.6337C221.176 21.8376 219.208 25.1102 215.579 26.8074L222.429 39.158H214.821L209.041 27.8344H205.864V39.158H199.196V7.82463L199.188 7.83333ZM210.06 21.8028C212.48 21.8028 214.221 20.3667 214.221 17.773C214.221 15.7624 212.837 14.0565 209.833 14.0565H205.847V21.8028H210.06Z" fill="#00C79A"></path>
+<path d="M220.044 3.92537C220.044 1.75815 221.611 0 223.987 0C226.364 0 228 1.74074 228 3.90796C228 6.07519 226.468 7.83333 224.022 7.83333C221.576 7.83333 220.044 6.11 220.044 3.92537ZM226.773 3.90796C226.773 2.28907 225.745 1.15759 223.987 1.15759C222.229 1.15759 221.271 2.33259 221.271 3.92537C221.271 5.51815 222.298 6.69315 224.022 6.69315C225.745 6.69315 226.773 5.51815 226.773 3.90796ZM222.594 2.01056H224.301C225.154 2.01056 225.719 2.62852 225.719 3.29C225.719 3.82093 225.467 4.29963 225.04 4.48241L225.772 5.84889H224.692L224.126 4.67389H223.613V5.84889H222.603V2.01056H222.594ZM224.161 3.80352C224.483 3.80352 224.657 3.61204 224.657 3.35963C224.657 3.08982 224.466 2.89833 224.161 2.89833H223.613V3.80352H224.161Z" fill="#00C79A"></path>
+</svg>
+<div class="sub">User Documentation</div>
+</div>
+<div id="sb-search">
+<input id="sb-search-input" placeholder="🔍 Search sections…" type="text"/>
+</div>
+<div id="sb-nav-content">
+<nav id="sb-nav"><div class="nav-section" data-section="intro"><div class="nav-chapter" data-target="intro" onclick="handleChapterClick(event, this)"><span class="ch-num">1</span> <span class="ch-title">Getting Started</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#system-requirements">System Requirements</a><a class="nav-item" href="#interface-overview">Interface Overview</a><a class="nav-item" href="#home-page">Home Page</a><a class="nav-item" href="#project-types">Project Types</a><a class="nav-item" href="#saving-a-project">Saving a Project</a></div></div><div class="nav-section" data-section="design"><div class="nav-chapter" data-target="design" onclick="handleChapterClick(event, this)"><span class="ch-num">2</span> <span class="ch-title">Design Tab</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview">Overview</a><a class="nav-item" href="#hole-creation-tools">Hole Creation Tools</a><a class="nav-item" href="#hole-parameters-editing">Hole Parameters &amp; Editing</a><a class="nav-item" href="#importing-holes-geometry">Importing Holes &amp; Geometry</a><a class="nav-item" href="#lines-markers">Lines &amp; Markers</a><a class="nav-item" href="#terrain-mesh">Terrain &amp; Mesh</a><a class="nav-item" href="#ring-planes">Ring Planes</a><a class="nav-item" href="#tunnel-sections">Tunnel Sections</a><a class="nav-item" href="#slot-raise-module">Slot Raise Module</a><a class="nav-item" href="#ppv-measurement-points">PPV Measurement Points</a><a class="nav-item" href="#blast-volume">Blast Volume</a><a class="nav-item" href="#burden-trace">Burden Trace</a></div></div><div class="nav-section" data-section="views"><div class="nav-chapter" data-target="views" onclick="handleChapterClick(event, this)"><span class="ch-num">3</span> <span class="ch-title">Views</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-2">Overview</a><a class="nav-item" href="#top-view">Top View</a><a class="nav-item" href="#front-view">Front View</a><a class="nav-item" href="#side-view-ring-view">Side View / Ring View</a><a class="nav-item" href="#section-view">Section View</a><a class="nav-item" href="#3-d-view">3-D View</a></div></div><div class="nav-section" data-section="charging"><div class="nav-chapter" data-target="charging" onclick="handleChapterClick(event, this)"><span class="ch-num">4</span> <span class="ch-title">Charging Tab</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-3">Overview</a><a class="nav-item" href="#products">Products</a><a class="nav-item" href="#loading-a-hole">Loading a Hole</a><a class="nav-item" href="#decks">Decks</a><a class="nav-item" href="#copy-paste-load">Copy &amp; Paste Load</a><a class="nav-item" href="#inventory">Inventory</a></div></div><div class="nav-section" data-section="sequence"><div class="nav-chapter" data-target="sequence" onclick="handleChapterClick(event, this)"><span class="ch-num">5</span> <span class="ch-title">Sequence Tab</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-4">Overview</a><a class="nav-item" href="#non-electric-sequence">Non-Electric Sequence</a><a class="nav-item" href="#electronic-sequence">Electronic Sequence</a><a class="nav-item" href="#histogram-animation">Histogram &amp; Animation</a><a class="nav-item" href="#exporting-the-sequence">Exporting the Sequence</a></div></div><div class="nav-section" data-section="reporting"><div class="nav-chapter" data-target="reporting" onclick="handleChapterClick(event, this)"><span class="ch-num">6</span> <span class="ch-title">Reporting Tab</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-5">Overview</a><a class="nav-item" href="#blast-report-contents">Blast Report Contents</a><a class="nav-item" href="#drill-log-report">Drill Log Report</a><a class="nav-item" href="#exporting-data">Exporting Data</a></div></div><div class="nav-section" data-section="explore"><div class="nav-chapter" data-target="explore" onclick="handleChapterClick(event, this)"><span class="ch-num">7</span> <span class="ch-title">Cloud &amp; Settings</span> <span class="chevron">▸</span></div><div class="nav-items"><a class="nav-item" href="#overview-6">Overview</a><a class="nav-item" href="#synchronisation">Synchronisation</a><a class="nav-item" href="#application-settings">Application Settings</a><a class="nav-item" href="#keyboard-shortcuts">Keyboard Shortcuts</a><a class="nav-item" href="#troubleshooting-faq">Troubleshooting &amp; FAQ</a><a class="nav-item" href="#glossary">Glossary</a></div></div></nav>
+</div>
+</nav>
+<button id="back-to-top" title="Back to top">⇧</button>
+<!-- ════ CONTENT ════ -->
+<div id="ct">
+<!-- COVER -->
+<section id="hero">
+<h1>Expertir 4.0</h1>
+<div class="cover-subtitle">User Documentation — Drill &amp; Blast Design Platform</div>
+<div class="cover-meta">
+<div class="cover-meta-item"><span>Version</span>4.0 · build 1.0.12.0</div>
+<div class="cover-meta-item"><span>Platform</span>Windows Desktop</div>
+<div class="cover-meta-item"><span>Language</span>English</div>
+</div>
+<div class="hero-tags">
+<span class="hero-tag">Open-Pit Mining</span>
+<span class="hero-tag">Underground Stope</span>
+<span class="hero-tag">Underground Tunnel</span>
+<span class="hero-tag">Explore™ Cloud Sync</span>
+</div>
+</section>
+<!-- ════════════════════════════════ -->
+<!--  GETTING STARTED                -->
+<!-- ════════════════════════════════ -->
+<!-- ════ TABLE OF CONTENTS ════ -->
+<div class="toc-section">
+<h2>Table of Contents</h2>
+<div class="toc-grid"><a href="#intro"><span class="toc-num">1.</span>Getting Started</a><a href="#design"><span class="toc-num">2.</span>Design Tab</a><a href="#views"><span class="toc-num">3.</span>Views</a><a href="#charging"><span class="toc-num">4.</span>Charging Tab</a><a href="#sequence"><span class="toc-num">5.</span>Sequence Tab</a><a href="#reporting"><span class="toc-num">6.</span>Reporting Tab</a><a href="#explore"><span class="toc-num">7.</span>Cloud &amp; Settings</a></div>
+</div>
+<div class="content-wrap"><section id="intro"><h2>1 · Getting Started</h2><p>Expertir 4.0 is a desktop application developed by EPC Groupe. It centralises all stages of a drill &amp; blast operation — <strong>hole design</strong>, <strong>explosive loading</strong>, <strong>initiation sequencing</strong> and <strong>report generation</strong> — into one workspace. Projects can be saved locally or synchronised with the <strong>Explore™ cloud platform</strong>.</p>
+<div class="cards"><div class="card"><div class="ci">📐</div><h4>Design</h4><p>Create, import and edit holes, front lines and markers on a 3-D mesh.</p></div><div class="card"><div class="ci">💥</div><h4>Charging</h4><p>Assign explosive products per hole, manage decks and inventory.</p></div><div class="card"><div class="ci">⏱</div><h4>Sequence</h4><p>Set up electronic or non-electric firing sequences and visualise timing.</p></div><div class="card"><div class="ci">📊</div><h4>Reporting</h4><p>Generate professional blast and drill-log reports.</p></div><div class="card"><div class="ci">☁</div><h4>Explore™</h4><p>Push and pull projects with the cloud for team collaboration.</p></div><div class="card"><div class="ci">🔄</div><h4>Import / Export</h4><p>CSV, DXF, STR, OBJ, Iredes, Polarex, Deswik, Daveytronic…</p></div></div>
+</section><section id="system-requirements"><h2>1.1 · System Requirements</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Minimum</th>
+<th>Recommended</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OS</td>
+<td>Windows 10 64-bit</td>
+<td>Windows 11 64-bit</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Intel Core i5 / AMD Ryzen 5</td>
+<td>Intel Core i7 / AMD Ryzen 7</td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>8 GB</td>
+<td>16 GB or more</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>OpenGL 4.x compatible</td>
+<td>Dedicated GPU, 4 GB VRAM</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>2 GB</td>
+<td>10 GB SSD</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Optional (offline capable)</td>
+<td>Internet (Explore sync &amp; licence)</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="interface-overview"><h2>1.2 · Interface Overview</h2>
+<p>The Expertir window is divided into four permanent areas:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Top bar</strong></td>
+<td>Top of the window</td>
+<td>Four main tabs (Design, Charging, Sequence, Reporting), Home button, Import, Undo/Redo, Save.</td>
+</tr>
+<tr>
+<td><strong>Left panel</strong></td>
+<td>Left side</td>
+<td>Context-sensitive tools and sub-panels that change with the active tab.</td>
+</tr>
+<tr>
+<td><strong>View area</strong></td>
+<td>Centre</td>
+<td>2-D / 3-D views. A floating toolbar lets you switch: Top, Front, Side/Ring, Section, 3D, Profile.</td>
+</tr>
+<tr>
+<td><strong>Right panel</strong></td>
+<td>Right side</td>
+<td>Properties of the selected element (hole parameters, charge details, sequence timing…).</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="navigation-in-any-view">Navigation in Any View</h3>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zoom in / out</td>
+<td>Mouse wheel</td>
+</tr>
+<tr>
+<td>Pan</td>
+<td>Right-click + drag</td>
+</tr>
+<tr>
+<td>Select one element</td>
+<td>Left-click</td>
+</tr>
+<tr>
+<td>Add to selection</td>
+<td><kbd>Ctrl</kbd> + left-click</td>
+</tr>
+<tr>
+<td>Rectangle selection</td>
+<td>Activate rectangle mode → left-click + drag</td>
+</tr>
+<tr>
+<td>Polygon selection</td>
+<td>Activate polygon mode → click vertices → double-click to close</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+</tr>
+<tr>
+<td>Redo</td>
+<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+</tr>
+<tr>
+<td>Save</td>
+<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+</tr>
+<tr>
+<td>Move selected elements</td>
+<td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+</tr>
+<tr>
+<td>Delete selected</td>
+<td><kbd>Delete</kbd></td>
+</tr>
+<tr>
+<td>Deactivate tool</td>
+<td><kbd>Esc</kbd></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout info"><span class="ico">ℹ</span><div><strong>Viewer mode</strong> — When a project is opened read-only, the title bar shows <em>" – Viewer mode"</em>. All editing tools are disabled; you can still navigate views and generate reports.</div></div>
+</section><section id="home-page"><h2>1.3 · Home Page</h2>
+<p>The Home page is the first screen on launch. It lists all blast projects and lets you create, open, import, duplicate or delete them.</p>
+<h3 id="creating-a-new-project">Creating a New Project</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Choose a project type</strong>Click one of the three buttons: <em>New Open Pit Project</em>, <em>New UG Stope Project</em>, or <em>New UG Tunnel Project</em>.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Name and configure</strong>Enter the site name, blast reference and coordinate system (EPSG code).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Start designing</strong>The workspace opens on the Design tab.</div></div></div>
+<h3 id="opening-an-existing-project">Opening an Existing Project</h3>
+<p>Click <strong>Open</strong> next to a blast in the list. If the main revision is missing, Expertir warns you and prevents opening.</p>
+<h3 id="importing-a-project-file">Importing a Project File</h3>
+<p>Click <strong>Import Project</strong> and select an Expertir archive (<code>.xpt</code>). A new blast is created locally — the original file is never modified.</p>
+<h3 id="managing-revisions">Managing Revisions</h3>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>How</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create a duplicate</td>
+<td>Right-click a blast → <em>Create a duplicate</em></td>
+<td>Exact copy with a new name</td>
+</tr>
+<tr>
+<td>New revision</td>
+<td>Right-click → <em>Create a new revision</em></td>
+<td>New version of an existing blast</td>
+</tr>
+<tr>
+<td>Delete a blast</td>
+<td>Right-click → <em>Delete Blast</em></td>
+<td>All revisions must be closed first</td>
+</tr>
+<tr>
+<td>Delete a revision</td>
+<td>Right-click → <em>Delete Revision</em></td>
+<td>Revision must be closed first</td>
+</tr>
+<tr>
+<td>Export locally</td>
+<td>Right-click → <em>Export Revision Locally</em></td>
+<td>Saves a snapshot; later changes not reflected automatically</td>
+</tr>
+<tr>
+<td>Export to Explore</td>
+<td>Right-click → <em>Export Revision</em></td>
+<td>Main revision must be exported before sub-revisions</td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout warn"><span class="ico">⚠</span><div>Always <strong>save</strong> your changes before exporting a revision to Explore. Unsaved changes will not be included in the export.</div></div>
+</section><section id="project-types"><h2>1.4 · Project Types</h2>
+<p>The project type determines which tools and hole categories are available and <strong>cannot be changed after creation</strong>.</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Typical Use</th>
+<th>Key Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Open Pit</strong> <span class="badge bop">OP</span></td>
+<td>Quarries, open-cast mines</td>
+<td>Top view as primary view; bench, crest &amp; toe line tools; burden/spacing grid</td>
+</tr>
+<tr>
+<td><strong>UG Stope</strong> <span class="badge bug">UG</span></td>
+<td>Underground stope blasting</td>
+<td>Ring planes; Slot Raise module; Ring (side) view; Drill centre tools; PU paths</td>
+</tr>
+<tr>
+<td><strong>UG Tunnel</strong> <span class="badge btun">TUN</span></td>
+<td>Tunnel face advance</td>
+<td>Section creation tools; tunnel hole tools (Cut, Contour, Perimeter, Floor); tunnel-specific categories</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="saving-a-project"><h2>1.5 · Saving a Project</h2>
+<p>Press <kbd>Ctrl</kbd>+<kbd>S</kbd> or click <strong>Save</strong> in the top bar. The first time you save a new project, a dialog asks:</p>
+<ul>
+<li><strong>Save locally</strong> — stores the project on your computer only.</li>
+<li><strong>Save on Explore</strong> — links the project to your Explore account. Fill in Site name, Project name, Zone name, Blast name and Planned date.</li>
+</ul>
+<p>When leaving an open project, Expertir prompts you to save or discard unsaved changes.</p></section><section id="design"><h2>2 · Design Tab</h2></section><section id="overview"><h2>2.1 · Overview</h2>
+<p>Click the <strong>Design</strong> tab in the top bar. The left panel is split into five collapsible sub-panels:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Sub-panel</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sections</strong></td>
+<td>Tunnel section shapes (Tunnel projects only)</td>
+</tr>
+<tr>
+<td><strong>Creation</strong></td>
+<td>Hole-creation tool buttons and initial parameters</td>
+</tr>
+<tr>
+<td><strong>Hole list</strong></td>
+<td>Scrollable list of all holes with search/filter</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td>Grid, PPV, blast volume, orientation, renaming…</td>
+</tr>
+<tr>
+<td><strong>Lines &amp; Markers</strong></td>
+<td>Crest/toe/gallery lines, polylines, markers</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="hole-creation-tools"><h2>2.2 · Hole Creation Tools</h2>
+<p>All creation tools are in the <strong>Creation</strong> sub-panel. They form a radio group — only one is active at a time. Click a button to activate; click again or press <kbd>Esc</kbd> to exit.</p>
+<p>Before placing holes, set defaults in the <strong>Hole initial parameters</strong> group (also in the Creation sub-panel) and click <strong>Apply</strong>:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spacing</td>
+<td>m</td>
+<td>Default distance between adjacent holes in a row</td>
+</tr>
+<tr>
+<td>Burden</td>
+<td>m</td>
+<td>Default distance from the free face to the first row</td>
+</tr>
+<tr>
+<td>Min Burden</td>
+<td>m</td>
+<td>Minimum allowed burden; the software warns if violated</td>
+</tr>
+<tr>
+<td>Diameter</td>
+<td>mm</td>
+<td>Drill bit diameter</td>
+</tr>
+<tr>
+<td>Inclination</td>
+<td>°</td>
+<td>Angle from vertical (0 ° = vertical)</td>
+</tr>
+<tr>
+<td>Length</td>
+<td>m</td>
+<td>Total hole depth</td>
+</tr>
+<tr>
+<td>Bench Height</td>
+<td>m</td>
+<td>Height of the bench (used to compute toe positions)</td>
+</tr>
+<tr>
+<td>Subdrill</td>
+<td>m</td>
+<td>Extra depth below the design floor</td>
+</tr>
+<tr>
+<td>Floor Altitude</td>
+<td>m</td>
+<td>Absolute Z level of the bench floor</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="single-hole-tool">Single Hole Tool</h3>
+<p>Places one hole per click.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "Single" in the Creation sub-panel</strong>The cursor changes to indicate the tool is active.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Review parameters</strong>Check Inclination, Azimuth, Diameter, Length and Subdrill in the <em>Hole parameters</em> group. Click <strong>Apply</strong> if you changed anything.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click in the Top View (or another 2-D view)</strong>A hole appears at that position immediately.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Continue clicking to place more holes</strong>Click <em>Single</em> again or press <kbd>Esc</kbd> to exit the tool.</div></div></div>
+<div class="callout info"><span class="ico">ℹ</span><div><strong>Min hole distance</strong> — The tool will not place a hole closer than the configured minimum distance to any existing hole head. Adjust this in the Hole parameters group.</div></div>
+<h3 id="line-tool">Line Tool</h3>
+<p>Creates a straight row of evenly spaced holes in one drag gesture.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "Line" in the Creation sub-panel.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Verify Spacing</strong>in Hole initial parameters.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Left-click to set the start point, drag to the end, then release.</strong>Holes are placed along the line at the configured spacing.</div></div></div>
+<h3 id="polyline-tool">Polyline Tool</h3>
+<p>Distributes holes along a multi-segment path you draw.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "Poly" (multiple-tool icon) in the Creation sub-panel.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click successive points</strong>to define the path. Holes appear along the path at the configured spacing.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Double-click the last point</strong>to finish and generate the holes.</div></div></div>
+<h3 id="holes-bench-tool">Holes &amp; Bench Tool</h3>
+<p>Generates holes together with a theoretical bench front (crest + toe lines). Useful for Open Pit projects.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "H&amp;B" in the Creation sub-panel.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Configure the front</strong>in the <em>Theoretical Bench</em> group: Bench Inclination (°), Bench Height Left/Right (m), Floor Level Left/Right (m). Check <em>Left = Right</em> to mirror both sides.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Choose the front shape</strong>: Straight, Inward curving, or Outward curving.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click and drag</strong>across the Top View. Crest and toe lines are created automatically alongside the holes.</div></div></div>
+<h3 id="fan-tool">Fan Tool</h3>
+<p>Creates holes radiating from a central point — typical in underground stope fan blasting.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "Fan" in the Creation sub-panel.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Configure</strong>angular spacing, burden and number of holes in the <em>Fan Creation Criteria</em> group.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click in the Ring view</strong>(or Top View for stope) to set the fan's origin. Holes radiate outward at the configured angles.</div></div></div>
+<h3 id="tunnel-hole-tools">Tunnel Hole Tools <span class="badge btun">Tunnel only</span></h3>
+
+<p>Four buttons appear in the Creation sub-panel for Tunnel projects. Each uses the <strong>Tunnel Tool</strong> parameters panel:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>What it does</th>
+<th>Typical category</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cut</strong></td>
+<td>Places cut holes in the central zone of the face — the first to fire, creating the initial void</td>
+<td>Cut</td>
+</tr>
+<tr>
+<td><strong>Contour</strong></td>
+<td>Distributes holes around the full tunnel section perimeter</td>
+<td>Contour, Roof, Shoulder…</td>
+</tr>
+<tr>
+<td><strong>Perimeter</strong></td>
+<td>Places holes on the outer perimeter ring</td>
+<td>Contour</td>
+</tr>
+<tr>
+<td><strong>Floor</strong></td>
+<td>Places lifter holes along the floor of the section</td>
+<td>Lifter</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="tunnel-tool-parameters">Tunnel Tool Parameters</h4>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target plane</td>
+<td>The tunnel section the holes are generated against</td>
+</tr>
+<tr>
+<td>Look up (°)</td>
+<td>Tilts holes upward from the face plane</td>
+</tr>
+<tr>
+<td>Look out (°)</td>
+<td>Tilts holes outward, proportional to distance from centre</td>
+</tr>
+<tr>
+<td>Ortho</td>
+<td>Forces look-out to be orthogonal to the local row</td>
+</tr>
+<tr>
+<td>Center X / Y</td>
+<td>Lookout centre coordinates</td>
+</tr>
+<tr>
+<td>Nb lines</td>
+<td>Number of concentric hole rings to generate</td>
+</tr>
+<tr>
+<td>Spacing</td>
+<td>Distance between holes on each ring</td>
+</tr>
+<tr>
+<td>Dist. to section</td>
+<td>Clearance from the section boundary</td>
+</tr>
+<tr>
+<td>Dist. to floor</td>
+<td>Clearance from the floor line</td>
+</tr>
+<tr>
+<td>Burden up / side / down</td>
+<td>Burden distances for upper, lateral and lower zones</td>
+</tr>
+<tr>
+<td>Spacing up / side / down</td>
+<td>Spacing for each zone</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="hole-parameters-editing"><h2>2.3 · Hole Parameters &amp; Editing</h2>
+<p>Click on any hole to select it. Its properties appear in the right panel. Click a field, type the new value and press <kbd>Enter</kbd> — the hole updates in all views immediately.</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hole name</td>
+<td>—</td>
+<td>Free alphanumeric identifier</td>
+</tr>
+<tr>
+<td>Inclination</td>
+<td>°</td>
+<td>Angle from vertical (0 ° = vertical drill)</td>
+</tr>
+<tr>
+<td>Azimuth</td>
+<td>°</td>
+<td>Horizontal bearing from geographic north (0–360 °)</td>
+</tr>
+<tr>
+<td>Diameter</td>
+<td>mm</td>
+<td>Drill bit diameter</td>
+</tr>
+<tr>
+<td>Length</td>
+<td>m</td>
+<td>Total drilled depth</td>
+</tr>
+<tr>
+<td>Subdrill</td>
+<td>m</td>
+<td>Extra depth below the design floor</td>
+</tr>
+<tr>
+<td>Top Altitude</td>
+<td>m</td>
+<td>Z coordinate of the collar</td>
+</tr>
+<tr>
+<td>Bottom Altitude</td>
+<td>m</td>
+<td>Z coordinate of the toe</td>
+</tr>
+<tr>
+<td>Start position (E/N/Z)</td>
+<td>m</td>
+<td>Collar coordinates</td>
+</tr>
+<tr>
+<td>End position (E/N/Z)</td>
+<td>m</td>
+<td>Toe coordinates</td>
+</tr>
+<tr>
+<td>Dump</td>
+<td>°</td>
+<td>Lateral tilt angle — used in ring planes</td>
+</tr>
+<tr>
+<td>Mark as front row</td>
+<td>—</td>
+<td>Flags the hole as belonging to the first blast row</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="hole-categories">Hole Categories</h3>
+<p>Each hole has a <strong>category</strong> that describes its functional role. Change it in the right panel or via the <em>Change Hole Category</em> menu.</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Colour</th>
+<th>Projects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undefined</td>
+<td>—</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>—</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Cut</td>
+<td><code>#3BFFED</code></td>
+<td>Tunnel, Stope</td>
+</tr>
+<tr>
+<td>Reaming</td>
+<td>—</td>
+<td>Stope</td>
+</tr>
+<tr>
+<td>Easer</td>
+<td><code>#8D3022</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>Contour</td>
+<td><code>#B89E97</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>Bottom</td>
+<td>—</td>
+<td>Open Pit</td>
+</tr>
+<tr>
+<td>Relief</td>
+<td><code>#084887</code></td>
+<td>Tunnel</td>
+</tr>
+<tr>
+<td>Lifter</td>
+<td><code>#635A37</code></td>
+<td>Tunnel</td>
+</tr>
+<tr>
+<td>Shoulder</td>
+<td><code>#FFD927</code></td>
+<td>Tunnel</td>
+</tr>
+<tr>
+<td>Roof</td>
+<td><code>#FF8800</code></td>
+<td>Tunnel</td>
+</tr>
+<tr>
+<td>Knee</td>
+<td><code>#FFD6E0</code></td>
+<td>Tunnel</td>
+</tr>
+<tr>
+<td>Bolt, Injection, Second Contour, Casing, Probe, Grout, Spiling, Cleaning</td>
+<td>—</td>
+<td>All / Underground</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="mass-editing">Mass Editing</h3>
+<p>Select multiple holes (rectangle/polygon selection or <kbd>Ctrl</kbd>+click), then open <strong>Change Hole Parameters → Change Holes Geometries</strong> from the top-bar menu. Apply a single value to all selected holes for: Inclination, Azimuth, Diameter, Length, Subdrill, Bottom Altitude, Top Altitude, Category, or Rotate from toe. Leave a field blank to keep individual values.</p>
+<h3 id="renaming-holes">Renaming Holes</h3>
+<p>Open the <strong>Rename</strong> tool from the top bar or the <em>Tools</em> sub-panel. Three modes:</p>
+<ul>
+<li><strong>Select</strong> — click a hole, type a name in the <em>Hole name</em> field.</li>
+<li><strong>Increm.</strong> — activate the tool, click holes or draw lines across the Top View; they receive sequential numbers. Double-click to stop.</li>
+<li><strong>Decrem.</strong> — same, counting down.</li>
+</ul>
+<p>Configure <em>Prefix</em>, <em>Reset numbering</em> start value and <em>Incremental steps</em> in the Naming Tools panel.</p>
+<h3 id="snap-options">Snap Options</h3>
+<p>Two snap options in the top bar under the <strong>Snap</strong> menu:</p>
+<ul>
+<li><strong>Snap hole's head to ground surface</strong> — the collar is automatically placed on the imported terrain mesh when creating or moving holes.</li>
+<li><strong>Snap hole's toe to toe-snapping object</strong> — the toe is snapped to a designated snap mesh (e.g. a toe-line surface).</li>
+</ul>
+</section><section id="importing-holes-geometry"><h2>2.4 · Importing Holes &amp; Geometry</h2>
+<p>Click <strong>Import</strong> in the top bar, or drag and drop a file into any view. The Import dialog lists supported formats:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension(s)</th>
+<th>What is imported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generic CSV / TXT holes</td>
+<td><code>.csv</code> <code>.txt</code></td>
+<td>Holes with custom column mapping</td>
+</tr>
+<tr>
+<td>STR Holes</td>
+<td><code>.str</code></td>
+<td>Surpac STR format</td>
+</tr>
+<tr>
+<td>Iredes</td>
+<td><code>.xml</code> <code>.csv</code> <code>.txt</code></td>
+<td>Industry standard Iredes format</td>
+</tr>
+<tr>
+<td>Polarex</td>
+<td><code>.csv</code></td>
+<td>Polarex drill plan</td>
+</tr>
+<tr>
+<td>Pulsar / TruePulse</td>
+<td><code>.dm4</code></td>
+<td>Deviation measurements</td>
+</tr>
+<tr>
+<td>DXF</td>
+<td><code>.dxf</code></td>
+<td>Holes, polylines, faces (see DXF import below)</td>
+</tr>
+<tr>
+<td>OBJ terrain</td>
+<td><code>.obj</code></td>
+<td>3-D terrain mesh</td>
+</tr>
+<tr>
+<td>STR Lines</td>
+<td><code>.str</code></td>
+<td>Crest / toe / gallery lines</td>
+</tr>
+<tr>
+<td>Deswik</td>
+<td><code>.txt</code></td>
+<td>Underground ring planes</td>
+</tr>
+<tr>
+<td>Laser file</td>
+<td><code>.las</code> <code>.txt</code></td>
+<td>Laser scan profiles</td>
+</tr>
+<tr>
+<td>Background image</td>
+<td><code>.pdf</code> <code>.png</code> <code>.jpg</code></td>
+<td>Georeferenced plan image</td>
+</tr>
+<tr>
+<td>Explore™ / ExperTab™</td>
+<td>Cloud</td>
+<td>Drill plan from Explore platform</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="importing-a-generic-csv-file">Importing a Generic CSV File</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Import → Holes</strong>, browse to your file and click Open.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set the separator</strong>(comma, semicolon or tab). Tick <em>Header is first row</em> if the first line contains column names.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set Lines per hole</strong>— usually 1. Set to 2 or more if a single hole spans multiple rows.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Map the columns</strong>— click each column header and assign a role: Id, Start E/N/Z, End E/N/Z, Inclination, Azimuth, Length, Diameter, or GPS (Lat/Lon/Alt).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set EPSG codes</strong>— enter <em>EPSG (In)</em> for the file's coordinate system and <em>EPSG (Site)</em> for the project's system if they differ.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Validate then confirm</strong>— click the validate button; a green "Success" confirms the mapping is valid. Click <strong>Confirm</strong> to import.</div></div></div>
+<div class="callout warn"><span class="ico">⚠</span><div>Always validate the column mapping. Wrong EPSG codes can place holes thousands of kilometres from the site.</div></div>
+<h3 id="importing-a-dxf-file">Importing a DXF File</h3>
+<p>The DXF import dialog shows each geometry type found (faces, polylines, lines, points) and lets you choose what to import each <em>as</em>:</p>
+<ul>
+<li><strong>Import as terrain</strong> — choose terrain type: Ground, Gallery, Stope, or Toe snap.</li>
+<li><strong>Import polylines / lines / points as holes</strong> — each element becomes a hole.</li>
+<li><strong>Import polylines as deviations</strong> — for deviation paths of existing holes.</li>
+<li><strong>Import points as markers</strong>.</li>
+<li><strong>Import as laser profiles</strong>.</li>
+</ul>
+<p>Also set <em>Unit</em> (Metres / Millimetres) and <em>Coordinate system</em> (Georeferenced / Local) before clicking Import.</p>
+</section><section id="lines-markers"><h2>2.5 · Lines &amp; Markers</h2>
+<p>The <strong>Lines &amp; Markers</strong> sub-panel contains crest/toe lines, polylines and markers.</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Line type</th>
+<th>Purpose</th>
+<th>Projects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Crest line</td>
+<td>Top edge of the blast bench; reference for spacing</td>
+<td>Open Pit</td>
+</tr>
+<tr>
+<td>Toe line</td>
+<td>Bottom of bench / floor level; used by <em>Adjust Toe</em> tool</td>
+<td>Open Pit</td>
+</tr>
+<tr>
+<td>Gallery / Stope / Floor line</td>
+<td>Underground geometry references</td>
+<td>Underground</td>
+</tr>
+<tr>
+<td>Manual line</td>
+<td>Free-form reference line drawn by the user</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Polyline (2-D / 3-D)</td>
+<td>General-purpose vector path; can be used as hole-generation reference</td>
+<td>All</td>
+</tr>
+<tr>
+<td>PU Path</td>
+<td>Underground cable path for electronic sequencing</td>
+<td>Stope</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="creating-a-polyline">Creating a Polyline</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click "Polyline" in the top bar</strong>(or from the Lines &amp; Markers sub-panel).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click in the view</strong>to add successive vertices. The line is drawn live as you move the cursor.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Double-click the last point</strong>to end the polyline.</div></div></div>
+<p>Right-click a selected polyline: <em>Duplicate as polyline</em>, <em>Offset</em>, <em>Smooth</em>, <em>Close</em>, <em>Change colour</em>, <em>Delete</em>.</p>
+<h3 id="adjust-toe-line">Adjust Toe Line</h3>
+<p>Select one or more holes, then open <em>Adjust toe line and mesh</em> from the right-click menu or top bar. This snaps the toe of selected holes to the nearest point on the toe line, recalculating hole length automatically.</p>
+<h3 id="markers">Markers</h3>
+<p>Activate <strong>Add Marker</strong> and click in a view to place a reference point. Import markers from CSV via <em>Import → Markers</em>.</p>
+</section><section id="terrain-mesh"><h2>2.6 · Terrain &amp; Mesh</h2>
+<p>A 3-D surface mesh enables head/toe snapping, blast volume calculation, and visual context in the 3-D view.</p>
+<h3 id="importing-a-terrain">Importing a Terrain</h3>
+<p>Drag an <code>.obj</code> or <code>.dxf</code> file into the view, or use <strong>Import</strong>. Only <strong>one terrain mesh</strong> per blast. If one already exists, you are asked to replace or cancel.</p>
+<div class="callout warn"><span class="ico">⚠</span><div><strong>Distance warning</strong> — If the mesh is more than 1 km from the site origin, Expertir asks for confirmation. Beyond 50 km, it is strongly recommended to create a new project.</div></div>
+<h3 id="display-modes">Display Modes</h3>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Texture</td>
+<td>Shows the mesh with its original colour texture (if the OBJ has a .mtl file)</td>
+</tr>
+<tr>
+<td>Normal Map</td>
+<td>Enhanced shading using surface normals — good for visualising relief</td>
+</tr>
+<tr>
+<td>Flat</td>
+<td>Single uniform colour; configurable in Settings</td>
+</tr>
+<tr>
+<td>Wireframe</td>
+<td>Displays the triangle mesh edges — useful for quality checking</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="creating-a-mesh-from-a-laser-file">Creating a Mesh from a Laser File</h3>
+<p>Go to <em>Tools</em> sub-panel → <em>Create a mesh from a laser file</em>. Select your <code>.las</code> or <code>.txt</code> laser scan file. Expertir builds a surface from the point cloud.</p>
+<h3 id="background-image">Background Image</h3>
+<p>Import a georeferenced plan image (<code>.pdf</code>, <code>.png</code>, <code>.jpg</code>) via <em>Import → Image</em>. The <strong>Image Import Configuration</strong> dialog lets you position and scale the image with handles and sliders, then click <strong>Apply</strong>.</p>
+</section><section id="ring-planes"><h2>2.7 · Ring Planes <span class="badge bug">UG Stope</span></h2>
+
+<p>Ring planes organise holes into vertical groups. Each ring has a Name, Azimuth, Dump angle and Colour.</p>
+<h3 id="adding-a-single-ring-plane">Adding a Single Ring Plane</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Ring → Single ringplane</strong>in the top bar.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click in the Top View</strong>where you want the ring plane.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Configure in the right panel</strong>: Name, Azimuth, Dump and Colour.</div></div></div>
+<h3 id="adding-multiple-ring-planes">Adding Multiple Ring Planes</h3>
+<p>Click <strong>Ring → Multiple ringplanes</strong>. In the <em>Rings configuration</em> dialog, set Number of rings, Distance within rings (m), and Progressive change of orientation distance (m). Click <strong>Apply</strong>.</p>
+<h3 id="opening-a-ring-in-the-side-view">Opening a Ring in the Side View</h3>
+<p><strong>Double-click</strong> a ring plane in the Top View. The Side / Ring View opens centred on that ring, showing its holes in profile.</p>
+<h3 id="drill-centres">Drill Centres</h3>
+<p>Add a drill centre via <strong>Ring → Drill center</strong>, then click in the view. Configure <em>Arm length (m)</em> and the associated ring plane in the right panel.</p>
+</section><section id="tunnel-sections"><h2>2.8 · Tunnel Sections <span class="badge btun">Tunnel</span></h2>
+
+<p>A section defines the tunnel face shape used by the tunnel hole tools.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Open the Sections sub-panel</strong>in the left panel → <em>Section creation tools</em>.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Choose a shape</strong>: Rectangle, Arched, Elliptical, or Saved (reuse a previous section).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Enter dimensions</strong>(Length, Height, semi-axes, Name).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Apply</strong>. The section appears in the <em>Section Display</em> list below.</div></div></div>
+<p>In the Section Display panel, click <strong>Modify</strong> to edit or <strong>Delete</strong> to remove a section.</p>
+</section><section id="slot-raise-module"><h2>2.9 · Slot Raise Module <span class="badge bug">UG Stope</span></h2>
+
+<p>Designs the initial void-creating holes in an underground stope. Opens in its own window via the <strong>Slot Raise</strong> button in the top bar.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Slot Raise → Create Slot Raise.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Enter a name</strong>in the <em>Slot raise name</em> field.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Draw the rock polygon</strong>— in the Polygon list panel, click <em>Add</em> then click vertices in the view to outline the area to be blasted.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set parameters</strong>: Swelling ratio (rock expansion factor), Depth (m), Max Angle (deg), Max Distance (m).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Auto Generate</strong>. Expertir computes the optimal hole layout.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Fine-tune manually</strong>using the hole-editing tools. Use display options (Surfaces, Ratios, Distances) to verify the design.</div></div></div>
+<p>Save as <code>.json</code> with <em>Export Slot Raise</em>; reload with <em>Import Slot Raise</em>.</p>
+</section><section id="ppv-measurement-points"><h2>2.10 · PPV Measurement Points</h2>
+<p>PPV (Peak Particle Velocity) quantifies ground vibration at sensitive locations. Expertir calculates the estimated PPV for each hole based on charge weight and distance.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click the Measurement points list button</strong>in the top bar (ruler icon).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Add</strong>. A new row appears in the table.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Fill in the fields</strong>: Name, EPSG, X, Y, Z, K, α (Alpha), PPV max (mm/s).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Add to confirm.</strong>PPV is recalculated for all holes.</div></div></div>
+<p>PPV values can be displayed as hole labels in all 2-D views.</p>
+</section><section id="blast-volume"><h2>2.11 · Blast Volume</h2>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Enable</strong>: in the Tools sub-panel, expand <em>Blast Volume</em> and tick <em>Enable Blast Volume</em>.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Calculate</strong>: click <em>Calculate Blast Volume</em> in the top bar. Expertir uses the terrain mesh and hole geometry.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Read results</strong>: volume (m³) appears in the Top View status bar and the Blast Volume widget.</div></div></div>
+<p>Per-hole column and toe volumes can be displayed as labels. Configure via <em>Terrain Sampling Ratio</em> and <em>Fast / Auto Mode</em> in the Hole Volumes widget.</p>
+</section><section id="burden-trace"><h2>2.12 · Burden Trace</h2>
+<p>Visualises actual burden distances from each hole toe to the free face, flagging under- or over-burdened holes.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Burden Trace</strong>in the top bar (or right-click a hole → Trace Burden).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Configure</strong>in the <em>Burden Trace Settings</em> panel: Theoretical Burden (m), Min Burden, Max Burden.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Update.</strong>Coloured lines are drawn from each hole toe to the nearest free face.</div></div></div></section><section id="views"><h2>3 · Views</h2></section><section id="overview-2"><h2>3.1 · Overview</h2>
+<p>Switch views using the <strong>floating toolbar</strong> in the view area (Top, Front, Side/Ring, Section, 3D, Profile) or the corresponding buttons in the top bar.</p>
+<div class="cards"><div class="card"><div class="ci">⬆</div><h4>Top View</h4><p>Plan view from above. Primary design view for Open Pit.</p></div><div class="card"><div class="ci">➡</div><h4>Front View</h4><p>Looking straight at the blast face. Shows inclinations and front lines.</p></div><div class="card"><div class="ci">↔</div><h4>Side / Ring</h4><p>Lateral cross-section; Ring view for UG Stope.</p></div><div class="card"><div class="ci">✂</div><h4>Section View</h4><p>Vertical cut perpendicular to the front.</p></div><div class="card"><div class="ci">🌐</div><h4>3-D View</h4><p>Interactive 3-D scene with terrain and all elements.</p></div><div class="card"><div class="ci">📏</div><h4>Profile View</h4><p>Cross-section profile from laser or terrain data.</p></div></div>
+</section><section id="top-view"><h2>3.2 · Top View</h2>
+<p>The primary plan view. Shows all holes projected onto the horizontal plane.</p>
+<h3 id="status-bar">Status Bar</h3>
+<p>Permanently shows: <strong>Holes Count = X (Y selected)</strong> · Total drilled = X m · Min / Max / Average length · Blast Volume = X m³.</p>
+<h3 id="hole-labels">Hole Labels</h3>
+<p>Right-click an empty area → <em>Display</em> to toggle: Name, Inclination, Length, Diameter, Azimuth, Head/Toe Altitude, Initial Distance, PPV Calculated, Column/Toe Volume, Head/Toe Burden Distance, Head/Toe Spacing Distance, Programming Number, Deviation Order.</p>
+<h3 id="grid">Grid</h3>
+<p>Toggle with the <strong>Grid</strong> button. In <em>Grid Settings</em> choose Theoretical or Geographical grid, scale, colour and position.</p>
+</section><section id="front-view"><h2>3.3 · Front View</h2>
+<p>Head-on view of the blast face. Best for checking inclinations and charge columns.</p>
+<h3 id="toggleable-elements">Toggleable Elements</h3>
+<p>Holes (head, toe, body) with labels · Crest and toe lines · All markers and polylines · Horizontal spacing lines and ring plane distance labels · Minimum profile contour · Virtual reference hole · Background image.</p>
+<h3 id="navigation">Navigation</h3>
+<p>Use <kbd>←</kbd>/<kbd>→</kbd> (or step buttons) to shift the viewing slice. Adjust step size with <em>Increase/Decrease Front Horizontal Spacing Step</em>.</p>
+</section><section id="side-view-ring-view"><h2>3.4 · Side View / Ring View</h2>
+<p>Lateral cross-section. In Stope projects this becomes the <strong>Ring View</strong> showing one ring at a time.</p>
+<p><strong>Double-click</strong> a ring plane in the Top View to open it here. The active ring name is shown at the top of the view. If nothing is selected, the view prompts: <em>"Double click on a ring plane in the top view to see it."</em></p>
+<h3 id="toggleable-elements_1">Toggleable Elements</h3>
+<p>Hole heads/toes/bodies with labels · Minimum profile cross-section · Graduations (ruler with configurable step) · Drill logs · Horizontal spacing and burden distances · Background image.</p>
+</section><section id="section-view"><h2>3.5 · Section View</h2>
+<p>Vertical cut perpendicular to the viewing direction. The current position shows as <strong>Distance to reference: X m</strong>. Navigate with <em>Previous / Next Section</em> buttons, or click the section indicator in the Top View. Click <strong>Reset</strong> to return to the origin.</p>
+</section><section id="3-d-view"><h2>3.6 · 3-D View</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orbit (rotate scene)</td>
+<td>Left-click + drag</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>Mouse wheel</td>
+</tr>
+<tr>
+<td>Pan</td>
+<td>Right-click + drag</td>
+</tr>
+<tr>
+<td>Reset camera</td>
+<td><em>Recenter 3D</em> button in the top bar</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="toggleable-elements_2">Toggleable Elements</h3>
+<p>Holes with deviations, names and labels · Terrain (all display modes + opacity + colour) · Crest/toe lines, markers, polylines · Ring planes · Column and toe volumes · Burden trace · Isochrones.</p>
+<h3 id="isochrones">Isochrones</h3>
+<p>Configure via the <em>Isochrones</em> menu: Number of lines, each line resolution, computing method.</p></section><section id="charging"><h2>4 · Charging Tab</h2></section><section id="overview-3"><h2>4.1 · Overview</h2>
+<p>Click <strong>Charging</strong> in the top bar. The left panel has two sub-panels: <strong>Hole charging</strong> (assign products to the selected hole) and <strong>Inventory</strong> (total quantities consumed).</p>
+</section><section id="products"><h2>4.2 · Products</h2>
+<p>Open the <strong>Product list</strong> from the charging panel or top bar. Products are organised into tabs: <em>Recent</em>, <em>Cartridges</em>, <em>Detonators</em>, <em>Bulks</em>, <em>DetCords</em>. Also available: <em>Stemming</em> and <em>Air deck</em>.</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Bulk product</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ANFO</td>
+<td>Ammonium Nitrate / Fuel Oil</td>
+</tr>
+<tr>
+<td>ANFO_ALU</td>
+<td>ANFO with aluminium additive</td>
+</tr>
+<tr>
+<td>Emulsion</td>
+<td>Water-in-oil emulsion</td>
+</tr>
+<tr>
+<td>Emulsion_ANFO &gt;60%</td>
+<td>Emulsion-heavy blend</td>
+</tr>
+<tr>
+<td>Emulsion_ANFO &lt;50%</td>
+<td>ANFO-heavy blend</td>
+</tr>
+<tr>
+<td>Dynamite</td>
+<td>Cartridge explosive</td>
+</tr>
+<tr>
+<td>Gel</td>
+<td>Gelatinous explosive</td>
+</tr>
+<tr>
+<td>Booster</td>
+<td>Primer/booster cartridge</td>
+</tr>
+<tr>
+<td>Pumpable / Pourable</td>
+<td>Site-mixed bulk</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>User-defined custom product</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="loading-a-hole"><h2>4.3 · Loading a Hole</h2>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Select a hole</strong>by clicking on it. Charging info appears in the right panel (<em>Loads</em> tab).</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Add product</strong>in the charging panel to open the product picker.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Browse the product tabs</strong>and click a product to select it.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set charge parameters</strong>: Length (m), From top (m), and other fields in the charge detail widget.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Add a detonator</strong>— select a detonator product and add it to the appropriate deck level.</div></div></div>
+<p>The <strong>Energy</strong> tab (next to Loads) shows the energy breakdown: toe/column shock &amp; gas energies, global energy, powder factor, required energy.</p>
+<p>Use <em>Previous hole / Next hole</em> buttons to step through holes without clicking in the view.</p>
+</section><section id="decks"><h2>4.4 · Decks</h2>
+<p>A <strong>deck</strong> is a charge column separated from adjacent charges by stemming or air.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Select the target holes.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Decks</strong>in the top bar (Sequence Tools group). The <em>Decks</em> dialog opens.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Set parameters</strong>: Number of Decks, Number of detonators per deck, Interval between decks (ms). Tick <em>Activate level connection</em> if needed.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Apply.</strong>Settings are applied to all selected holes.</div></div></div>
+</section><section id="copy-paste-load"><h2>4.5 · Copy &amp; Paste Load</h2>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Select the source hole</strong>and click <strong>Copy load</strong> in the charging panel.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Select the target holes.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Paste load.</strong>For ring plane projects, options include <em>Paste to selected ring planes</em> and <em>Paste to selected ring planes with charges</em>.</div></div></div>
+<p>If target holes have different diameters, the <strong>Charge Paste Adapted</strong> dialog lets you choose which charge level to adapt to each hole's geometry.</p>
+</section><section id="inventory"><h2>4.6 · Inventory</h2>
+<p>The <strong>Inventory</strong> sub-panel (Charging tab) shows all products used with total quantities. Click <strong>Copy to clipboard</strong> or <strong>Export as TXT</strong> to share the data.</p></section><section id="sequence"><h2>5 · Sequence Tab</h2></section><section id="overview-4"><h2>5.1 · Overview</h2>
+<p>Click <strong>Sequence</strong> in the top bar. The sequence toolbar appears with these tool groups:</p>
+<ul>
+<li><strong>Non-electric / Electronic</strong> — switch technology (a confirmation dialog warns before converting).</li>
+<li><strong>Decks</strong> — configure inter-deck connections.</li>
+<li><strong>Connections</strong> — show/hide connector lines in the view.</li>
+<li><strong>Programming</strong> — detonator numbering tool.</li>
+<li><strong>Display</strong> — toggle per-hole display: None, Detonator ID, Timing, Status, With delta time, With distance.</li>
+<li><strong>Histogram</strong> — open the timing histogram.</li>
+<li><strong>Animation</strong> — start/stop firing simulation.</li>
+</ul>
+</section><section id="non-electric-sequence"><h2>5.2 · Non-Electric Sequence</h2>
+<h3 id="settings">Settings</h3>
+<p>Click <strong>Settings</strong> in the sequence toolbar → <em>Non-electric settings</em>: Default detonator delay (ms), Default detonator number, Default connector colour, Connector delay per type (ms).</p>
+<h3 id="working-modes">Working Modes</h3>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>How to activate</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Select</td>
+<td>Click the cursor button</td>
+<td>Select and inspect elements</td>
+</tr>
+<tr>
+<td>Line</td>
+<td>Click the Line button</td>
+<td>Draw connector lines between holes by clicking them in sequence</td>
+</tr>
+<tr>
+<td>Circular</td>
+<td>Click Circular mode button</td>
+<td>Connects holes in a closed loop</td>
+</tr>
+<tr>
+<td>Linear</td>
+<td>Click Linear mode button</td>
+<td>Connects holes in a straight chain</td>
+</tr>
+<tr>
+<td>V-Sequence</td>
+<td>Click V.Sequence button</td>
+<td>Creates a V-shaped timing pattern from a central row outward</td>
+</tr>
+<tr>
+<td>Manual Increment</td>
+<td>Click Manual Incr. path button</td>
+<td>Click holes one by one to assign incrementing delays</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="adding-removing-connections">Adding / Removing Connections</h3>
+<ul>
+<li><strong>Add Nonel Connections</strong> → click two holes to link them.</li>
+<li><strong>Remove Nonel Connections</strong> → click a connector line to delete it.</li>
+<li><strong>Clear Nonel Sequence</strong> → removes all connections (confirmation required).</li>
+</ul>
+</section><section id="electronic-sequence"><h2>5.3 · Electronic Sequence</h2>
+<h3 id="v-sequence-tool">V-Sequence Tool</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click V.Sequence</strong>in the sequence toolbar.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Enter Deconfinement time (ms/m)</strong>— controls how fast the blast wave travels relative to burden distance.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click a centre hole.</strong>The V pattern is generated outward. Tick <em>Symetric</em> to mirror both arms.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Adjust</strong>with <em>Reset</em> (start over) or <em>Manual Increment</em> (fine-tune individual delays).</div></div></div>
+<h3 id="programming-order-tool">Programming Order Tool</h3>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Programming → Create a sequence order.</strong></div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Activate the tool</strong>in the dialog.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Hover over holes</strong>to preview the cable path. <strong>Click a hole</strong> to stop the tool and assign sequential numbers.</div></div><div class="step"><div class="sn"></div><div class="sb">Alternatively, <strong>use the polygon tool</strong> to draw a zone — all holes inside receive sequential numbers.</div></div></div>
+</section><section id="histogram-animation"><h2>5.4 · Histogram &amp; Animation</h2>
+<h3 id="histogram">Histogram</h3>
+<p>Click <strong>Histogram</strong> in the sequence toolbar. The chart shows firing count per time window. Set <em>Cumul. +/- (ms)</em> to group nearby firings. Use it to verify no excessive simultaneous detonations (which would cause PPV spikes).</p>
+<h3 id="animation">Animation</h3>
+<p>Click <strong>Animation</strong> (play button). Holes light up in firing order. Controls: <em>Anim. speed (ms/s)</em>, <em>Anim. at (ms)</em> (jump to a time), <em>Loop</em>, <em>Pause</em>, <em>Reset</em>.</p>
+</section><section id="exporting-the-sequence"><h2>5.5 · Exporting the Sequence</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Export</th>
+<th>Access via</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sequence timings</td>
+<td>Export → Export sequence timings</td>
+<td><code>.csv</code> with delay per hole</td>
+</tr>
+<tr>
+<td>Programming order</td>
+<td>Export → Export programming order</td>
+<td><code>.csv</code> with cable-path order</td>
+</tr>
+<tr>
+<td>Daveytronic</td>
+<td>Export → Export Daveytronik</td>
+<td>Proprietary format for programming e-det units</td>
+</tr>
+<tr>
+<td>Hanwha</td>
+<td>Export → Export Hanwha</td>
+<td>Hanwha e-det programming format</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="daveytronic-export">Daveytronic Export</h3>
+<p>Fill in: PU type, Detonator type, Site name, Zone name, Blast &amp; revision name, User name, Path letter (A–R), PU serial number, output directory. Constraints: hole names ≤ 5 chars (DT4G) or ≤ 10 chars (DT5G), no empty decks, max 9 decks per hole.</p></section><section id="reporting"><h2>6 · Reporting Tab</h2></section><section id="overview-5"><h2>6.1 · Overview</h2>
+<p>Click <strong>Reporting</strong> in the top bar to capture views and generate official reports.</p>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Open the target view</strong>— only one view should be open at a time.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Configure it</strong>— show/hide elements, set the camera angle.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Capture.</strong>A thumbnail is added to the capture grid. Repeat as needed.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Add titles</strong>— tick <em>Auto generate titles</em> for automatic captions, or type manually.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Click Generate report</strong>and choose the report type.</div></div></div>
+<div class="callout tip"><span class="ico">💡</span><div>Tick <em>Open directory on save</em> to jump straight to the output folder after saving.</div></div>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Report</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blast Report</td>
+<td><code>.xlsx</code> — full blast form: site info, drilling, loading, explosives, PPV, signatures</td>
+</tr>
+<tr>
+<td>Drill Log (Drilling Report)</td>
+<td><code>.xlsx</code> — per-hole drill log with design vs actual values and driller checklist</td>
+</tr>
+<tr>
+<td>Multiblend Sheet</td>
+<td><code>.xlsx</code> — multi-product loading summary</td>
+</tr>
+<tr>
+<td>Loading Diagrams</td>
+<td><code>.pdf</code> — schematic loading diagram per hole</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="blast-report-contents"><h2>6.2 · Blast Report Contents</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identification</td>
+<td>Site name, Blast reference, Date, Location</td>
+</tr>
+<tr>
+<td>Drilling</td>
+<td>Driller(s), Rig number(s), Metres drilled, Re-drill metres, Days drilling, Av. daily metres</td>
+</tr>
+<tr>
+<td>Geometry</td>
+<td>Avg burden, Avg spacing, Avg depth + subdrill, Rock density, Hole count, Diameter, Metres fired, Proposed floor (masl), Min burden</td>
+</tr>
+<tr>
+<td>Loading</td>
+<td>MIC (kg), Loading rate (kg/m), Initiation type, Deck count, Blast pattern (Staggered/Square), Blast volume (m³), Tonnes</td>
+</tr>
+<tr>
+<td>Explosives table</td>
+<td>Per type: Target / Actual / Extra / Total quantities</td>
+</tr>
+<tr>
+<td>Accessories</td>
+<td>Harness connecting wire, H2 connectors</td>
+</tr>
+<tr>
+<td>Supply</td>
+<td>Explosives supplier, MEMU ID, Delivery reference</td>
+</tr>
+<tr>
+<td>Environmental</td>
+<td>Monitoring position, Coordinates, Closest hole, Distance, Weather, PPV, AOP</td>
+</tr>
+<tr>
+<td>Post-blast comments</td>
+<td>Free text</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>Planned blast time, Actual blast time</td>
+</tr>
+<tr>
+<td>Signatures</td>
+<td>Shotfirer, Explosives Supervisor, Quarry Approved, P/O Number</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="drill-log-report"><h2>6.3 · Drill Log Report</h2>
+<p>A field document for drillers. Expertir pre-fills design values; drillers add measured values on site. Per-hole columns: Hole No, Target Azimuth, Design Angle, Design Depth, Actual Angle, Actual Depth, Date, Comments.</p>
+<h3 id="drillers-checklist-auto-generated">Driller's Checklist (auto-generated)</h3>
+<ul>
+<li>Have all completed, re-drilled and attempted holes been logged?</li>
+<li>Have re-drilled or attempted holes been marked on the plan?</li>
+<li>Has depth, angle and azimuth been recorded for all holes?</li>
+<li>Has inclination &amp; azimuth been checked for the 1st then every 5th hole?</li>
+<li>Have all wet holes been highlighted?</li>
+<li>Has the date drilled been recorded for all holes?</li>
+</ul>
+</section><section id="exporting-data"><h2>6.4 · Exporting Data</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Export</th>
+<th>Format</th>
+<th>Access via</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Holes to CSV/TXT</td>
+<td><code>.csv</code></td>
+<td>Top bar → Export → Export holes to csv/txt</td>
+</tr>
+<tr>
+<td>Holes to STR</td>
+<td><code>.str</code></td>
+<td>Top bar → Export → Export holes to str</td>
+</tr>
+<tr>
+<td>Holes to Iredes</td>
+<td><code>.xml</code></td>
+<td>Top bar → Export → Export holes to iredes format</td>
+</tr>
+<tr>
+<td>Ring planes</td>
+<td><code>.csv</code></td>
+<td>Top bar → Export → Export ring planes</td>
+</tr>
+<tr>
+<td>Markers</td>
+<td><code>.csv</code></td>
+<td>Top bar → Export → Export markers to csv/txt</td>
+</tr>
+<tr>
+<td>Loading diagrams</td>
+<td><code>.pdf</code></td>
+<td>Top bar → Export → Export loading diagrams</td>
+</tr>
+<tr>
+<td>Programming order</td>
+<td><code>.csv</code></td>
+<td>Top bar → Export → Export programming order</td>
+</tr>
+<tr>
+<td>Sequence timings</td>
+<td><code>.csv</code></td>
+<td>Top bar → Export → Export sequence timings</td>
+</tr>
+<tr>
+<td>Blast Report</td>
+<td><code>.xlsx</code></td>
+<td>Reporting tab → Generate report</td>
+</tr>
+<tr>
+<td>Daveytronic</td>
+<td>Proprietary</td>
+<td>Sequence toolbar → Export Daveytronik</td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout warn"><span class="ico">⚠</span><div><strong>Export failed</strong> — Check that the output folder is writable and that the target file is not open in another application.</div></div></section><section id="explore"><h2>7 · Cloud &amp; Settings</h2></section><section id="overview-6"><h2>7.1 · Overview</h2>
+<div class="steps"><div class="step"><div class="sn"></div><div class="sb"><strong>Click Connect to Explore</strong>on the Home page.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Enter credentials</strong>: User mail and Password. If wrong, "Invalid username or password" is shown.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Select your Site, Project and Zone</strong>from the drop-down lists.</div></div><div class="step"><div class="sn"></div><div class="sb"><strong>Confirm.</strong>The top-right status changes to <strong>Connected</strong>.</div></div></div>
+<div class="callout warn"><span class="ico">⚠</span><div><strong>Licence error</strong> — If Expertir cannot find a valid licence after extended offline use, reconnect to the internet to revalidate. If the error persists, contact support.</div></div>
+</section><section id="synchronisation"><h2>7.2 · Synchronisation</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Button</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Refresh blast list</td>
+<td><em>Refresh</em></td>
+<td>Downloads the latest list from Explore</td>
+</tr>
+<tr>
+<td>Clear cache &amp; re-sync</td>
+<td><em>Sync with Local</em></td>
+<td>Clears local cache, forces full re-sync</td>
+</tr>
+<tr>
+<td>Export revision to Explore</td>
+<td>Right-click blast → <em>Export Revision</em></td>
+<td>Pushes current revision to Explore. Save first; main revision must be exported before sub-revisions.</td>
+</tr>
+<tr>
+<td>Import drill plan</td>
+<td>Top bar → <em>Explore™ / ExperTab™</em></td>
+<td>Pulls hole data from Explore into the current project</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="application-settings"><h2>7.3 · Application Settings</h2>
+<p>Open Settings from the top bar (gear icon). The settings tree covers:</p>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Key settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application</td>
+<td>Enable upload logs (Yes / No / Ask me later) · Freeze holes automatically</td>
+</tr>
+<tr>
+<td>User Interface</td>
+<td>View background colour</td>
+</tr>
+<tr>
+<td>3-D</td>
+<td>Terrain default colour · Camera vertical field of view</td>
+</tr>
+<tr>
+<td>Parsers</td>
+<td>Invert X/Y for OBJ / Iredes / DXF / Deswik / STR · Polarex: use stored angles, convergence angle, magnetic declination</td>
+</tr>
+<tr>
+<td>Stope</td>
+<td>Slicer visibility rules · Ringplane smoothing distance, display width/height · Min profile mesh restriction · Min profile display method · Change dump angle direction</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="profile-page">Profile Page</h3>
+<p>From the Home page top-right → <em>Profile</em>: upload a company logo (JPEG/PNG, max 5 MB) for reports, and edit your name, email, company and language.</p>
+<h3 id="updates">Updates</h3>
+<p>When a new version is available, the <em>New Update</em> dialog shows the version number and changelog. Click <strong>Update to the latest version</strong> to install, or <em>Ask me later</em> to postpone.</p>
+</section><section id="keyboard-shortcuts"><h2>7.4 · Keyboard Shortcuts</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Shortcut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undo</td>
+<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+</tr>
+<tr>
+<td>Redo</td>
+<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+</tr>
+<tr>
+<td>Save</td>
+<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+</tr>
+<tr>
+<td>Delete selected</td>
+<td><kbd>Delete</kbd></td>
+</tr>
+<tr>
+<td>Deactivate current tool</td>
+<td><kbd>Esc</kbd></td>
+</tr>
+<tr>
+<td>Move selection</td>
+<td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+</tr>
+<tr>
+<td>Add to selection</td>
+<td><kbd>Ctrl</kbd> + left-click</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="troubleshooting-faq"><h2>7.5 · Troubleshooting &amp; FAQ</h2>
+<h3 id="expertir-wont-start-licence-error">Expertir won't start / Licence Error</h3>
+<p>Ensure internet access. Expertir requires periodic online licence validation. If the problem persists after connecting, upload logs from the Help menu and contact support.</p>
+<h3 id="holes-appear-far-from-the-site-after-import">Holes appear far from the site after import</h3>
+<p>The EPSG code for the input file or the site is wrong. Re-open the import dialog, correct both EPSG fields and re-validate. Common mistake: using EPSG:4326 (WGS84 geographic, in degrees) when the file uses a projected system (UTM, Lambert, etc.).</p>
+<h3 id="import-fails-with-a-parse-error">Import fails with a parse error</h3>
+<ul>
+<li>Verify the separator matches the selection.</li>
+<li>Check for blank lines or extra columns in the file.</li>
+<li>For STR and laser files, look at the line number in the error message and fix the formatting there.</li>
+</ul>
+<h3 id="the-terrain-mesh-is-far-from-my-holes">The terrain mesh is far from my holes</h3>
+<p>The OBJ or DXF file uses a different coordinate reference. Expertir warns at &gt;1 km (confirmation needed) and &gt;50 km (strongly recommended to create a new project).</p>
+<h3 id="export-fails">Export fails</h3>
+<ul>
+<li>Check that the target folder is writable.</li>
+<li>Close the file in any other application if it is already open.</li>
+<li>Check available disk space.</li>
+</ul>
+<h3 id="explore-sync-export-fails">Explore sync / export fails</h3>
+<ul>
+<li>Confirm internet connection and that <strong>Connected</strong> is shown top-right.</li>
+<li>The blast must be open before exporting.</li>
+<li>Save all changes first.</li>
+<li>Export the main revision before sub-revisions.</li>
+<li>If it persists, click <em>Sync with Local</em> to clear the cache and retry.</li>
+</ul>
+<h3 id="a-sequence-warning-about-minimum-safety-distance-appears">A sequence warning about minimum safety distance appears</h3>
+<p>Two or more holes fire too close together in time relative to their physical distance. Adjust delays to increase the time gap between those holes.</p>
+<h3 id="daveytronic-export-validation-errors">Daveytronic export validation errors</h3>
+<ul>
+<li>Hole names: ≤ 5 chars (DT4G) or ≤ 10 chars (DT5G); only A–Z, a–z, 0–9, <code>-</code>, <code>_</code> and spaces.</li>
+<li>Path letter must be A–R; PU serial number 1–9999.</li>
+<li>No empty decks; max 9 decks per hole; 1 detonator/deck for DT4G, up to 9 for DT5G.</li>
+</ul>
+<h3 id="how-do-i-send-logs-to-support">How do I send logs to support?</h3>
+<p>Top bar → Help menu → <em>Upload Logs</em>. You can also enable automatic log upload in Settings → Application → Enable upload logs.</p>
+</section><section id="glossary"><h2>7.6 · Glossary</h2>
+<div class="tbl-wrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blast</td>
+<td>A complete explosive firing operation on a defined rock mass</td>
+</tr>
+<tr>
+<td>Burden</td>
+<td>Distance from the free face to the first row of holes</td>
+</tr>
+<tr>
+<td>Subdrill</td>
+<td>Extra hole depth below the design floor to ensure complete fragmentation at the toe</td>
+</tr>
+<tr>
+<td>Stemming</td>
+<td>Inert material (drill cuttings, gravel) placed above the explosive column to confine gases</td>
+</tr>
+<tr>
+<td>Deck</td>
+<td>A discrete explosive charge separated from adjacent charges by stemming or an air gap</td>
+</tr>
+<tr>
+<td>Detonator</td>
+<td>Device that initiates the explosive; may be non-electric (shock tube) or electronic</td>
+</tr>
+<tr>
+<td>Delay</td>
+<td>Programmed time between detonator firing and the next; controls fragmentation and vibration</td>
+</tr>
+<tr>
+<td>Isochrone</td>
+<td>Line connecting holes that fire at the same instant; used to visualise blast timing</td>
+</tr>
+<tr>
+<td>PPV</td>
+<td>Peak Particle Velocity — measure of ground vibration used for blast impact assessment</td>
+</tr>
+<tr>
+<td>Revision</td>
+<td>A saved version of a blast project; multiple revisions can coexist under one blast</td>
+</tr>
+<tr>
+<td>Ring Plane</td>
+<td>A defined plane through which UG Stope drill holes radiate from a single drill drive</td>
+</tr>
+<tr>
+<td>Slot Raise</td>
+<td>Initial opening blast in a stope, creating the free face for subsequent rings</td>
+</tr>
+<tr>
+<td>Mesh / Terrain</td>
+<td>3-D surface model (OBJ, DXF, STR) representing the rock mass or pit floor</td>
+</tr>
+<tr>
+<td>EPSG</td>
+<td>Coordinate reference system code; used to geo-reference the blast in real-world coordinates</td>
+</tr>
+<tr>
+<td>Explore</td>
+<td>EPC Groupe cloud platform for project sharing, reporting and fleet management</td>
+</tr>
+</tbody>
+</table></div></section></div><!-- end .content-wrap -->
+<!-- ════ FOOTER ════ -->
+<footer>
+<div class="footer-inner">
+<div class="footer-logo">Expertir 4.0</div>
+<div class="footer-copy">© 2024 EPC Groupe · All rights reserved · <a href="https://www.epc-groupe.com" target="_blank">epc-groupe.com</a></div>
+</div>
+</footer>
+</div><!-- end #ct -->
+<script>
+var isScrolling = false;
+
+function estimateScrollDuration(targetEl) {
+  var dist = Math.abs(targetEl.getBoundingClientRect().top);
+  return Math.min(2500, Math.max(600, dist * 0.6));
+}
+
+function handleChapterClick(event, el) {
+  event.preventDefault();
+  event.stopPropagation();
+  var section = el.closest('.nav-section');
+  var target = el.getAttribute('data-target');
+
+  var allSections = document.querySelectorAll('.nav-section');
+  for (var i = 0; i < allSections.length; i++) {
+    if (allSections[i] !== section) {
+      allSections[i].classList.remove('open');
+    }
+  }
+  section.classList.toggle('open');
+
+  if (target) {
+    var targetEl = document.getElementById(target);
+    if (targetEl) {
+      isScrolling = true;
+      var duration = estimateScrollDuration(targetEl);
+      var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      clearTimeout(window._scrollTimer);
+      window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+    }
+  }
+}
+
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    window.requestAnimationFrame(function() {
+      updateActiveNav();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+function updateActiveNav() {
+  if (isScrolling) return;
+
+  var sections = document.querySelectorAll('h2[id], h3[id], section[id]');
+  var current = '';
+  for (var i = 0; i < sections.length; i++) {
+    var top = sections[i].getBoundingClientRect().top;
+    if (top < 120) current = sections[i].id;
+  }
+
+  var navItems = document.querySelectorAll('.nav-item, .nav-subitem, .nav-chapter');
+  for (var j = 0; j < navItems.length; j++) {
+    navItems[j].classList.remove('active');
+    var href = navItems[j].getAttribute('href');
+    var dataTarget = navItems[j].getAttribute('data-target');
+    if ((href && href === '#' + current) || (dataTarget && dataTarget === current)) {
+      navItems[j].classList.add('active');
+    }
+  }
+
+  var btn = document.getElementById('back-to-top');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+}
+
+document.getElementById('back-to-top').addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+var navLinks = document.querySelectorAll('#sb-nav .nav-item, #sb-nav .nav-subitem');
+for (var k = 0; k < navLinks.length; k++) {
+  navLinks[k].addEventListener('click', function(ev) {
+    var href = this.getAttribute('href');
+    if (href) {
+      var targetEl = document.querySelector(href);
+      if (targetEl) {
+        ev.preventDefault();
+        isScrolling = true;
+        var duration = estimateScrollDuration(targetEl);
+        var offsetTop = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        clearTimeout(window._scrollTimer);
+        window._scrollTimer = setTimeout(function() { isScrolling = false; }, duration);
+      }
+    }
+  });
+}
+
+document.getElementById('sb-search-input').addEventListener('input', function(e) {
+  var query = e.target.value.toLowerCase();
+  var sections = document.querySelectorAll('.nav-section');
+  for (var i = 0; i < sections.length; i++) {
+    var text = sections[i].textContent.toLowerCase();
+    if (query === '' || text.indexOf(query) !== -1) {
+      sections[i].style.display = '';
+      if (query) sections[i].classList.add('open');
+    } else {
+      sections[i].style.display = 'none';
+    }
+  }
+});
+
+var firstSection = document.querySelector('.nav-section');
+if (firstSection) firstSection.classList.add('open');
+
+// Inject .num circles into main chapter h2s only (e.g. "2 . Design Tab")
+// Sub-sections (e.g. "2.1 . Overview") get class sub-section, no circle
+(function() {
+  var midDot = '·'; // middle dot character
+  document.querySelectorAll('.content-wrap h2').forEach(function(h2) {
+    var text = h2.textContent.trim();
+    // Sub-section: starts with digit.digit (e.g. "2.1")
+    var isSub = /^\d+\.\d/.test(text);
+    // Main chapter: starts with single number followed by middle dot (e.g. "2 · Title")
+    var mainMatch = text.match(/^(\d+)\s*·\s+(.+)$/);
+    if (isSub) {
+      h2.classList.add('sub-section');
+    } else if (mainMatch) {
+      var num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = mainMatch[1];
+      h2.textContent = mainMatch[2];
+      h2.insertBefore(num, h2.firstChild);
+    }
+  });
+})();
+</script>
+</body>
+</html>
